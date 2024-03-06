@@ -8,7 +8,7 @@ export default function TabAccountScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Account</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/two.tsx" />
+     
     </View>
   );
 }
@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#ffffff'
   },
   title: {
     fontSize: 20,
