@@ -45,17 +45,13 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-  const colorScheme = useColorScheme();
-
   return (
     <AppProvider>
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-        <Stack.Screen name="canvas" options={{presentation: 'containedModal', gestureEnabled: false}} />
+        <Stack.Screen name="canvas" options={{headerShown: false, presentation: 'containedModal', gestureEnabled: false}} />
       </Stack>
-    </ThemeProvider>
     </AppProvider>
   );
 }

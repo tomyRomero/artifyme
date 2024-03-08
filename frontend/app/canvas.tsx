@@ -3,6 +3,7 @@ import { View, StyleSheet, Dimensions, TouchableOpacity, Text } from 'react-nati
 import { Svg, Path } from 'react-native-svg';
 import { router } from 'expo-router';
 import { useAppContext } from '../lib/AppContext';
+import Colors from '../constants/Colors';
 
 
 const { height, width } = Dimensions.get('window');
@@ -16,7 +17,6 @@ export default function CanvasScreen({}) {
 
 
   useEffect(() => {
-    console.log('Saving paths to global state:', paths);
     // Update paths in the global state whenever paths change
     setPaths(paths);
   }, [paths, setPaths]);
@@ -28,7 +28,7 @@ export default function CanvasScreen({}) {
     setClearButtonClicked(false);
   };
 
-  const onTouchMove = (event: { nativeEvent: { locationX: any; locationY: any; }; }) => {
+  const onTouchMove = (event: { nativeEvent: { locationX: number; locationY: number; }; }) => {
     const newPath = [...currentPath];
     const locationX = event.nativeEvent.locationX;
     const locationY = event.nativeEvent.locationY;
@@ -94,15 +94,15 @@ const styles = StyleSheet.create({
   svgContainer: {
     height: height * 0.7,
     width,
-    borderColor: 'black',
     backgroundColor: 'white',
-    borderWidth: 1,
+    borderWidth: 10, 
+    borderColor: '#8B4513', 
   },
   closeButton: {
     position: 'absolute',
-    top: 20,
-    right: 20,
-    backgroundColor: 'black',
+    top: 30,
+    right: 10,
+    backgroundColor: Colors.primary,
     padding: 10,
     borderRadius: 5,
     zIndex: 1,
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
   },
   clearButton: {
     marginTop: 10,
-    backgroundColor: 'black',
+    backgroundColor: Colors.primary,
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
