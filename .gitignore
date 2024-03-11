@@ -8,6 +8,8 @@ node_modules/
 dist/
 web-build/
 
+application.properties
+
 # Native
 *.orig.*
 *.jks
