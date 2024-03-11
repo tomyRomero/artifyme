@@ -1,6 +1,6 @@
 import base64
 from fastapi import FastAPI, Query, Request, UploadFile, File
-from fastapi.responses import StreamingResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 from diffusers import DiffusionPipeline
 import io
 from PIL import Image
@@ -59,49 +59,54 @@ async def generate_image(prompt: str = Query(..., description="Text prompt for i
     return StreamingResponse(image_data, media_type="image/png")
 
 
-@app.post("/generate/img2img", response_class=StreamingResponse)
+@app.post("/generate/img2img")
 async def generate_image(request: Request):
     # Parse JSON body
-    body = await request.json()
+    try:
+        body = await request.json()
 
-    print("body:" , body)
+        # Extract base64-encoded image from request body
+        base64_image = body.get("base64_image", "")
+        prompt = body.get("prompt", "")
+        strength = body.get("strength", 0.75)
+        scale = body.get("scale", 7)
+        sampling_steps = body.get("sampling_steps", 10)
+        num_inference_steps = body.get("num_inference_steps", 20)
 
-    # Extract base64-encoded image from request body
-    base64_image = body.get("base64_image", "")
-    prompt = body.get("prompt", "")
-    strength = body.get("strength", 0.75)
-    scale = body.get("scale", 7)
-    sampling_steps = body.get("sampling_steps", 10)
-    num_inference_steps = body.get("num_inference_steps", 40)
+        print("Received request to generate image.")
+        print(f"Prompt: {prompt}")
 
-    print("Received request to generate image.")
-    print(f"Prompt: {prompt}")
-    print(f"Base64 Image: {base64_image}")
+        # Decode base64-encoded image
+        image_bytes = base64.b64decode(base64_image.split(",")[-1])
+        init_image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+        init_image = init_image.resize((768, 512))
+        init_image.save("init_image.png")
 
-    # Decode base64-encoded image
-    image_bytes = base64.b64decode(base64_image.split(",")[-1])
-    init_image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
-    init_image = init_image.resize((768, 512))
-    init_image.save("init_image.png")
+        # Generate image with the provided prompt
+        images = pipe(
+            prompt=prompt,
+            image=init_image,
+            strength=strength,
+            num_inference_steps=num_inference_steps,
+            sampling_steps=sampling_steps,
+            scale=scale
+        ).images
+        generated_image = images[0]
 
-    # Generate image with the provided prompt
-    images = pipe(
-        prompt=prompt,
-        image=init_image,
-        strength=strength,
-        num_inference_steps=num_inference_steps,
-        sampling_steps=sampling_steps,
-        scale=scale
-    ).images
-    generated_image = images[0]
+        # Convert generated image to PNG format
+        image_data = io.BytesIO()
+        generated_image.save(image_data, format="PNG")
+        image_data.seek(0)
 
-    # Convert generated image to PNG format
-    image_data = io.BytesIO()
-    generated_image.save(image_data, format="PNG")
-    image_data.seek(0)
+        # Convert generated image to base64 format
+        base64_image_str = base64.b64encode(image_data.getvalue()).decode('utf-8')
 
-    # Return the streaming response
-    return StreamingResponse(image_data, media_type="image/png")
+        # Return the streaming response
+        return JSONResponse({
+            "base64_image": f"data:image/png;base64,{base64_image_str}"})
+    except Exception as e:
+         # If any error occurs, return an error response
+        return JSONResponse({"error": str(e)}, status_code=500)
 
 if __name__ == "__main__":
     import uvicorn

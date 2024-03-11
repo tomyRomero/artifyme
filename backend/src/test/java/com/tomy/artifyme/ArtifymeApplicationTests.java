@@ -1,4 +1,4 @@
-package com.example.artifyme;
+package com.tomy.artifyme;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
