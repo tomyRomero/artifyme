@@ -9,6 +9,9 @@ type AppContextProps = {
 
   paths: any,
   setPaths: React.Dispatch<React.SetStateAction<any>>;
+
+  token: any,
+  setToken: React.Dispatch<React.SetStateAction<any>>;
 };
 
 // Create the AppContext with an initial value of undefined
@@ -24,10 +27,14 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   //Save the state of the drawing
   const [paths, setPaths] = useState<string[][]>([]);
 
+  //JWT Token
+  const [token, setToken] = useState(null);
+
   // Provide the context value to the children components, include additional states if there are any
   const contextValue: AppContextProps = {
     setTheme, theme,
-    paths, setPaths
+    paths, setPaths,
+    token, setToken
   };
 
   return <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>;

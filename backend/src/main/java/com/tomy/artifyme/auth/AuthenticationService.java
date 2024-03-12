@@ -4,8 +4,12 @@ import com.tomy.artifyme.config.JwtService;
 import com.tomy.artifyme.user.User;
 import com.tomy.artifyme.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,23 +23,46 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationResponse register(RegisterRequest request)
-    {
+   @SuppressWarnings("null")
+public ResponseEntity<AuthenticationResponse> register(RegisterRequest request) {
+    try {
+        // Check if user with provided email already exists
+        if (repository.findByEmail(request.getEmail()).isPresent()) {
+            // User with email already exists, handle appropriately
+            throw new RuntimeException("Email is already in use");
+        }
+
+        if (request.getFirstname() == null || request.getLastname() == null || request.getEmail() == null || request.getPassword() == null) {
+            throw new RuntimeException("All fields (firstname, lastname, email, password) are required.");
+        }
+
         var user = User.builder()
-        .firstname(request.getFirstname())
-        .lastname(request.getLastname())
-        .email(request.getEmail())
-        .password(passwordEncoder.encode(request.getPassword()))
-        .role("User")
-        .active(true) 
-        .build();
+                .firstname(request.getFirstname())
+                .lastname(request.getLastname())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role("User")
+                .active(true)
+                .build();
 
         repository.save(user);
         var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-            .token(jwtToken)
-            .build();
+        return ResponseEntity.ok(AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build());
+    } catch (RuntimeException e) {
+        // Handle email already in use exception
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthenticationResponse.builder()
+                .errorMessage(e.getMessage())
+                .build());
+    }  catch (Exception e) {
+        // Handle any other unexpected exceptions
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(AuthenticationResponse.builder()
+                .errorMessage("An unexpected error occurred")
+                .build());
     }
+}
+
 
     public AuthenticationResponse authenticate(AuthenticationRequest request)
     {
@@ -46,7 +73,7 @@ public class AuthenticationService {
         )
     );
     var user = repository.findByEmail(request.getEmail())
-        .orElseThrow();
+        .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + request.getEmail()));
     var jwtToken = jwtService.generateToken(user);
     return AuthenticationResponse.builder()
         .token(jwtToken)

@@ -25,13 +25,11 @@ export default function TabAccountScreen() {
         <View style={styles.profile}>
           <View>
             <Text style={styles.profileName}>Tomy Romero</Text>
-
             <Text style={styles.profileEmail}>
               tomyfletcher99@hotmail.com
             </Text>
           </View>
         </View>
-
         <ScrollView>
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Preferences</Text>

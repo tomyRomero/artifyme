@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View, Image, StyleSheet, useColorScheme, TouchableOpacity, Pressable, Platform} from 'react-native';
 import { Link, Tabs } from 'expo-router';
-import Colors from '../../constants/Colors';
+import { Colors } from '../../constants';
 import Svg, { Path } from 'react-native-svg';
 import { StatusBar } from 'expo-status-bar';
 import { BottomTabBar } from "@react-navigation/bottom-tabs"

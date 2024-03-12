@@ -3,7 +3,7 @@ import { View, StyleSheet, Dimensions, TouchableOpacity, Text } from 'react-nati
 import { Svg, Path } from 'react-native-svg';
 import { router } from 'expo-router';
 import { useAppContext } from '../lib/AppContext';
-import Colors from '../constants/Colors';
+import { Colors } from '../constants';
 
 
 const { height, width } = Dimensions.get('window');
@@ -14,7 +14,6 @@ export default function CanvasScreen({}) {
   const [isClearButtonClicked, setClearButtonClicked] = useState(false);
 
   const { paths, setPaths } = useAppContext(); // Access the paths state and setPaths method from the global context
-
 
   useEffect(() => {
     // Update paths in the global state whenever paths change

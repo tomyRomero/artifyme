@@ -25,6 +25,7 @@
     "expo-system-ui": "~2.4.0",
     "expo-web-browser": "~12.3.2",
     "formik": "^2.4.5",
+    "jwt-decode": "^4.0.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.72.10",
