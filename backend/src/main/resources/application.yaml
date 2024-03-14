@@ -1,5 +1,0 @@
-spring:
-  data:
-    mongodb:
-      uri: mongodb+srv://tomyfletcher99:Finalartifyme1!@cluster1.avuqdfr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster1
-      database: artifyme

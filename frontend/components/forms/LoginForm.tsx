@@ -11,13 +11,13 @@ import {
 } from 'react-native';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { useAppContext } from '../../lib/AppContext';
+import { storeToken } from '../../lib/utils';
+
 
 
 const INPUT_OFFSET = 110;
 
 const LoginForm = () => {
-    const { setToken } = useAppContext();
     const [loading, setLoading] = useState(false);
 
     const validationSchema = yup.object().shape({
@@ -48,8 +48,8 @@ const LoginForm = () => {
           if (response.ok) {
             const data = await response.json();
             // Save the token to local storage or state
-            console.log('Login successful. Token:', data.token);
-            setToken(data.token)
+            console.log('Login successful');
+            await storeToken(data.token)
             router.push('/')
             
           } else {

@@ -9,6 +9,7 @@ import axios from 'axios';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { captureRef } from 'react-native-view-shot';
+import { getToken } from '../../lib/utils';
 
 const { height, width } = Dimensions.get('window');
 
@@ -84,21 +85,58 @@ const CreateImageForm = () => {
         
         if (isBase64Image(base64)) {
           console.log("is base64")
+          const uniqueImageName = `sketchimage_${Date.now()}`; // Generating a unique name using timestamp
           
-          //The IP address of the same network my server and device using (iphone) are sharing ,
-          // the port number of where the sever uvicorn for python is running
-          const apiUrl = process.env.EXPO_PUBLIC_FAST_API_URL;
-    
-          const response = await axios.post(`${apiUrl}/generate/img2img`, {
-            base64_image: base64,
-            prompt: description,
+          const apiUrl = process.env.EXPO_PUBLIC_JAVA_API_URL;
+          //Get Token from asyncstorage
+          const token = await getToken();
+          const response = await fetch(`${apiUrl}/api/s3/upload`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json', 
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                name: uniqueImageName,
+                image: base64
+            })
+        });
+
+        const data = await response.json();
+        console.log("S3 response", data); // Log the response from the server
+        
+     
+          // Assuming you have the S3 response stored in a variable named 's3Response'
+          const { filename } = await data;
+          console.log("filename: ", filename)
+          console.log("token: ", token)
+          // Construct the URL for getting the image from the backend
+          const getImageUrl = `${apiUrl}/api/s3/image/${encodeURIComponent(filename)}`;
+
+          // Fetch the image from the backend
+          await fetch(getImageUrl, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+          })
+          .then(imgresponse => {
+            if (!imgresponse.ok) {
+                throw new Error('Failed to retrieve image from server');
+            }
+            console.log("get image response: ", imgresponse);
+            return imgresponse.json(); // Assuming the response is JSON
+          })
+          .then(data => {
+            const { base64ImageData , contentType } = data; 
+            const uri = `data:${contentType};base64,${base64ImageData}`;
+            console.log("image uri: ", uri)
+            setGeneratedImage(uri); 
+          })
+          .catch(error => {
+            console.error('Error:', error);
           });
-    
-        // Extract the base64_image field from the response
-        const { base64_image } = response.data;
-  
+        
         // Set the base64 image as the state value for generatedImage
-        setGeneratedImage(base64_image);
         setLoading(false)
         } else {
           console.log("is not base64")
@@ -245,7 +283,7 @@ const styles = StyleSheet.create({
       borderRadius: 10,
       padding: 10,
       borderWidth: 5, 
-      borderColor: '#8B4513', 
+      borderColor: Colors.canvas, 
     },
     drawingPreviewText: {
       marginTop: 5,

@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     width,
     backgroundColor: 'white',
     borderWidth: 10, 
-    borderColor: '#8B4513', 
+    borderColor: Colors.canvas, 
   },
   closeButton: {
     position: 'absolute',
