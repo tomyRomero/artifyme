@@ -50,7 +50,7 @@ const LoginForm = () => {
             // Save the token to local storage or state
             console.log('Login successful');
             await storeToken(data.token)
-            router.push('/')
+            router.back();
             
           } else {
             // Handle login errors

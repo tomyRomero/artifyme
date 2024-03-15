@@ -30,11 +30,18 @@ export default function TabAccountScreen() {
   });
 
 // Function to fetch user details from the API protected route
-const fetchUserDetails = async (token: string) => {
+const fetchUserDetails = async () => {
+  //Get Token from asyncstorage
+  const token = await getToken();
+  if(!token || isTokenExpired(token))
+  {
+    setAuth(false);
+    return;
+  }
+
   //The IP address of the same network my server and device using (iphone) are sharing ,
   // the port number of where the sever tomcat for java is running
   const apiUrl = process.env.EXPO_PUBLIC_JAVA_API_URL;
-
   try {
     //Use token as an authorization header to gain access to protected route, getTokenSubject returns the email stored in token
     //Use email to fetch user details from the serverside database and return them
@@ -45,7 +52,6 @@ const fetchUserDetails = async (token: string) => {
     });
 
     if (response.status == 200) {
-      
       //If I am able to gain access to protected route and recieve user data then the user is authenticated, set state to reflect
       setName(`${response.data.firstname} ${response.data.lastname}`)
       setEmail(getTokenSubject(token))
@@ -64,27 +70,11 @@ const fetchUserDetails = async (token: string) => {
 };
 
   const authenticate = async ()=> {
+    //start the authentication process
     setLoading(true);
-    //Get Token from asyncstorage
-    const token = await getToken();
 
-    if(!token)
-    { 
-      //If there is no token user is not logged in
-      setAuth(false)
-    }else{
-      //If there is a token, ensure it is not expired or else user is not authenticated
-     if(isTokenExpired(token))
-     {
-      setAuth(false)
-     }else{
-      //If token is not expired, make a request to a protected api route to get user details
-      fetchUserDetails(token)
-      //inside fetchUser details we determine if user is fully authenticated(has peermissons to protected api endpoints) 
-      //and then set state
-     }
-    }
-
+    await fetchUserDetails()
+    
     setLoading(false);
   }
 

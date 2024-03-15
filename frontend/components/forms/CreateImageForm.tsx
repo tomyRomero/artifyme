@@ -1,15 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions,Keyboard, TouchableWithoutFeedback, Image , Animated, ActivityIndicator} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions,Keyboard, TouchableWithoutFeedback, Image , Animated, ActivityIndicator, Alert} from 'react-native';
 import { Path, Svg } from 'react-native-svg';
 import { Colors } from '../../constants';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import { useAppContext } from '../../lib/AppContext';
 import * as FileSystem from 'expo-file-system';
 import axios from 'axios';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { captureRef } from 'react-native-view-shot';
-import { getToken } from '../../lib/utils';
+import { authenticate, getToken, getTokenSubject, isTokenExpired } from '../../lib/utils';
+import { useIsFocused } from '@react-navigation/native';
 
 const { height, width } = Dimensions.get('window');
 
@@ -17,6 +18,8 @@ const CreateImageForm = () => {
     const { paths, setPaths } = useAppContext();
     const [generatedImage, setGeneratedImage] = useState<null | string>(null); // State to store the generated image URI
     const [loading, setLoading] = useState(false)
+    const [auth, setAuth] = useState(false);
+    const [saved, setSaved] = useState(false);
   
     const fadeAnim = useRef(new Animated.Value(0)).current; 
     const svgRef = useRef(null);
@@ -34,6 +37,21 @@ const CreateImageForm = () => {
         useNativeDriver: true, // Enable native driver for better performance
       }).start();
     }, [generatedImage]);
+
+      //Track whether the screen is focused
+      const isFocused = useIsFocused(); 
+
+      useEffect(() => {
+        const checkAuth = async ()=> {
+          if (isFocused) {
+            //Check to see if user is authenticated 
+           setAuth(await authenticate());
+           console.log("auth: ",auth)
+          }
+        }
+
+        checkAuth();
+      }, [isFocused]);
   
   
     const saveAsPNG = async () => {
@@ -62,7 +80,38 @@ const CreateImageForm = () => {
         throw error; 
       }
     };
-  
+    
+    const saveArtwork = async ({ token, sketchedImage, aiImage }: {token: string, sketchedImage: string, aiImage: string}) => {
+      try {
+        const javaApiUrl = process.env.EXPO_PUBLIC_JAVA_API_URL;
+        
+        const response = await fetch(`${javaApiUrl}/api/v1/artwork/save`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json', 
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            userEmail: getTokenSubject(token),
+            sketchedImage: sketchedImage,
+            aiImage: aiImage,
+          })
+        });
+    
+        if (response.ok) {
+          const responseData = await response.text(); 
+          console.log('Artwork saved: ', responseData); 
+          setSaved(true);
+      } else {
+          Alert.alert('Failed to save artwork to database');
+      }
+      } catch (error) {
+        console.error('save artwork error:', error);
+        Alert.alert('Error', 'Failed to save artwork to database');
+      }
+    };
+    
+    
     
     function isBase64Image(imageData: string) {
       const base64Regex = /^data:image\/(png|jpe?g|gif|webp|svg\+xml);base64,/;
@@ -71,6 +120,7 @@ const CreateImageForm = () => {
   
     const submitForm = async (formValues: { description: string; }) => {
       try {
+        setSaved(false);
         setLoading(true)
         const { description } = formValues;
   
@@ -81,80 +131,137 @@ const CreateImageForm = () => {
           return;
         }
   
-        const base64 = await saveAsPNG();
-        
-        if (isBase64Image(base64)) {
-          console.log("is base64")
-          const uniqueImageName = `sketchimage_${Date.now()}`; // Generating a unique name using timestamp
-          
-          const apiUrl = process.env.EXPO_PUBLIC_JAVA_API_URL;
-          //Get Token from asyncstorage
-          const token = await getToken();
-          const response = await fetch(`${apiUrl}/api/s3/upload`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json', 
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({
-                name: uniqueImageName,
-                image: base64
-            })
-        });
+        const sketchbase64 = await saveAsPNG();
 
-        const data = await response.json();
-        console.log("S3 response", data); // Log the response from the server
-        
-     
-          // Assuming you have the S3 response stored in a variable named 's3Response'
-          const { filename } = await data;
-          console.log("filename: ", filename)
-          console.log("token: ", token)
-          // Construct the URL for getting the image from the backend
-          const getImageUrl = `${apiUrl}/api/s3/image/${encodeURIComponent(filename)}`;
-
-          // Fetch the image from the backend
-          await fetch(getImageUrl, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-          })
-          .then(imgresponse => {
-            if (!imgresponse.ok) {
-                throw new Error('Failed to retrieve image from server');
-            }
-            console.log("get image response: ", imgresponse);
-            return imgresponse.json(); // Assuming the response is JSON
-          })
-          .then(data => {
-            const { base64ImageData , contentType } = data; 
-            const uri = `data:${contentType};base64,${base64ImageData}`;
-            console.log("image uri: ", uri)
-            setGeneratedImage(uri); 
-          })
-          .catch(error => {
-            console.error('Error:', error);
+        if (isBase64Image(sketchbase64)) {
+          //Generate AI Image
+          //The IP address of the same network my server and device using (iphone) are sharing ,
+          // the port number of where the sever uvicorn for python is running
+          const apiUrl = process.env.EXPO_PUBLIC_FAST_API_URL;
+          const response = await axios.post(`${apiUrl}/generate/img2img`, {
+            base64_image: sketchbase64,
+            prompt: description,
           });
-        
-        // Set the base64 image as the state value for generatedImage
-        setLoading(false)
-        } else {
-          console.log("is not base64")
-          setLoading(false)
-        }
+            //If AI image generation was successful continue the logic or else exit the function and dont do anything else
+            if (response.status === 200) {
+            console.log("AI Image success")
+              //Extract the base64_image field from the response
+              const { base64_image } = response.data;
+              //if authenticated save the artwork. 
+              if(auth)
+              {
+              //start by uploading the sketch image to an s3 bucket
+              const uniqueSketchImageName = `sketchimage_${Date.now()}`; // Generating a unique name using timestamp
+              const javaApiUrl = process.env.EXPO_PUBLIC_JAVA_API_URL;
+              //Get Token from asyncstorage
+              const token = await getToken();
+              const sketchimageresponse = await fetch(`${javaApiUrl}/api/s3/upload`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', 
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    name: uniqueSketchImageName,
+                    image: sketchbase64
+                })
+              
+            });
+            //If sketch was uploaded successfully, then we can upload the AI image
+            if(sketchimageresponse.ok)
+            {
+              console.log("Upload Sketch Image Success")
+              const sketchdata = await sketchimageresponse.json();
+              const { filename } = await sketchdata;
+              const sketchfilename:string = filename;
+              
+
+              //Begin uploading AI Image
+              const uniqueAIImageName = `aiimage_${Date.now()}`; // Generating a unique name using timestamp
+              const aiimageresponse = await fetch(`${javaApiUrl}/api/s3/upload`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', 
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    name: uniqueAIImageName,
+                    image: base64_image
+                })
+            });
+
+            if(aiimageresponse.ok)
+            {
+              console.log("Upload AI Image Success")
+              const aidata = await aiimageresponse.json();
+              const { filename } = await aidata;
+              const aifilename:string = filename;
+             
+                
+                //AI image was uploaded we can save the artwork now to the database.
+                if (token) {
+                  saveArtwork({token, sketchedImage: sketchfilename, aiImage: aifilename });
+                }else{
+                  Alert.alert("Token not available please try signing in")
+                }
+
+            }
+            else{
+              //Alert user of failure to save AI image, we can still display the results
+              Alert.alert("Was not able to save AI Image")
+            }
+
+            }
+            else{
+              //Alert user of failure to save sketch image, we can still display the results
+              Alert.alert("Was not able to save Sketch Image")
+            }
+            }
+
+            //Regardless of if the user is logged in or not(of if there was an error when saving), still render result
+            // Set the base64 image as the state value for generatedImage
+            setGeneratedImage(base64_image);
+  
+            } else {
+              //first response status of the AI Image is not successful, return the submit function and dont do anything else.
+              Alert.alert("Was not able to generate AI Image, Please Try Again")
+              console.error('Error:', response.status);
+              setLoading(false)
+              return;
+            }
+          
+         
+        } 
       } catch (error) {
         console.error('Error:', error);
         setLoading(false)
       }
+      setLoading(false)
     };
 
+    const handleLogin = ()=> {
+      router.push("/login")
+    }
+
+    const handleArtwork = ()=> {
+
+    }
 
   return (
     <>
         <View style={styles.formContainer}>
           <Text style={styles.title}>Any sketches you create will be transformed into images using artificial intelligence (AI), Happy sketching! 🎨✨</Text>
           <View style={styles.separator} />
-
+           {/* Login prompt */}
+           {!generatedImage && (
+            <>
+            {!auth && ( <TouchableOpacity onPress={handleLogin} style={styles.loginPrompt}>
+             <Text style={styles.loginText}>Login</Text>
+             <Text>to save artworks</Text>
+           </TouchableOpacity>)}
+            </>
+           )}
+          
           <Formik
             initialValues={{
                description: '' 
@@ -225,6 +332,19 @@ const CreateImageForm = () => {
                   >
                     <Text style={styles.buttonText}>Try Again</Text>
                   </TouchableOpacity>
+                )}
+
+                 {/* Login prompt */}
+                {generatedImage && (
+                  <>
+                  {auth ? (<TouchableOpacity onPress={handleArtwork} style={styles.genImageloginPrompt}>
+                  <Text style={styles.loginText}>Artwork</Text>
+                  <Text>{saved ? "Saved ✅" : "was not saved, please try again ❌"}</Text>
+                </TouchableOpacity>) : ( <TouchableOpacity onPress={handleLogin} style={styles.genImageloginPrompt}>
+                  <Text style={styles.loginText}>Login</Text>
+                  <Text>to save artworks 🖼️</Text>
+                </TouchableOpacity>)}
+                  </>
                 )}
 
               {!generatedImage && !loading && (
@@ -335,7 +455,26 @@ const styles = StyleSheet.create({
       borderRadius: 5,
       alignSelf: 'center',
       marginTop: 10,
-    }
+    },
+    loginPrompt: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginTop: -15,
+      marginBottom: 10
+    },
+    loginText: {
+      textDecorationLine: 'underline',
+      color: 'blue',
+      marginRight: 5,
+    },
+    genImageloginPrompt: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginTop: 15, 
+      marginBottom: 10
+    },
   });
   
   
