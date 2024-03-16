@@ -25,6 +25,8 @@ public class Artwork {
 
     private String sketchedImage;
     private String aiImage;
+    private String title;
+    private String description;
     private LocalDateTime creationDateTime;
     
 }

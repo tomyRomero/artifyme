@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, Image, StyleSheet, useColorScheme, TouchableOpacity, Pressable, Platform} from 'react-native';
+import { Text, View, Image, StyleSheet, useColorScheme, TouchableOpacity, Pressable, Platform, SafeAreaView} from 'react-native';
 import { Link, Tabs } from 'expo-router';
 import { Colors } from '../../constants';
 import Svg, { Path } from 'react-native-svg';
@@ -75,30 +75,8 @@ export default function TabLayout() {
     );
 };
 
-const CustomCreateButton = ({accessibilityState, children , onPress} : any) => (
-  <TouchableOpacity
-    style={{
-      top: -30,
-      justifyContent: 'center',
-      alignItems: 'center',
-      ...styles.shadow
-    }}
-    onPress={onPress}
-  >
-    <View style={{
-      width: 70,
-      height: 70,
-      borderRadius: 35, 
-      backgroundColor: Colors.light.tint
-    }}>
-      {children}
-    </View>
-  </TouchableOpacity>
-)
-
-
-
-  return (
+  return ( 
+  <SafeAreaView style={{ flex: 1 }}>
       <Tabs
       screenOptions={{
         tabBarShowLabel: false,
@@ -211,6 +189,7 @@ const CustomCreateButton = ({accessibilityState, children , onPress} : any) => (
                 }}
             />
         </Tabs>
+        </SafeAreaView>
     )
 }
 
@@ -230,7 +209,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    height: 90,
+    flexGrow: 1,
     width: '100%',
     borderBottomWidth: 1, 
     borderBottomColor: 'rgba(0,0,0,0.1)',
@@ -248,7 +227,7 @@ const styles = StyleSheet.create({
         elevation: 4,
       },
     }),
-    backgroundColor: `#FFFFFF`
+    backgroundColor: Colors.backgrounglight
   },
   title: {
     color: '#000000',

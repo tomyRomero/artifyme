@@ -11,13 +11,10 @@ import {
   Image,
   ActivityIndicator,
 } from 'react-native';
-import { useAppContext } from '../../lib/AppContext';
 import { isTokenExpired, getTokenSubject, getToken, removeToken } from '../../lib/utils';
 import { useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
 import { Colors } from '../../constants';
-
-
 
 export default function TabAccountScreen() {
 
@@ -125,13 +122,13 @@ const fetchUserDetails = async () => {
            <View style={styles.row}>
              <View style={[styles.rowIcon]}>
              <Image
-                           source={require('../../assets/icons/darkmode.png')}
-                           resizeMode="contain"
-                           style={{
-                               width: 35,
-                               height: 35,
-                           }}
-                   />
+              source={require('../../assets/icons/darkmode.png')}
+              resizeMode="contain"
+              style={{
+              width: 35,
+              height: 35,
+              }}
+              />
              </View>
 
              <Text style={styles.rowLabel}>Dark Mode</Text>
@@ -151,13 +148,13 @@ const fetchUserDetails = async () => {
              style={styles.row}>
              <View style={[styles.rowIcon]}>
              <Image
-                           source={require('../../assets/icons/about.png')}
-                           resizeMode="contain"
-                           style={{
-                               width: 35,
-                               height: 35,
-                           }}
-                   />
+              source={require('../../assets/icons/about.png')}
+              resizeMode="contain"
+              style={{
+              width: 35,
+              height: 35,
+              }}
+              />
              </View>
 
              <Text style={styles.rowLabel}>About</Text>
@@ -165,13 +162,13 @@ const fetchUserDetails = async () => {
              <View style={styles.rowSpacer} />
 
              <Image
-                           source={require('../../assets/icons/right.png')}
-                           resizeMode="contain"
-                           style={{
-                               width: 35,
-                               height: 35,
-                           }}
-                   />
+            source={require('../../assets/icons/right.png')}
+            resizeMode="contain"
+            style={{
+            width: 35,
+            height: 35,
+             }}
+             />
            </TouchableOpacity>
 
            <TouchableOpacity
@@ -181,13 +178,13 @@ const fetchUserDetails = async () => {
              style={styles.row}>
              <View style={[styles.rowIcon]}>
              <Image
-                           source={require('../../assets/icons/contact.png')}
-                           resizeMode="contain"
-                           style={{
-                               width: 35,
-                               height: 35,
-                           }}
-                   />
+              source={require('../../assets/icons/contact.png')}
+              resizeMode="contain"
+              style={{
+              width: 35,
+              height: 35,
+              }}
+              />
              </View>
 
              <Text style={styles.rowLabel}>Contact Dev</Text>
@@ -195,29 +192,29 @@ const fetchUserDetails = async () => {
              <View style={styles.rowSpacer} />
 
              <Image
-                           source={require('../../assets/icons/right.png')}
-                           resizeMode="contain"
-                           style={{
-                               width: 35,
-                               height: 35,
-                           }}
-                   />
+             source={require('../../assets/icons/right.png')}
+             resizeMode="contain"
+             style={{
+             width: 35,
+             height: 35,
+             }}
+             />
            </TouchableOpacity>
 
           {auth && ( <TouchableOpacity
              onPress={() => {
-               // handle onPress
+              
              }}
              style={styles.row}>
              <View style={[styles.rowIcon]}>
              <Image
-                           source={require('../../assets/icons/password.png')}
-                           resizeMode="contain"
-                           style={{
-                               width: 35,
-                               height: 35,
-                           }}
-                   />
+              source={require('../../assets/icons/password.png')}
+              resizeMode="contain"
+              style={{
+              width: 35,
+              height: 35,
+                }}
+              />
              </View>
 
              <Text style={styles.rowLabel}>Change Password</Text>
@@ -225,13 +222,13 @@ const fetchUserDetails = async () => {
              <View style={styles.rowSpacer} />
 
              <Image
-                           source={require('../../assets/icons/right.png')}
-                           resizeMode="contain"
-                           style={{
-                               width: 35,
-                               height: 35,
-                           }}
-                   />
+                source={require('../../assets/icons/right.png')}
+                resizeMode="contain"
+                style={{
+                width: 35,
+                height: 35,
+              }}
+              />
            </TouchableOpacity>)}
           
          </View>
@@ -241,8 +238,6 @@ const fetchUserDetails = async () => {
            <Text style={styles.authButtonText}>Logout</Text>
          </TouchableOpacity>) : ( <TouchableOpacity onPress={handleLogin} style={styles.loginButton}>
            {loading ? (<ActivityIndicator color="#fff" />) : (<Text style={styles.authButtonText}>Login</Text>)}
-           
-           
          </TouchableOpacity>)}
         
        </View>
@@ -262,11 +257,11 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     flexShrink: 1,
     flexBasis: 0,
+    backgroundColor: Colors.backgrounglight,
   },
-  /** Profile */
+
   profile: {
     padding: 24,
-    backgroundColor: '#fff',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
@@ -293,10 +288,10 @@ const styles = StyleSheet.create({
   profileEmail: {
     marginTop: 5,
     fontSize: 16,
-    color: '#989898',
+    color: '#414d63',
     textAlign: 'center',
   },
-  /** Section */
+
   section: {
     paddingHorizontal: 24,
   },
@@ -308,13 +303,13 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 1.1,
   },
-  /** Row */
+
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
     height: 50,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: '#ffffff',
     borderRadius: 8,
     marginBottom: 12,
     paddingLeft: 12,
@@ -339,7 +334,7 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     flexBasis: 0,
   },
-   /** Section */
+
   sectionBody: {
     borderRadius: 12,
     shadowColor: '#000',
@@ -351,7 +346,7 @@ const styles = StyleSheet.create({
     shadowRadius: 1.41,
     elevation: 2,
   },
-  /** Profile */
+
   profileAvatar: {
     width: 60,
     height: 60,

@@ -14,6 +14,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { router } from 'expo-router';
+import { Colors } from '../../constants';
 
 const SignUpForm = () => {
     const [ loading, setLoading] = useState(false);
@@ -197,7 +198,7 @@ header: {
     borderRadius: 9999,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#ffdada',
+    backgroundColor: Colors.primary,
     marginBottom: 16,
   },
   title: {

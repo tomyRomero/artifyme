@@ -22,7 +22,7 @@ export default function TabCreateScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: `#FFFFFF`
+    backgroundColor: `#faf0e6`
   },
 });
 

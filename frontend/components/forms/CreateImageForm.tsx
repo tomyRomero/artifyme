@@ -13,9 +13,8 @@ import { authenticate, getToken, getTokenSubject, isTokenExpired } from '../../l
 import { useIsFocused } from '@react-navigation/native';
 
 const { height, width } = Dimensions.get('window');
-
 const CreateImageForm = () => {
-    const { paths, setPaths } = useAppContext();
+    const {paths, setPaths} = useAppContext();
     const [generatedImage, setGeneratedImage] = useState<null | string>(null); // State to store the generated image URI
     const [loading, setLoading] = useState(false)
     const [auth, setAuth] = useState(false);
@@ -25,7 +24,9 @@ const CreateImageForm = () => {
     const svgRef = useRef(null);
   
     const validationSchema = yup.object().shape({
+      title: yup.string().required("Title is required").min(3, 'Title must be at least 3 characters long'),
       description: yup.string().required('Description is required').min(5, 'Description must be at least 5 characters long'),
+      
     });
   
     useEffect(() => {
@@ -81,7 +82,7 @@ const CreateImageForm = () => {
       }
     };
     
-    const saveArtwork = async ({ token, sketchedImage, aiImage }: {token: string, sketchedImage: string, aiImage: string}) => {
+    const saveArtwork = async ({ token, sketchedImage, aiImage , description, title }: {token: string, sketchedImage: string, aiImage: string, description: string , title: string}) => {
       try {
         const javaApiUrl = process.env.EXPO_PUBLIC_JAVA_API_URL;
         
@@ -95,15 +96,19 @@ const CreateImageForm = () => {
             userEmail: getTokenSubject(token),
             sketchedImage: sketchedImage,
             aiImage: aiImage,
+            description: description,
+            title: title
           })
         });
     
         if (response.ok) {
-          const responseData = await response.text(); 
-          console.log('Artwork saved: ', responseData); 
+          const responseData = await response.json(); 
+          console.log(responseData.message);
+          console.log('Artwork ID: ', responseData.id); 
           setSaved(true);
       } else {
-          Alert.alert('Failed to save artwork to database');
+          const responseData = await response.json(); 
+          Alert.alert(`Failed to save artwork to database: ${responseData.message}`);
       }
       } catch (error) {
         console.error('save artwork error:', error);
@@ -111,22 +116,20 @@ const CreateImageForm = () => {
       }
     };
     
-    
-    
     function isBase64Image(imageData: string) {
       const base64Regex = /^data:image\/(png|jpe?g|gif|webp|svg\+xml);base64,/;
       return base64Regex.test(imageData);
     }
   
-    const submitForm = async (formValues: { description: string; }) => {
+    const submitForm = async (formValues: { description: string; title: string}) => {
       try {
         setSaved(false);
         setLoading(true)
-        const { description } = formValues;
+        const { description, title } = formValues;
   
-        // Check if paths is empty
+        //Check if paths is empty
         if (paths.length === 0) {
-          alert('Please draw something before submitting the form.');
+          alert('Please draw something to continue.');
           setLoading(false)
           return;
         }
@@ -196,15 +199,12 @@ const CreateImageForm = () => {
               const aidata = await aiimageresponse.json();
               const { filename } = await aidata;
               const aifilename:string = filename;
-             
-                
-                //AI image was uploaded we can save the artwork now to the database.
+              //AI image was uploaded we can save the artwork now to the database.
                 if (token) {
-                  saveArtwork({token, sketchedImage: sketchfilename, aiImage: aifilename });
+                  saveArtwork({token, sketchedImage: sketchfilename, aiImage: aifilename , description:description, title:title});
                 }else{
-                  Alert.alert("Token not available please try signing in")
+                  Alert.alert("Token not available please try signing in again, to save")
                 }
-
             }
             else{
               //Alert user of failure to save AI image, we can still display the results
@@ -229,8 +229,6 @@ const CreateImageForm = () => {
               setLoading(false)
               return;
             }
-          
-         
         } 
       } catch (error) {
         console.error('Error:', error);
@@ -250,21 +248,11 @@ const CreateImageForm = () => {
   return (
     <>
         <View style={styles.formContainer}>
-          <Text style={styles.title}>Any sketches you create will be transformed into images using artificial intelligence (AI), Happy sketching! 🎨✨</Text>
-          <View style={styles.separator} />
-           {/* Login prompt */}
-           {!generatedImage && (
-            <>
-            {!auth && ( <TouchableOpacity onPress={handleLogin} style={styles.loginPrompt}>
-             <Text style={styles.loginText}>Login</Text>
-             <Text>to save artworks</Text>
-           </TouchableOpacity>)}
-            </>
-           )}
           
           <Formik
             initialValues={{
-               description: '' 
+               description: '', 
+               title: ''
               }}
             validationSchema={validationSchema}
             onSubmit={(values, { resetForm }) => {
@@ -275,28 +263,50 @@ const CreateImageForm = () => {
           >
             {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
               <>
+               {!generatedImage && (
+                <>
+                <View style={styles.input}>
+                  <Text style={styles.inputLabel}>Title</Text>
+                  <TextInput
+                    placeholder="Provide a title for your artwork!"
+                    style={styles.inputControl}
+                    multiline
+                    value={values.title}
+                    onChangeText={handleChange('title')}
+                    onBlur={handleBlur('title')}
+                  />
+                </View>
+                {touched.title && errors.title &&
+                <Text style={styles.errorText}>{errors.title}</Text>
+                }
+                </>
+              )
+              }
               {!generatedImage && (
                 <>
-                <TextInput
-                  placeholder="Provide a description of your drawing!"
-                  style={styles.textInput}
-                  multiline
-                  value={values.description}
-                  onChangeText={handleChange('description')}
-                  onBlur={handleBlur('description')}
-                />
+                <View style={styles.input}>
+                  <Text style={styles.inputLabel}>Description</Text>
+                  <TextInput
+                    placeholder="Provide a description of your drawing!"
+                    style={styles.inputControl}
+                    multiline
+                    value={values.description}
+                    onChangeText={handleChange('description')}
+                    onBlur={handleBlur('description')}
+                  />
+                </View>
                 {touched.description && errors.description &&
                 <Text style={styles.errorText}>{errors.description}</Text>
                 }
                 </>
               )
               }
-
+             
                 {!generatedImage && (
                   <Link href="/canvas" asChild>
                     <TouchableOpacity style={styles.pressableRect}>
                       <View style={styles.rectContainer}>
-                        <Svg ref={svgRef} height={height * 0.35} width={width * 0.8} viewBox={`0 0 ${width * 0.9} ${height * 0.9}`}>
+                        <Svg ref={svgRef} height={height * (auth ? 0.32 : 0.29)} width={width * 0.8} viewBox={`0 0 ${width * 0.9} ${height * 0.9}`}>
                           <Path
                             d={paths.join('')}
                             stroke="red"
@@ -306,6 +316,7 @@ const CreateImageForm = () => {
                             strokeLinecap="round"
                           />
                         </Svg>
+                        <Text style={styles.drawingPreviewDescription}>Any sketches you create will be transformed into images using artificial intelligence (AI), Happy sketching! 🎨✨</Text>
                         <Text style={styles.drawingPreviewText}>Draw me</Text>
                       </View>
                     </TouchableOpacity>
@@ -339,10 +350,34 @@ const CreateImageForm = () => {
                   <>
                   {auth ? (<TouchableOpacity onPress={handleArtwork} style={styles.genImageloginPrompt}>
                   <Text style={styles.loginText}>Artwork</Text>
-                  <Text>{saved ? "Saved ✅" : "was not saved, please try again ❌"}</Text>
-                </TouchableOpacity>) : ( <TouchableOpacity onPress={handleLogin} style={styles.genImageloginPrompt}>
-                  <Text style={styles.loginText}>Login</Text>
-                  <Text>to save artworks 🖼️</Text>
+                  <Text>{saved ? "Saved ✅" : "was not saved ❌"}</Text>
+                      </TouchableOpacity>) : ( 
+                          <View style={styles.emptyFooter}>
+                          <TouchableOpacity
+                            onPress={() => {
+                              
+                            }}>
+                            <View style={styles.btn}>
+                              <View style={{ width: 29 }} />
+
+                              <Text style={styles.btnText}>Login to Save Future Works</Text>
+                              <View style={{ marginLeft: 12 }}>
+                                <Image
+                                    source={require("./../../assets/icons/whiteright.png")}
+                                    style={styles.imageStyle} />
+                                </View>
+                            </View>
+                          </TouchableOpacity>
+                          </View>
+                      )}
+                  </>
+                )}
+              
+               {/* Login prompt */}
+               {!generatedImage && !loading && (
+                  <>
+                  {!auth && ( <TouchableOpacity onPress={handleLogin} style={styles.loginPrompt}>
+                  <Text style={styles.loginText}>Login to save artworks</Text>
                 </TouchableOpacity>)}
                   </>
                 )}
@@ -368,30 +403,31 @@ const CreateImageForm = () => {
 
 export default CreateImageForm
 
-
 const styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: `#FFFFFF`
     },
+    
     formContainer: {
       marginTop: -height * 0.001,
       alignItems: 'center',
       justifyContent: 'center',
       paddingHorizontal: 20,
-      paddingTop: height * 0.03
+      paddingTop: height * 0.02
     },
     title: {
+      fontWeight: '500',
+      color: '#1d1d1d',
       fontSize: 16,
       textAlign: 'center',
       marginBottom: 10,
-      color: '#000000'
     },
     separator: {
       width: '80%',
       height: 1,
-      backgroundColor: 'rgba(0,0,0,0.1)',
-      marginBottom: 20,
+      backgroundColor: 'black',
+      marginBottom: 15,
     },
     pressableRect: {
       alignItems: 'center',
@@ -401,8 +437,8 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       backgroundColor: 'lightgray',
       borderRadius: 10,
-      padding: 10,
-      borderWidth: 5, 
+      paddingHorizontal: 10,
+      borderWidth: 2, 
       borderColor: Colors.canvas, 
     },
     drawingPreviewText: {
@@ -410,13 +446,11 @@ const styles = StyleSheet.create({
       fontSize: 20,
       fontFamily: "DancingScript"
     },
-    textInput: {
-      width: '95%',
-      height: 50,
-      backgroundColor: '#f5f5f5',
-      padding: 10,
-      marginBottom: 20,
-      borderRadius: 12
+    drawingPreviewDescription: {
+      fontSize: 14,
+      color: '#666', 
+      textAlign: 'center',
+      marginTop: 5,
     },
     submitButton: {
       backgroundColor: Colors.primary,
@@ -432,8 +466,8 @@ const styles = StyleSheet.create({
     },
     errorText: {
       color: 'red', 
-      marginTop: -15, 
-      marginBottom: 10, 
+      marginTop: -5, 
+      marginBottom: 5, 
     },
     resultContainer: {
       alignItems: 'center',
@@ -456,13 +490,6 @@ const styles = StyleSheet.create({
       alignSelf: 'center',
       marginTop: 10,
     },
-    loginPrompt: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginTop: -15,
-      marginBottom: 10
-    },
     loginText: {
       textDecorationLine: 'underline',
       color: 'blue',
@@ -475,6 +502,58 @@ const styles = StyleSheet.create({
       marginTop: 15, 
       marginBottom: 10
     },
+  input: {
+    width: "100%",
+    marginBottom: 10,
+  },
+  inputLabel: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: Colors.primary,
+    marginBottom: 5,
+  },
+  inputControl: {
+    height: 44,
+    backgroundColor: '#fff',
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#24262e',
+  },
+   
+  emptyFooter: {
+    marginTop: 50,
+    alignSelf: 'stretch',
+  },
+  btn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderWidth: 1,
+    backgroundColor: Colors.primary,
+    borderColor: '#000',
+  },
+  btnText: {
+    fontSize: 18,
+    lineHeight: 26,
+    fontWeight: '600',
+    color: '#fff',
+  },
+  imageStyle: {
+    width: 20, 
+    height: 20, 
+  },
+  loginPrompt: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: -15,
+    marginBottom: 20
+  }
   });
   
   

@@ -1,30 +1,38 @@
-import { StyleSheet } from 'react-native';
-import { Text, View } from '../../components/Themed';
+import { SafeAreaView, StyleSheet , Text, View } from 'react-native';
+import EmptyGallery from '../../components/shared/EmptyGallery';
+import { Colors } from '../../constants';
+import Gallery from '../../components/shared/Gallery';
 
 export default function HomeScreen() {
   return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#f6f6f6' }}>
     <View style={styles.container}>
-      <Text style={styles.title}>Home</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+      <Text style={styles.title}>Gallery</Text>
+        
+       <EmptyGallery /> 
+
+        {/* <Gallery /> */}
 
     </View>
+    </ SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#ffffff'
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: 0,
+    paddingBottom: 140,
+    padding: 24,
+    backgroundColor: Colors.backgrounglight
   },
   title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
+    fontSize: 22,
+    fontWeight: '500',
+    color: '#1d1d1d',
+    marginTop: -12,
+    marginBottom: 12,
+
   },
 });

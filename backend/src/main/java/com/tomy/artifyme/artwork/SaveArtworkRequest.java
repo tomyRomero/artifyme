@@ -11,5 +11,6 @@ public class SaveArtworkRequest {
     private String userEmail;
     private String sketchedImage;
     private String aiImage;
-
+    private String title;
+    private String description;
 }

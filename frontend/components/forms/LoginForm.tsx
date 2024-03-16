@@ -12,6 +12,7 @@ import {
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { storeToken } from '../../lib/utils';
+import { Colors } from '../../constants';
 
 
 
@@ -221,7 +222,6 @@ const styles = StyleSheet.create({
       color: '#929292',
       textAlign: 'center',
     },
-    /** Input */
     input: {
       marginBottom: 16,
     },
@@ -250,7 +250,6 @@ const styles = StyleSheet.create({
       fontWeight: '500',
       color: '#222',
     },
-    /** Button */
     btn: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -305,7 +304,7 @@ const styles = StyleSheet.create({
       borderRadius: 9999,
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: '#ffdada',
+      backgroundColor: Colors.primary,
       marginRight: 24,
     },
     errorText: {
