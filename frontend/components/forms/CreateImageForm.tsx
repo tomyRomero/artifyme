@@ -348,7 +348,9 @@ const CreateImageForm = () => {
                  {/* Login prompt */}
                 {generatedImage && (
                   <>
-                  {auth ? (<TouchableOpacity onPress={handleArtwork} style={styles.genImageloginPrompt}>
+                  {auth ? (
+                  
+                  <TouchableOpacity onPress={handleArtwork} style={styles.genImageloginPrompt}>
                   <Text style={styles.loginText}>Artwork</Text>
                   <Text>{saved ? "Saved ✅" : "was not saved ❌"}</Text>
                       </TouchableOpacity>) : ( 

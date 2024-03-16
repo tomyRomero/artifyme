@@ -6,5 +6,5 @@ export const Colors = {
   primary: "#5800FF", 
   secondary: "#CDCDD2",
   canvas: "#5800FF",
-  backgrounglight: "#faf0e6",
+  backgroundlight: "#faebd7",
 };

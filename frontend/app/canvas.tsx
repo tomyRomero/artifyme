@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Dimensions, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet, Dimensions, TouchableOpacity, Text, TouchableWithoutFeedback } from 'react-native';
 import { Svg, Path } from 'react-native-svg';
 import { router } from 'expo-router';
 import { useAppContext } from '../lib/AppContext';
 import { Colors } from '../constants';
+
 
 
 const { height, width } = Dimensions.get('window');
@@ -25,6 +26,7 @@ export default function CanvasScreen({}) {
     setPaths((prevPaths: string[][]) => [...prevPaths, currentPath]); // Update paths in the global state with the new path
     setCurrentPath([]);
     setClearButtonClicked(false);
+
   };
 
   const onTouchMove = (event: { nativeEvent: { locationX: number; locationY: number; }; }) => {

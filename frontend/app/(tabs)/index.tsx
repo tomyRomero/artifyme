@@ -1,18 +1,117 @@
-import { SafeAreaView, StyleSheet , Text, View } from 'react-native';
+import { Alert, SafeAreaView, StyleSheet , Text, View } from 'react-native';
 import EmptyGallery from '../../components/shared/EmptyGallery';
 import { Colors } from '../../constants';
 import Gallery from '../../components/shared/Gallery';
+import { router, useLocalSearchParams } from 'expo-router';
+import Pagination from '../../components/shared/Pagination';
+import { useEffect, useState } from 'react';
+import { useIsFocused } from '@react-navigation/native';
+import { authenticate, getToken, getTokenSubject, isTokenExpired } from '../../lib/utils';
+import axios from 'axios';
+
 
 export default function HomeScreen() {
+
+  const [auth, setAuth] = useState(false);
+  const [artworks, setArtworks] = useState([])
+  const [isNext, setIsNext] = useState(false);
+
+  const searchParams = useLocalSearchParams();
+  
+
+  //Get page number, 
+  //searchParams can come in a form of an array, so have to check both condtions
+  const pageSize = 6;
+  let pageNumber = 1;
+  if (searchParams.pageNumber) {
+    if (Array.isArray(searchParams.pageNumber)) {
+      pageNumber = parseInt(searchParams.pageNumber[0], 10);
+    } else {
+      pageNumber = parseInt(searchParams.pageNumber, 10);
+    }
+  }
+
+  const fetchArtworks = async () => {
+    const javaApiUrl = process.env.EXPO_PUBLIC_JAVA_API_URL;
+    const token = await getToken();
+
+    if(!token || isTokenExpired(token))
+    {
+      setAuth(false);
+      return;
+    }
+
+    try {
+      const response = await axios.get(`${javaApiUrl}/api/v1/artworks?pageNumber=${pageNumber}
+      &pageSize=${pageSize}&useremail=${getTokenSubject(token)}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = response.data;
+   
+      if (response.status == 200) {
+        setArtworks(data.content)
+        setIsNext(data.next)
+        console.log(`${data.message}`)
+      }else{
+        console.log(`${data.message}`)
+        Alert.alert(`${data.message}`)
+      }
+  
+    } catch (error) {
+      console.error('Error fetching artworks:', error);
+      
+    }
+  }
+
+  //Track whether the screen is focused
+  const isFocused = useIsFocused(); 
+  
+  useEffect(() => {
+    const checkAuth = async ()=> {
+      if (isFocused) {
+        //Check to see if user is authenticated 
+       setAuth(await authenticate());
+       
+       if(!auth)
+       {
+        setArtworks([])
+       }else{
+        fetchArtworks();
+       }
+      }
+    }
+
+    checkAuth();
+
+  }, [isFocused]);
+
+  useEffect(()=> {
+    fetchArtworks();
+  }, [pageNumber])
+  
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f6f6f6' }}>
     <View style={styles.container}>
       <Text style={styles.title}>Gallery</Text>
-        
-       <EmptyGallery /> 
+        {
+        artworks.length === 0 ? 
+        (
+          <EmptyGallery auth={auth}/> 
+        ) 
+        : 
+        (
+        <Gallery artworks={artworks}/>)
+        }
 
-        {/* <Gallery /> */}
-
+    <View style={styles.paginationContainer}>
+          <Pagination
+            pageNumber={pageNumber}
+            isNext={isNext}
+          />
+        </View>
     </View>
     </ SafeAreaView>
   );
@@ -25,7 +124,7 @@ const styles = StyleSheet.create({
     flexBasis: 0,
     paddingBottom: 140,
     padding: 24,
-    backgroundColor: Colors.backgrounglight
+    backgroundColor: Colors.backgroundlight
   },
   title: {
     fontSize: 22,
@@ -33,6 +132,12 @@ const styles = StyleSheet.create({
     color: '#1d1d1d',
     marginTop: -12,
     marginBottom: 12,
-
+  },
+  paginationContainer: {
+    position: 'absolute',
+    bottom: 70,
+    left: 0,
+    right: 0,
+    justifyContent: 'flex-end'
   },
 });

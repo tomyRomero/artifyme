@@ -2,11 +2,18 @@ package com.tomy.artifyme.artwork;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+
+import org.springframework.data.domain.Pageable;
 
 @Service
 @RequiredArgsConstructor
@@ -67,4 +74,45 @@ public class ArtworkService {
                 .build());
         }
     }
+
+    public ResponseEntity<PageResponse> getArtworksWithPagination(
+    @RequestParam(value = "pageNumber", required = false, defaultValue = "1") Integer pageNumber,
+    @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
+    @RequestParam(value = "useremail", required = false) String userEmail) {
+
+        try{
+            // Create a pageable object for pagination
+            Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+        
+            // Perform paginated query with user email filter if provided
+            Page<Artwork> page;
+            if (userEmail != null && !userEmail.isEmpty()) {
+                page = artworkRepository.findByUserEmailOrderByCreationDateTimeDesc(userEmail, pageable);
+            } else {
+                page = artworkRepository.findAll(pageable);
+            }
+        
+            // Determine if there are more pages available
+            boolean isNext = page.hasNext();
+        
+            // Create a PageResponse object
+            return ResponseEntity.ok(PageResponse.builder()
+                    .message("Success getting results")
+                    .isNext(isNext)
+                    .content(page.getContent())
+                    .build());
+
+        }catch(Exception e)
+        {
+              // Print stack trace for debugging
+              e.printStackTrace();
+
+              return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(PageResponse.builder()
+                   .message("An unexpected error occurred: " + e)
+                   .isNext(false)
+                   .content(new ArrayList<>())
+                   .build());
+        }
+    }
+    
     }

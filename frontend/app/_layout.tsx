@@ -1,9 +1,7 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { SafeAreaView, useColorScheme } from 'react-native';
 import { AppProvider } from '../lib/AppContext';
 
 export {
@@ -47,12 +45,12 @@ export default function RootLayout() {
 function RootLayoutNav() {
   return (
     <AppProvider>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="canvas" options={{headerShown: false, presentation: 'containedModal', gestureEnabled: false}} />
-        <Stack.Screen name="login" options={{headerShown: false, presentation: 'containedModal', gestureEnabled: false}} />
-        <Stack.Screen name="signup" options={{headerShown: false, presentation: 'containedModal', gestureEnabled: false}} />
-      </Stack>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="canvas" options={{headerShown: false, presentation: 'containedModal', gestureEnabled: false}} />
+              <Stack.Screen name="login" options={{headerShown: false, presentation: 'containedModal', gestureEnabled: false}} />
+              <Stack.Screen name="signup" options={{headerShown: false, presentation: 'containedModal', gestureEnabled: false}} />
+            </Stack>
     </AppProvider>
   );
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { View,  StyleSheet, Keyboard, TouchableWithoutFeedback} from 'react-native';
 import CreateImageForm from '../../components/forms/CreateImageForm';
+import { Colors } from '../../constants';
 
 
 
@@ -22,7 +23,7 @@ export default function TabCreateScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: `#faf0e6`
+    backgroundColor: Colors.backgroundlight
   },
 });
 

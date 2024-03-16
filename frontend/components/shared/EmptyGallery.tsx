@@ -1,8 +1,9 @@
 import React from 'react'
 import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
 import { Colors } from '../../constants';
+import { router } from 'expo-router';
 
-const EmptyGallery = () => {
+const EmptyGallery = ({auth}: {auth: boolean}) => {
   return (
         <View style={styles.empty}>
           <View style={styles.fake}>
@@ -40,18 +41,25 @@ const EmptyGallery = () => {
           <Text style={styles.emptyTitle}>Your gallery is empty</Text>
 
           <Text style={styles.emptyDescription}>
-            Once you login and create an artwork, you'll see them here.
+            {auth? ("Once you create an artwork, you'll see them here."): ("Once you login and create an artwork, you'll see them here.")}
           </Text>
 
           <View style={styles.emptyFooter}>
           <TouchableOpacity
             onPress={() => {
-              
+              if(auth)
+              {
+                router.push("/create")
+              }else{
+                router.push("/login")
+              }
             }}>
             <View style={styles.btn}>
               <View style={{ width: 29 }} />
 
-              <Text style={styles.btnText}>Get Started</Text>
+              <Text style={styles.btnText}>
+                {auth ? "Create" : "Get Started"}
+                </Text>
               <View style={{ marginLeft: 12 }}>
                 <Image
                     source={require("./../../assets/icons/whiteright.png")}

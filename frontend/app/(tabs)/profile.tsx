@@ -99,8 +99,10 @@ const fetchUserDetails = async () => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
     {loading ? (
-     <View style={styles.profile}>
-        <ActivityIndicator />
+     <View style={styles.container}>
+      <View style={{marginTop:100}}>
+          <ActivityIndicator size={"large"} color={"black"}/>
+      </View>
       </View>
     ): (
        <View style={styles.container}>
@@ -257,10 +259,11 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     flexShrink: 1,
     flexBasis: 0,
-    backgroundColor: Colors.backgrounglight,
+    backgroundColor: Colors.backgroundlight,
   },
 
   profile: {
+    marginTop: -20,
     padding: 24,
     flexDirection: 'column',
     alignItems: 'center',

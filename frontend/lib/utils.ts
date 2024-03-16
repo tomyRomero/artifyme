@@ -128,3 +128,59 @@ export const fetchUserDetails = async (token: string) => {
     return false;
   }
   };
+
+
+  export const calculateTimeAgo = (timestamp: string): string => {
+    const eventDate = new Date(timestamp); // Parse the timestamp directly
+    const currentDate = new Date(); // Get the current date/time
+
+    const timeDifference = currentDate.getTime() - eventDate.getTime();
+    const minutes = Math.floor(timeDifference / 60000); // 1 minute = 60,000 milliseconds
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+  
+    if (minutes < 1) {
+        return 'just now';
+    } else if (minutes < 60) {
+        return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+    } else if (hours < 24) {
+        return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+    } else {
+        return `${days} day${days > 1 ? 's' : ''} ago`;
+    }
+};
+
+
+export const getImageDate = async (filename: string)=> {
+  const apiUrl = process.env.EXPO_PUBLIC_JAVA_API_URL;
+
+  const token = await getToken();
+
+  if(!token || isTokenExpired(token))
+  {
+    return null;
+  }
+
+  const getImageUrl = `${apiUrl}/api/s3/image/${encodeURIComponent(filename)}`;
+  
+  try {
+    const imgresponse = await fetch(getImageUrl, {
+      headers: {
+          Authorization: `Bearer ${token}`
+      }
+    });
+
+    if (!imgresponse.ok) {
+        throw new Error('Failed to retrieve image from server');
+    }
+
+    const data = await imgresponse.json();
+    const { base64ImageData , contentType } = data; 
+    console.log("Got image uri")
+    const uri = `data:${contentType};base64,${base64ImageData}`;
+    return uri;
+  } catch(error) {
+    console.error('Error:', error);
+    return null;
+  }
+};
