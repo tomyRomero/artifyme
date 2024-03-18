@@ -151,7 +151,7 @@ export const fetchUserDetails = async (token: string) => {
 };
 
 
-export const getImageDate = async (filename: string)=> {
+export const getImageData = async (filename: string)=> {
   const apiUrl = process.env.EXPO_PUBLIC_JAVA_API_URL;
 
   const token = await getToken();

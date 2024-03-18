@@ -47,6 +47,7 @@ function RootLayoutNav() {
     <AppProvider>
             <Stack>
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="artwork/[id]" options={{ headerShown: false , presentation: 'containedModal'}} />
               <Stack.Screen name="canvas" options={{headerShown: false, presentation: 'containedModal', gestureEnabled: false}} />
               <Stack.Screen name="login" options={{headerShown: false, presentation: 'containedModal', gestureEnabled: false}} />
               <Stack.Screen name="signup" options={{headerShown: false, presentation: 'containedModal', gestureEnabled: false}} />

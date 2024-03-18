@@ -1,8 +1,8 @@
 import { Alert, SafeAreaView, StyleSheet , Text, View } from 'react-native';
-import EmptyGallery from '../../components/shared/EmptyGallery';
+import EmptyGallery from '../../components/home/EmptyGallery';
 import { Colors } from '../../constants';
-import Gallery from '../../components/shared/Gallery';
-import { router, useLocalSearchParams } from 'expo-router';
+import Gallery from '../../components/home/Gallery';
+import { useLocalSearchParams } from 'expo-router';
 import Pagination from '../../components/shared/Pagination';
 import { useEffect, useState } from 'react';
 import { useIsFocused } from '@react-navigation/native';
@@ -17,11 +17,11 @@ export default function HomeScreen() {
   const [isNext, setIsNext] = useState(false);
 
   const searchParams = useLocalSearchParams();
-  
+  const pageSize = 6;  
 
   //Get page number, 
   //searchParams can come in a form of an array, so have to check both condtions
-  const pageSize = 6;
+
   let pageNumber = 1;
   if (searchParams.pageNumber) {
     if (Array.isArray(searchParams.pageNumber)) {
@@ -74,7 +74,6 @@ export default function HomeScreen() {
       if (isFocused) {
         //Check to see if user is authenticated 
        setAuth(await authenticate());
-       
        if(!auth)
        {
         setArtworks([])
@@ -93,7 +92,7 @@ export default function HomeScreen() {
   }, [pageNumber])
   
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#f6f6f6' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.backgroundlight }}>
     <View style={styles.container}>
       <Text style={styles.title}>Gallery</Text>
         {

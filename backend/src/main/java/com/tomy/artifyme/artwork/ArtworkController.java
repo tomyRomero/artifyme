@@ -24,8 +24,15 @@ public class ArtworkController {
     public ResponseEntity<PageResponse> getArtworksWithPagination(
     @RequestParam(value = "pageNumber", required = false, defaultValue = "1") Integer pageNumber,
     @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
-    @RequestParam(value = "useremail", required = false) String userEmail) {
+    @RequestParam(value = "useremail", required = true) String userEmail) {
         return artworkService.getArtworksWithPagination(pageNumber, pageSize, userEmail);
+    }
+
+    @GetMapping("/api/v1/artwork")
+    public ResponseEntity<Object> getArtworkFromId(
+        @RequestParam(value = "id", required = true) String id
+    ){
+        return artworkService.getArtworkById(id);
     }
 
 }

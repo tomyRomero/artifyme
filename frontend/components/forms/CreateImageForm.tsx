@@ -439,7 +439,7 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       backgroundColor: 'lightgray',
       borderRadius: 10,
-      paddingHorizontal: 10,
+      paddingHorizontal: width * 0.05,
       borderWidth: 2, 
       borderColor: Colors.canvas, 
     },

@@ -8,10 +8,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestParam;
+
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 
@@ -76,9 +79,9 @@ public class ArtworkService {
     }
 
     public ResponseEntity<PageResponse> getArtworksWithPagination(
-    @RequestParam(value = "pageNumber", required = false, defaultValue = "1") Integer pageNumber,
-    @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
-    @RequestParam(value = "useremail", required = false) String userEmail) {
+     Integer pageNumber,
+    Integer pageSize,
+    String userEmail) {
 
         try{
             // Create a pageable object for pagination
@@ -115,4 +118,37 @@ public class ArtworkService {
         }
     }
     
+    public ResponseEntity<Object>getArtworkById(String id) {
+        try {
+            if (id == null || id.isEmpty()) {
+                throw new IllegalArgumentException("ID is required!");
+            }
+
+            // Fetch artwork from the repository by ID
+            Optional<Artwork> artworkOptional = artworkRepository.findById(id);
+
+            if (artworkOptional.isPresent()) {
+                Artwork artwork = artworkOptional.get();
+                Map<String, Object> successResponse = new HashMap<>();
+                successResponse.put("artwork", artwork);
+                successResponse.put("message", "Artwork found");
+                // If artwork is found, return it
+                return ResponseEntity.ok(successResponse);
+            } else {
+                // If artwork is not found, return a not found response
+                Map<String, Object> errorResponse = new HashMap<>();
+                errorResponse.put("message", "Artwork not found");
+                return ResponseEntity.status(404).body(errorResponse);
+            }
+        } catch (Exception e) {
+            // Log exception for debugging
+            e.printStackTrace();
+
+            // If any other exception occurs, return an error response
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("message", "Internal Server Error: " + e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
     }
