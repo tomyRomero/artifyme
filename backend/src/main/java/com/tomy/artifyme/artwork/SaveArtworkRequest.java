@@ -1,5 +1,7 @@
 package com.tomy.artifyme.artwork;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,4 +15,5 @@ public class SaveArtworkRequest {
     private String aiImage;
     private String title;
     private String description;
+    private List<List<String>> paths;
 }

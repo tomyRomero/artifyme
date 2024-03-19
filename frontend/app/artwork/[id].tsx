@@ -26,8 +26,6 @@ const artwork = () => {
       setLoading(false);
       return;
     }
-
-    console.log("id: ", searchParams.id)
     try {
       const response = await axios.get(`${javaApiUrl}/api/v1/artwork?id=${searchParams.id}`, {
         headers: {
@@ -37,16 +35,13 @@ const artwork = () => {
 
       const data = response.data;
       if (response.status == 200) {
-        console.log("artwork data: ", data.artwork)
         setArtwork(data.artwork)
-        console.log(`${data.message}`)
       }else{
-        console.log(`${data.message}`)
         Alert.alert(`${data.message}`)
       }
   
     } catch (error) {
-      console.log('Error fetching artwork:', error);
+      Alert.alert(`Error fetching artwork:, ${error}`);
     }
 
     setLoading(false);
@@ -82,7 +77,12 @@ const artwork = () => {
       (
         <>
         {artwork ? 
-         (<Artwork title={artwork.title} description={artwork.description} aiImage={artwork.aiImage} sketchedImage={artwork.sketchedImage}/>)
+         (<Artwork 
+          title={artwork.title} 
+          description={artwork.description} 
+          aiImage={artwork.aiImage}
+          sketchedImage={artwork.sketchedImage} 
+          id={searchParams.id}/>)
          : 
          (<NotFoundArtwork />)
          }

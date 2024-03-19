@@ -1,5 +1,7 @@
 import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react';
 import { useColorScheme } from 'react-native';
+import { authenticate } from './utils';
+import { useIsFocused } from '@react-navigation/native';
 
 // Define the types for the context
 type AppContextProps = {
@@ -12,6 +14,18 @@ type AppContextProps = {
 
   token: any,
   setToken: React.Dispatch<React.SetStateAction<any>>;
+
+  authenticated: any,
+  setAuthenticated: React.Dispatch<React.SetStateAction<any>>;
+
+  screen: any;
+  setScreen: React.Dispatch<React.SetStateAction<any>>;
+
+  newArtwork: any;
+  setNewArtwork: React.Dispatch<React.SetStateAction<any>>;
+
+  deleted: any;
+  setDeleted: React.Dispatch<React.SetStateAction<any>>;
 };
 
 // Create the AppContext with an initial value of undefined
@@ -30,12 +44,38 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   //JWT Token
   const [token, setToken] = useState(null);
 
+  //If User Is Authenticated
+  const [authenticated, setAuthenticated] = useState(false);
+
+  //Marker if a screen changes
+  const [screen, setScreen] = useState(false);
+
+  //Marker for when a new artwork is made
+  const [newArtwork, setNewArtwork] = useState(false);
+
+  //Marker for when an artwork is deleted
+  const [deleted, setDeleted] = useState(false);
+
   // Provide the context value to the children components, include additional states if there are any
   const contextValue: AppContextProps = {
     setTheme, theme,
     paths, setPaths,
-    token, setToken
+    token, setToken,
+    authenticated, setAuthenticated,
+    screen, setScreen,
+    newArtwork , setNewArtwork,
+    deleted, setDeleted
   };
+
+  useEffect(()=> {
+
+    const startUpAuthenticate = async () => {
+      setAuthenticated(await authenticate());
+    }
+
+    startUpAuthenticate();
+
+  }, [screen])
 
   return <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>;
 };

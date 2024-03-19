@@ -35,9 +35,10 @@ public class ArtworkService {
                     !StringUtils.hasText(request.getSketchedImage()) ||
                     !StringUtils.hasText(request.getAiImage()) || 
                     !StringUtils.hasText(request.getTitle()) || 
-                    !StringUtils.hasText(request.getDescription()))
+                    !StringUtils.hasText(request.getDescription()) ||
+                    request.getPaths() == null || request.getPaths().isEmpty())
                     {
-                throw new IllegalArgumentException("User email, sketched image, AI image, description and title are required!");
+                throw new IllegalArgumentException("User email, sketched image, AI image, description , title and SVG paths are required!");
             }
 
             // Debug print to show validation success
@@ -50,6 +51,7 @@ public class ArtworkService {
                     .aiImage(request.getAiImage())
                     .creationDateTime(LocalDateTime.now()) // Set creation date
                     .description(request.getDescription())
+                    .paths(request.getPaths())
                     .title(request.getTitle())
                     .build();
 
@@ -147,6 +149,41 @@ public class ArtworkService {
             // If any other exception occurs, return an error response
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("message", "Internal Server Error: " + e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
+    public ResponseEntity<Object> deleteArtwork(String id) {
+        try {
+            // Check if ID is provided
+            if (id == null || id.isEmpty()) {
+                throw new IllegalArgumentException("ID is required!");
+            }
+
+            // Find the artwork by ID
+            Optional<Artwork> artworkOptional = artworkRepository.findById(id);
+
+            if (artworkOptional.isPresent()) {
+                // If artwork is found, delete it
+                artworkRepository.deleteById(id);
+
+                // Return success response
+                Map<String, Object> successResponse = new HashMap<>();
+                successResponse.put("message", "Artwork deleted successfully");
+                return ResponseEntity.ok(successResponse);
+            } else {
+                // If artwork is not found, return not found response
+                Map<String, Object> errorResponse = new HashMap<>();
+                errorResponse.put("message", "Artwork not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+            }
+        } catch (Exception e) {
+            // Log exception for debugging
+            e.printStackTrace();
+
+            // Return error response for any exception
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("message", "Internal Server Error: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }

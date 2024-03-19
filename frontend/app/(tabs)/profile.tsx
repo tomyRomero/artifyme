@@ -11,14 +11,15 @@ import {
   Image,
   ActivityIndicator,
 } from 'react-native';
-import { isTokenExpired, getTokenSubject, getToken, removeToken } from '../../lib/utils';
+import { fetchUserDetailsWithReturn, removeToken } from '../../lib/utils';
 import { useIsFocused } from '@react-navigation/native';
-import axios from 'axios';
 import { Colors } from '../../constants';
+import { useAppContext } from '../../lib/AppContext';
 
 export default function TabAccountScreen() {
 
-  const [ auth, setAuth] = useState(false);
+  const { authenticated, setAuthenticated, screen, setScreen} = useAppContext();
+
   const [loading, setLoading] =  useState(true);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -26,53 +27,28 @@ export default function TabAccountScreen() {
     darkMode: false,
   });
 
-// Function to fetch user details from the API protected route
-const fetchUserDetails = async () => {
-  //Get Token from asyncstorage
-  const token = await getToken();
-  if(!token || isTokenExpired(token))
-  {
-    setAuth(false);
-    return;
-  }
 
-  //The IP address of the same network my server and device using (iphone) are sharing ,
-  // the port number of where the sever tomcat for java is running
-  const apiUrl = process.env.EXPO_PUBLIC_JAVA_API_URL;
-  try {
-    //Use token as an authorization header to gain access to protected route, getTokenSubject returns the email stored in token
-    //Use email to fetch user details from the serverside database and return them
-    const response = await axios.get(`${apiUrl}/api/v1/user/${getTokenSubject(token)}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
 
-    if (response.status == 200) {
-      //If I am able to gain access to protected route and recieve user data then the user is authenticated, set state to reflect
-      setName(`${response.data.firstname} ${response.data.lastname}`)
-      setEmail(getTokenSubject(token))
-      setAuth(true);
-      
-    } else {
-      //If there is an error something wrong happened so therefore set authentication to false
-      //Throw an error if the response is not successful
-      console.log(`HTTP error ${response.status}: ${response.statusText}`)
-      setAuth(false);
-    }
-  } catch (error) {
-    console.log("Error fetching user details:", error);
-    setAuth(false);
-  }
-};
+  const initializeProfile = async ()=> {
+    //If the screen is focused that means the screen has changed, 
+      //Switch the global state of screen, so that global state runs checks if authenticated
+      setScreen(!screen);  
 
-  const authenticate = async ()=> {
-    //start the authentication process
-    setLoading(true);
+      if(authenticated)
+      {
+        const data = await fetchUserDetailsWithReturn()
 
-    await fetchUserDetails()
-    
-    setLoading(false);
+        if(data)
+        {
+          const { name , email} = data;
+          setName(name);
+          setEmail(email);
+        }else{
+          setAuthenticated(false);
+        }
+      }
+
+      setLoading(false);
   }
 
   //Track whether the screen is focused
@@ -80,8 +56,9 @@ const fetchUserDetails = async () => {
 
   useEffect(() => {
     if (isFocused) {
-      authenticate();
+      initializeProfile();
     }
+
   }, [isFocused]);
 
   const handleLogin = () => {
@@ -91,8 +68,8 @@ const fetchUserDetails = async () => {
   const handleLogout = async () => {
     setLoading(true)
     await removeToken();
+    setAuthenticated(false);
     router.push('/');
-
   };
 
  
@@ -108,14 +85,19 @@ const fetchUserDetails = async () => {
        <View style={styles.container}>
 
        <View style={styles.profile}>
-         {auth ? ( <View>
+         {authenticated ? ( 
+         <View>
            <Text style={styles.profileName}>{name}</Text>
            <Text style={styles.profileEmail}>
              {email}
            </Text>
-         </View>) : (<View>
+         </View>) 
+         : 
+         (<View>
            <Text style={styles.profileName}>Welcome Guest</Text>
-         </View>) }
+         </View>
+         ) 
+         }
        </View>
        <ScrollView>
          <View style={styles.section}>
@@ -203,7 +185,7 @@ const fetchUserDetails = async () => {
              />
            </TouchableOpacity>
 
-          {auth && ( <TouchableOpacity
+          {authenticated && ( <TouchableOpacity
              onPress={() => {
               
              }}
@@ -236,7 +218,7 @@ const fetchUserDetails = async () => {
          </View>
 
          <View style={styles.centered}>
-          {auth ? ( <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+          {authenticated ? ( <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
            <Text style={styles.authButtonText}>Logout</Text>
          </TouchableOpacity>) : ( <TouchableOpacity onPress={handleLogin} style={styles.loginButton}>
            {loading ? (<ActivityIndicator color="#fff" />) : (<Text style={styles.authButtonText}>Login</Text>)}

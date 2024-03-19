@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { StyleSheet , Text, TouchableOpacity, View , Image, Dimensions, ActivityIndicator} from 'react-native';
 import { Colors } from '../../constants';
 import { router} from 'expo-router';
 import { getImageData } from '../../lib/utils';
+import RBSheet from 'react-native-raw-bottom-sheet';
+import DeleteArtwork from './Delete';
+
 
 const { width } = Dimensions.get('window');
 const CIRCLE_SIZE = width / 2;
@@ -16,13 +19,17 @@ interface ArtworkProps{
   aiImage: string;
   sketchedImage: string;
   description: string;
+  id: string|string[];
 }
 
-const Artwork = ({title, aiImage, sketchedImage, description }: ArtworkProps) => {
+const Artwork = ({title, aiImage, sketchedImage, description, id }: ArtworkProps) => {
 
+  const [isVisible, setIsVisible] = useState(false);
   const [sketchedS3Image, setSketchS3Image] = useState<string|null>(null);
   const [aiS3Image, setAiS3Image] = useState<null|string>(null);
   const [loading, setLoading] = useState(true);
+  const sheet = useRef<RBSheet>(null);
+
 
   const fetchImages = async ()=> {
     try{
@@ -54,6 +61,12 @@ const Artwork = ({title, aiImage, sketchedImage, description }: ArtworkProps) =>
     fetchImages();
 
   }, [])
+
+  const handleDelete = ()=> {
+    if (sheet.current) {
+      sheet.current.open();
+    }
+  }
 
   return (
     <>
@@ -147,13 +160,16 @@ const Artwork = ({title, aiImage, sketchedImage, description }: ArtworkProps) =>
           </View>
         </TouchableOpacity>
         {/* Delete Button */}
-        <TouchableOpacity style={[styles.button, styles.deleteButton]}>
+        <TouchableOpacity 
+        onPress = {handleDelete}
+        style={[styles.button, styles.deleteButton]}>
           <View style={styles.buttonContent}>
             <Image source={require('../../assets/icons/trash.png')} style={styles.buttonIcon} />
             <Text style={styles.buttonText}>Delete</Text>
           </View>
         </TouchableOpacity>
         </View>
+        <DeleteArtwork sheet={sheet} id={id}/>
     </>
   )
 }

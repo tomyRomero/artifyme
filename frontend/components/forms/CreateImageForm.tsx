@@ -9,18 +9,20 @@ import axios from 'axios';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { captureRef } from 'react-native-view-shot';
-import { authenticate, getToken, getTokenSubject, isTokenExpired } from '../../lib/utils';
+import { getToken, getTokenSubject, isTokenExpired } from '../../lib/utils';
 import { useIsFocused } from '@react-navigation/native';
+import Results from '../artwork/Results';
 
 const { height, width } = Dimensions.get('window');
 const CreateImageForm = () => {
-    const {paths, setPaths} = useAppContext();
+
+    const {paths, authenticated, screen, setScreen , newArtwork, setNewArtwork} = useAppContext();
+    const [title, setTitle] = useState("");
+    const [artworkId , setArtworkId] = useState("");
+    const [description, setDescription] = useState("");
     const [generatedImage, setGeneratedImage] = useState<null | string>(null); // State to store the generated image URI
-    const [loading, setLoading] = useState(false)
-    const [auth, setAuth] = useState(false);
-    const [saved, setSaved] = useState(false);
+    const [loading, setLoading] = useState(false);
   
-    const fadeAnim = useRef(new Animated.Value(0)).current; 
     const svgRef = useRef(null);
   
     const validationSchema = yup.object().shape({
@@ -28,30 +30,18 @@ const CreateImageForm = () => {
       description: yup.string().required('Description is required').min(5, 'Description must be at least 5 characters long'),
       
     });
-  
-    useEffect(() => {
-      
-      // Start the fade animation when generatedImage changes
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 1000, // Adjust duration as needed
-        useNativeDriver: true, // Enable native driver for better performance
-      }).start();
-    }, [generatedImage]);
 
-      //Track whether the screen is focused
+      // Track whether the screen is focused
       const isFocused = useIsFocused(); 
 
       useEffect(() => {
-        const checkAuth = async ()=> {
+     
           if (isFocused) {
-            //Check to see if user is authenticated 
-           setAuth(await authenticate());
-           console.log("auth: ",auth)
+            //If the screen is focused that means the screen has changed, 
+            //Switch the global state of screen, so that global state runs checks if authenticated
+            setScreen(!screen);
           }
-        }
-
-        checkAuth();
+      
       }, [isFocused]);
   
   
@@ -84,9 +74,16 @@ const CreateImageForm = () => {
     
     const saveArtwork = async ({ token, sketchedImage, aiImage , description, title }: {token: string, sketchedImage: string, aiImage: string, description: string , title: string}) => {
       try {
+
+        if(isTokenExpired(token))
+        {
+          Alert.alert("Login Credentials invalid/expired, login again to accept images")
+          return;
+        }
+
         const javaApiUrl = process.env.EXPO_PUBLIC_JAVA_API_URL;
         
-        const response = await fetch(`${javaApiUrl}/api/v1/artwork/save`, {
+        const response = await fetch(`${javaApiUrl}/api/v1/artwork`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json', 
@@ -97,15 +94,16 @@ const CreateImageForm = () => {
             sketchedImage: sketchedImage,
             aiImage: aiImage,
             description: description,
-            title: title
+            title: title,
+            paths: paths
           })
         });
     
         if (response.ok) {
           const responseData = await response.json(); 
           console.log(responseData.message);
-          console.log('Artwork ID: ', responseData.id); 
-          setSaved(true);
+          setArtworkId(responseData.id);
+          setNewArtwork(!newArtwork);
       } else {
           const responseData = await response.json(); 
           Alert.alert(`Failed to save artwork to database: ${responseData.message}`);
@@ -123,7 +121,6 @@ const CreateImageForm = () => {
   
     const submitForm = async (formValues: { description: string; title: string}) => {
       try {
-        setSaved(false);
         setLoading(true)
         const { description, title } = formValues;
   
@@ -151,7 +148,7 @@ const CreateImageForm = () => {
               //Extract the base64_image field from the response
               const { base64_image } = response.data;
               //if authenticated save the artwork. 
-              if(auth)
+              if(authenticated)
               {
               //start by uploading the sketch image to an s3 bucket
               const uniqueSketchImageName = `sketchimage_${Date.now()}`; // Generating a unique name using timestamp
@@ -203,7 +200,7 @@ const CreateImageForm = () => {
                 if (token) {
                   saveArtwork({token, sketchedImage: sketchfilename, aiImage: aifilename , description:description, title:title});
                 }else{
-                  Alert.alert("Token not available please try signing in again, to save")
+                  Alert.alert("Login Credentials invalid/expired, login again to accept images")
                 }
             }
             else{
@@ -217,7 +214,6 @@ const CreateImageForm = () => {
               Alert.alert("Was not able to save Sketch Image")
             }
             }
-
             //Regardless of if the user is logged in or not(of if there was an error when saving), still render result
             // Set the base64 image as the state value for generatedImage
             setGeneratedImage(base64_image);
@@ -241,10 +237,6 @@ const CreateImageForm = () => {
       router.push("/login")
     }
 
-    const handleArtwork = ()=> {
-
-    }
-
   return (
     <>
         <View style={styles.formContainer}>
@@ -256,7 +248,8 @@ const CreateImageForm = () => {
               }}
             validationSchema={validationSchema}
             onSubmit={(values, { resetForm }) => {
-              console.log('Form values:', values);
+              setTitle(values.title);
+              setDescription(values.description);
               submitForm(values);
               resetForm();
             }}
@@ -306,7 +299,7 @@ const CreateImageForm = () => {
                   <Link href="/canvas" asChild>
                     <TouchableOpacity style={styles.pressableRect}>
                       <View style={styles.rectContainer}>
-                        <Svg ref={svgRef} height={height * (auth ? 0.32 : 0.29)} width={width * 0.8} viewBox={`0 0 ${width * 0.9} ${height * 0.9}`}>
+                        <Svg ref={svgRef} height={height * (authenticated ? 0.32 : 0.29)} width={width * 0.8} viewBox={`0 0 ${width * 0.9} ${height * 0.9}`}>
                           <Path
                             d={paths.join('')}
                             stroke="red"
@@ -322,63 +315,14 @@ const CreateImageForm = () => {
                     </TouchableOpacity>
                   </Link>
                 )}
-
-                {generatedImage && (
-                  <View style={styles.resultContainer}>
-                    <Text style={styles.resultText}>Results:</Text>
-                    <Image
-                      source={{ uri: generatedImage }}
-                      style={styles.resultImage}
-                    />
-                  </View>
-                )}
-
-                {generatedImage && (
-                  <TouchableOpacity
-                    style={styles.resetButton}
-                    onPress={() => {
-                      setGeneratedImage(null); 
-                      setPaths([])
-                    }}
-                  >
-                    <Text style={styles.buttonText}>Try Again</Text>
-                  </TouchableOpacity>
-                )}
-
-                 {/* Login prompt */}
-                {generatedImage && (
-                  <>
-                  {auth ? (
-                  
-                  <TouchableOpacity onPress={handleArtwork} style={styles.genImageloginPrompt}>
-                  <Text style={styles.loginText}>Artwork</Text>
-                  <Text>{saved ? "Saved ✅" : "was not saved ❌"}</Text>
-                      </TouchableOpacity>) : ( 
-                          <View style={styles.emptyFooter}>
-                          <TouchableOpacity
-                            onPress={() => {
-                              
-                            }}>
-                            <View style={styles.btn}>
-                              <View style={{ width: 29 }} />
-
-                              <Text style={styles.btnText}>Login to Save Future Works</Text>
-                              <View style={{ marginLeft: 12 }}>
-                                <Image
-                                    source={require("./../../assets/icons/whiteright.png")}
-                                    style={styles.imageStyle} />
-                                </View>
-                            </View>
-                          </TouchableOpacity>
-                          </View>
-                      )}
-                  </>
-                )}
               
-               {/* Login prompt */}
+                {
+                  generatedImage && <Results setGeneratedImage={setGeneratedImage} generatedImage={generatedImage} title={title} description={description} id={artworkId}/>
+                }
+                
                {!generatedImage && !loading && (
                   <>
-                  {!auth && ( <TouchableOpacity onPress={handleLogin} style={styles.loginPrompt}>
+                  {!authenticated && ( <TouchableOpacity onPress={handleLogin} style={styles.loginPrompt}>
                   <Text style={styles.loginText}>Login to save artworks</Text>
                 </TouchableOpacity>)}
                   </>
@@ -485,13 +429,7 @@ const styles = StyleSheet.create({
       height: 250,
       borderRadius: 10, 
     },
-    resetButton: {
-      backgroundColor: Colors.primary,
-      padding: 10,
-      borderRadius: 5,
-      alignSelf: 'center',
-      marginTop: 10,
-    },
+  
     loginText: {
       textDecorationLine: 'underline',
       color: 'blue',
@@ -524,31 +462,7 @@ const styles = StyleSheet.create({
     color: '#24262e',
   },
    
-  emptyFooter: {
-    marginTop: 50,
-    alignSelf: 'stretch',
-  },
-  btn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 8,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderWidth: 1,
-    backgroundColor: Colors.primary,
-    borderColor: '#000',
-  },
-  btnText: {
-    fontSize: 18,
-    lineHeight: 26,
-    fontWeight: '600',
-    color: '#fff',
-  },
-  imageStyle: {
-    width: 20, 
-    height: 20, 
-  },
+
   loginPrompt: {
     flexDirection: 'row',
     alignItems: 'center',

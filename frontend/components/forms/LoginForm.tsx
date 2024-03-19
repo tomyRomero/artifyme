@@ -7,19 +7,22 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
-  ActivityIndicator
+  ActivityIndicator,
+  Alert
 } from 'react-native';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { storeToken } from '../../lib/utils';
 import { Colors } from '../../constants';
-
+import { useAppContext } from '../../lib/AppContext';
 
 
 const INPUT_OFFSET = 110;
 
 const LoginForm = () => {
     const [loading, setLoading] = useState(false);
+
+    const {setAuthenticated} = useAppContext();
 
     const validationSchema = yup.object().shape({
         email: yup.string().email('Invalid email').required('Email is required'),
@@ -49,17 +52,18 @@ const LoginForm = () => {
           if (response.ok) {
             const data = await response.json();
             // Save the token to local storage or state
-            console.log('Login successful');
             await storeToken(data.token)
+            setAuthenticated(true);+
+            
             router.back();
             
           } else {
             // Handle login errors
-            console.error('Login failed:', response.statusText);
+            Alert.alert('Login failed:', response.statusText);
           }
         } catch (error) {
           // Handle validation errors
-          console.error('Validation error:', error);
+          Alert.alert(`Validation error:, ${error}`);
         }
 
         setLoading(false)

@@ -8,21 +8,22 @@ import { useEffect, useState } from 'react';
 import { useIsFocused } from '@react-navigation/native';
 import { authenticate, getToken, getTokenSubject, isTokenExpired } from '../../lib/utils';
 import axios from 'axios';
+import { useAppContext } from '../../lib/AppContext';
 
 
 export default function HomeScreen() {
 
-  const [auth, setAuth] = useState(false);
+  const { authenticated, screen, setScreen , newArtwork, deleted} = useAppContext();
+
   const [artworks, setArtworks] = useState([])
   const [isNext, setIsNext] = useState(false);
 
   const searchParams = useLocalSearchParams();
   const pageSize = 6;  
-
+  let pageNumber = 1;
+  
   //Get page number, 
   //searchParams can come in a form of an array, so have to check both condtions
-
-  let pageNumber = 1;
   if (searchParams.pageNumber) {
     if (Array.isArray(searchParams.pageNumber)) {
       pageNumber = parseInt(searchParams.pageNumber[0], 10);
@@ -37,7 +38,8 @@ export default function HomeScreen() {
 
     if(!token || isTokenExpired(token))
     {
-      setAuth(false);
+      Alert.alert("Login Credentials invalid/expired, login again")
+      setArtworks([]);
       return;
     }
 
@@ -54,42 +56,24 @@ export default function HomeScreen() {
       if (response.status == 200) {
         setArtworks(data.content)
         setIsNext(data.next)
-        console.log(`${data.message}`)
       }else{
-        console.log(`${data.message}`)
         Alert.alert(`${data.message}`)
       }
-  
     } catch (error) {
-      console.error('Error fetching artworks:', error);
-      
+      Alert.alert(`Error fetching artworks:, ${error}`);
     }
   }
-
-  //Track whether the screen is focused
-  const isFocused = useIsFocused(); 
   
   useEffect(() => {
-    const checkAuth = async ()=> {
-      if (isFocused) {
-        //Check to see if user is authenticated 
-       setAuth(await authenticate());
-       if(!auth)
-       {
-        setArtworks([])
-       }else{
-        fetchArtworks();
-       }
-      }
+    setScreen(!screen);
+
+    if(authenticated)
+    {
+      fetchArtworks();
+    }else{
+      setArtworks([]);
     }
-
-    checkAuth();
-
-  }, [isFocused]);
-
-  useEffect(()=> {
-    fetchArtworks();
-  }, [pageNumber])
+  }, [authenticated, pageNumber , newArtwork, deleted]);
   
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.backgroundlight }}>
@@ -98,11 +82,12 @@ export default function HomeScreen() {
         {
         artworks.length === 0 ? 
         (
-          <EmptyGallery auth={auth}/> 
+          <EmptyGallery auth={authenticated}/> 
         ) 
         : 
         (
-        <Gallery artworks={artworks}/>)
+        <Gallery artworks={artworks}/>
+        )
         }
 
     <View style={styles.paginationContainer}>

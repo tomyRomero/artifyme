@@ -52,11 +52,9 @@ const SignUpForm = () => {
           Alert.alert('Registration Successful', 'You have been registered successfully.');
           router.push("/login")
         } else {
-          console.log(`Registration Failed', ${data.errorMessage}`);
           Alert.alert('Registration Failed', data.errorMessage || 'An error occurred during registration.');
         }
       } catch (error) {
-        console.log(`Error: ${error}`)
         Alert.alert('Error', 'An error occurred. Please try again later.');
       }
       

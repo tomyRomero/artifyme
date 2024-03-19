@@ -58,7 +58,7 @@ const EmptyGallery = ({auth}: {auth: boolean}) => {
               <View style={{ width: 29 }} />
 
               <Text style={styles.btnText}>
-                {auth ? "Create" : "Get Started"}
+                {auth ? "Create" : "Sign Up"}
                 </Text>
               <View style={{ marginLeft: 12 }}>
                 <Image

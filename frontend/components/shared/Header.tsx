@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.backgroundlight
       },
       title: {
-        color: '#000000',
+        color: Colors.primary,
         fontFamily: 'DancingScript',
         fontWeight: 'bold',
         fontSize: 30,

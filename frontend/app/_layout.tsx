@@ -1,8 +1,9 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import {  useEffect } from 'react';
 import { AppProvider } from '../lib/AppContext';
+
 
 export {
   // Catch any errors thrown by the Layout component.

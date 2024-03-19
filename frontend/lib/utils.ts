@@ -2,17 +2,18 @@ import "core-js/stable/atob";
 import { jwtDecode } from "jwt-decode";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from "axios";
+import { Alert } from "react-native";
 
-  export const storeToken = async (value: string) => {
+export const storeToken = async (value: string) => {
     try {
       await AsyncStorage.setItem('@token', value);
       console.log('Token saved successfully');
     } catch (e) {
-      console.log(e)
+      Alert.alert("Failed to Store Login Credentials")
     }
   };
 
-  export const removeToken = async () => {
+export const removeToken = async () => {
     try {
       await AsyncStorage.removeItem('@token');
       console.log('Token removed successfully');
@@ -72,11 +73,6 @@ export const getTokenSubject = (token: string): string => {
   }
 };
 
-
-
-
-
-
 export const authenticate = async ()=> {
   //Get Token from asyncstorage
   const token = await getToken();
@@ -99,7 +95,7 @@ export const authenticate = async ()=> {
   }
 }
 
-// Function to fetch user details from the API protected route
+// Function to fetch user details from the API protected route to ensure token is working
 export const fetchUserDetails = async (token: string) => {
   //The IP address of the same network my server and device using (iphone) are sharing ,
   // the port number of where the sever tomcat for java is running
@@ -129,6 +125,45 @@ export const fetchUserDetails = async (token: string) => {
   }
   };
 
+// Function to fetch user details from the API protected route to get details of user
+export const fetchUserDetailsWithReturn = async () => {
+  //Get Token from asyncstorage
+  const token = await getToken();
+  if(!token || isTokenExpired(token))
+  {
+    Alert.alert("Login Credentials invalid/expired, login again")
+    return null;
+  }
+
+  //The IP address of the same network my server and device using (iphone) are sharing ,
+  // the port number of where the sever tomcat for java is running
+  const apiUrl = process.env.EXPO_PUBLIC_JAVA_API_URL;
+  try {
+    //Use token as an authorization header to gain access to protected route, getTokenSubject returns the email stored in token
+    //Use email to fetch user details from the serverside database and return them
+    const response = await axios.get(`${apiUrl}/api/v1/user/${getTokenSubject(token)}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.status == 200) {
+      //If I am able to gain access to protected route and recieve user data then the user is authenticated, set state to reflect
+      const name = (`${response.data.firstname} ${response.data.lastname}`)
+      const email = (getTokenSubject(token))
+      
+      return { name, email};
+    } else {
+      //If there is an error something wrong happened so therefore set authentication to false
+      //Throw an error if the response is not successful
+      Alert.alert(`HTTP error ${response.status}: ${response.statusText}`)
+      return null;
+    }
+  } catch (error) {
+    Alert.alert(`Error fetching user details: ${error}`);
+    return null;
+  }
+};
 
   export const calculateTimeAgo = (timestamp: string): string => {
     const eventDate = new Date(timestamp); // Parse the timestamp directly
@@ -158,6 +193,7 @@ export const getImageData = async (filename: string)=> {
 
   if(!token || isTokenExpired(token))
   {
+    Alert.alert("Login Credentials invalid/expired, login again to accept images")
     return null;
   }
 
