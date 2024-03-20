@@ -44,7 +44,7 @@ export default function Results({setGeneratedImage, generatedImage, title , desc
 
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.text}>{description}</Text>
-
+      <View style={styles.buttonsContainer}>
       {!update &&  
       <TouchableOpacity
           onPress={handleReset}
@@ -77,13 +77,14 @@ export default function Results({setGeneratedImage, generatedImage, title , desc
         {!update && <TouchableOpacity
           onPress={handleLogin}
           style={styles.button}>
-          <Text style={styles.btnText}>Login to save future works</Text>
+          <Text style={styles.btnText}>Login</Text>
           <Image
             source={require("./../../assets/icons/whiteright.png")}
             style={styles.imageStyle} />
         </TouchableOpacity>}
         </>
       )}
+      </View>
 
     </SafeAreaView>
   );
@@ -124,7 +125,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
     borderColor: '#000',
     alignSelf: 'center',
-    marginBottom: 10
+    marginBottom: 10,
+    marginRight: 20
   },
   btnText: {
     fontSize: 18,
@@ -153,5 +155,10 @@ const styles = StyleSheet.create({
     marginLeft: 40,
     textAlign: 'left',
     marginBottom: 45
+  },
+   buttonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 10
   },
 });
