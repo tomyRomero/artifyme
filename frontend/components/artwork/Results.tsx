@@ -13,9 +13,10 @@ interface ResultsProps {
   title: string;
   description: string;
   id: string;
+  update: boolean
 }
 
-export default function Results({setGeneratedImage, generatedImage, title , description, id}: ResultsProps) {
+export default function Results({setGeneratedImage, generatedImage, title , description, id, update}: ResultsProps) {
 
   const {setPaths, authenticated } = useAppContext();
 
@@ -44,6 +45,7 @@ export default function Results({setGeneratedImage, generatedImage, title , desc
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.text}>{description}</Text>
 
+      {!update &&  
       <TouchableOpacity
           onPress={handleReset}
           style={styles.button}>
@@ -51,32 +53,36 @@ export default function Results({setGeneratedImage, generatedImage, title , desc
           <Image
             source={require("./../../assets/icons/reset.png")}
             style={styles.imageStyle} />
-        </TouchableOpacity>
-
+        </TouchableOpacity>}
+    
       {authenticated ? 
       (
       <>
       {id.length > 0 && (
-        <TouchableOpacity
-        onPress={handleView}
-        style={styles.button}>
-        <Text style={styles.btnText}>View</Text>
-        <Image
-          source={require("./../../assets/icons/details.png")}
-          style={styles.imageStyle} />
-      </TouchableOpacity>
+        <>
+        {!update && (<TouchableOpacity
+          onPress={handleView}
+          style={styles.button}>
+          <Text style={styles.btnText}>View</Text>
+          <Image
+            source={require("./../../assets/icons/details.png")}
+            style={styles.imageStyle} />
+        </TouchableOpacity>)}
+        </>
       )}
       </>
       ):
       (
-        <TouchableOpacity
+        <>
+        {!update && <TouchableOpacity
           onPress={handleLogin}
           style={styles.button}>
           <Text style={styles.btnText}>Login to save future works</Text>
           <Image
             source={require("./../../assets/icons/whiteright.png")}
             style={styles.imageStyle} />
-        </TouchableOpacity>
+        </TouchableOpacity>}
+        </>
       )}
 
     </SafeAreaView>

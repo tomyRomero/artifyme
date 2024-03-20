@@ -6,5 +6,6 @@ interface Artwork {
     sketchedImage: string;
     title: string;
     userEmail: string;
+    paths? : string[][];
   }
   

@@ -6,13 +6,13 @@ import Artwork from '../../components/artwork/Artwork';
 import NotFoundArtwork from '../../components/artwork/NotFoundArtwork';
 import { getToken, isTokenExpired } from '../../lib/utils';
 import axios from 'axios';
-
-const { width } = Dimensions.get('window');
-const CIRCLE_SIZE = width / 2;
+import { useAppContext } from '../../lib/AppContext';
 
 const artwork = () => {
   const [loading, setLoading] = useState(true);
   const [artwork, setArtwork] = useState<Artwork|null>(null);
+
+  const {updateArtwork} = useAppContext();
 
   const searchParams = useLocalSearchParams();
 
@@ -49,8 +49,9 @@ const artwork = () => {
 
   useEffect(()=> {
     fetchArtwork();
-  }, [])
+  }, [updateArtwork]);
 
+ 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.backgroundlight }}>
       {loading ? (

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions,Keyboard, TouchableWithoutFeedback, Image , Animated, ActivityIndicator, Alert} from 'react-native';
 import { Path, Svg } from 'react-native-svg';
 import { Colors } from '../../constants';
-import { Link, router } from 'expo-router';
+import { Link, router, useLocalSearchParams } from 'expo-router';
 import { useAppContext } from '../../lib/AppContext';
 import * as FileSystem from 'expo-file-system';
 import axios from 'axios';
@@ -13,16 +13,16 @@ import { getToken, getTokenSubject, isTokenExpired } from '../../lib/utils';
 import { useIsFocused } from '@react-navigation/native';
 import Results from '../artwork/Results';
 
+
 const { height, width } = Dimensions.get('window');
 const CreateImageForm = () => {
-
-    const {paths, authenticated, screen, setScreen , newArtwork, setNewArtwork} = useAppContext();
+    const {paths, authenticated, screen, setScreen , newArtwork, setNewArtwork, setPathsChanged } = useAppContext();
     const [title, setTitle] = useState("");
     const [artworkId , setArtworkId] = useState("");
     const [description, setDescription] = useState("");
     const [generatedImage, setGeneratedImage] = useState<null | string>(null); // State to store the generated image URI
     const [loading, setLoading] = useState(false);
-  
+
     const svgRef = useRef(null);
   
     const validationSchema = yup.object().shape({
@@ -40,6 +40,7 @@ const CreateImageForm = () => {
             //If the screen is focused that means the screen has changed, 
             //Switch the global state of screen, so that global state runs checks if authenticated
             setScreen(!screen);
+            setPathsChanged(false);
           }
       
       }, [isFocused]);
@@ -77,7 +78,7 @@ const CreateImageForm = () => {
 
         if(isTokenExpired(token))
         {
-          Alert.alert("Login Credentials invalid/expired, login again to accept images")
+          Alert.alert("Login Credentials invalid/expired, login again")
           return;
         }
 
@@ -240,7 +241,6 @@ const CreateImageForm = () => {
   return (
     <>
         <View style={styles.formContainer}>
-          
           <Formik
             initialValues={{
                description: '', 
@@ -317,7 +317,7 @@ const CreateImageForm = () => {
                 )}
               
                 {
-                  generatedImage && <Results setGeneratedImage={setGeneratedImage} generatedImage={generatedImage} title={title} description={description} id={artworkId}/>
+                  generatedImage && <Results setGeneratedImage={setGeneratedImage} generatedImage={generatedImage} title={title} description={description} id={artworkId} update={false}/>
                 }
                 
                {!generatedImage && !loading && (
@@ -354,26 +354,12 @@ const styles = StyleSheet.create({
       flex: 1,
       backgroundColor: `#FFFFFF`
     },
-    
     formContainer: {
       marginTop: -height * 0.001,
       alignItems: 'center',
       justifyContent: 'center',
       paddingHorizontal: 20,
       paddingTop: height * 0.02
-    },
-    title: {
-      fontWeight: '500',
-      color: '#1d1d1d',
-      fontSize: 16,
-      textAlign: 'center',
-      marginBottom: 10,
-    },
-    separator: {
-      width: '80%',
-      height: 1,
-      backgroundColor: 'black',
-      marginBottom: 15,
     },
     pressableRect: {
       alignItems: 'center',
@@ -415,32 +401,10 @@ const styles = StyleSheet.create({
       marginTop: -5, 
       marginBottom: 5, 
     },
-    resultContainer: {
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginBottom: 20,
-    },
-    resultText: {
-      fontSize: 18,
-      marginBottom: 10,
-    },
-    resultImage: {
-      width: 250,
-      height: 250,
-      borderRadius: 10, 
-    },
-  
     loginText: {
       textDecorationLine: 'underline',
       color: 'blue',
       marginRight: 5,
-    },
-    genImageloginPrompt: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginTop: 15, 
-      marginBottom: 10
     },
   input: {
     width: "100%",
@@ -461,8 +425,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#24262e',
   },
-   
-
   loginPrompt: {
     flexDirection: 'row',
     alignItems: 'center',

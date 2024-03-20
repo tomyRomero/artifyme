@@ -14,15 +14,17 @@ export default function CanvasScreen({}) {
   const [currentPath, setCurrentPath] = useState([]);
   const [isClearButtonClicked, setClearButtonClicked] = useState(false);
 
-  const { paths, setPaths } = useAppContext(); // Access the paths state and setPaths method from the global context
+  const { paths, setPaths , setPathsChanged} = useAppContext(); // Access the paths state and setPaths method from the global context
 
   useEffect(() => {
     // Update paths in the global state whenever paths change
     setPaths(paths);
+    setPathsChanged(true);
   }, [paths, setPaths]);
 
 
   const onTouchEnd = () => {
+   
     setPaths((prevPaths: string[][]) => [...prevPaths, currentPath]); // Update paths in the global state with the new path
     setCurrentPath([]);
     setClearButtonClicked(false);
@@ -46,7 +48,7 @@ export default function CanvasScreen({}) {
   };
 
   const onClose = ()=> {
-    router.push('/(tabs)/create')
+    router.back();
   }
 
   return (

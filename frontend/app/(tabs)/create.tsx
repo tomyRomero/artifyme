@@ -4,7 +4,6 @@ import CreateImageForm from '../../components/forms/CreateImageForm';
 import { Colors } from '../../constants';
 
 
-
 export default function TabCreateScreen() {
 
   const dismissKeyboard = () => {
@@ -14,7 +13,7 @@ export default function TabCreateScreen() {
   return (
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
       <View style={styles.container}>
-        <CreateImageForm />
+        <CreateImageForm id={null}/>
       </View>
     </TouchableWithoutFeedback>
   );

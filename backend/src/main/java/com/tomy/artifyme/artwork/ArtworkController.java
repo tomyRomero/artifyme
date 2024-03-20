@@ -3,6 +3,7 @@ package com.tomy.artifyme.artwork;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,5 +40,11 @@ public class ArtworkController {
     @DeleteMapping("/api/v1/artwork")
     public ResponseEntity<Object> deleteArtworkById(@RequestParam(value = "id", required = true) String id) {
         return artworkService.deleteArtwork(id);
+    }
+
+     @PatchMapping("/api/v1/artwork")
+    public ResponseEntity<Object> updateArtwork(@RequestParam(value = "id", required = true) String id, @RequestBody UpdateArtworkRequest request) {
+        // Call the updateArtwork method of the artworkService and return its response
+        return artworkService.updateArtwork(id, request);
     }
 }

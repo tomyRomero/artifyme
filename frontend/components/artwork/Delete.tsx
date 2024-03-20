@@ -43,7 +43,6 @@ export default function DeleteArtwork({sheet, id}: any) {
         const response = await axios.delete(`${javaApiUrl}/api/v1/artwork?id=${id}`, { headers });
         
         if (response.status === 200) {
-            Alert.alert('Success: ', response.data.message);
             setDeleted(!deleted)
             router.push("/")
           } else {

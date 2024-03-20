@@ -188,4 +188,58 @@ public class ArtworkService {
         }
     }
 
+    @SuppressWarnings("null")
+    public ResponseEntity<Object> updateArtwork(String id, UpdateArtworkRequest request) {
+        try {
+            // Find the artwork by its ID
+            Optional<Artwork> optionalArtwork = artworkRepository.findById(id);
+            if (!optionalArtwork.isPresent()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(UpdateArtworkResponse.builder()
+                                .message("Artwork not found")
+                                .build());
+            }
+    
+            Artwork artwork = optionalArtwork.get();
+    
+            // Update the artwork fields based on the request
+            if (StringUtils.hasText(request.getTitle())) {
+                artwork.setTitle(request.getTitle());
+            }
+            if (StringUtils.hasText(request.getDescription())) {
+                artwork.setDescription(request.getDescription());
+            }
+            if (request.getSketchedImage() != null) {
+                artwork.setSketchedImage(request.getSketchedImage());
+            }
+            if (request.getAiImage() != null) {
+                artwork.setAiImage(request.getAiImage());
+            }
+            if (request.getPaths() != null && !request.getPaths().isEmpty()) {
+                artwork.setPaths(request.getPaths());
+            }
+    
+            // Save the updated artwork
+            artworkRepository.save(artwork);
+    
+            // Debug print to indicate successful artwork update
+            System.out.println("Artwork updated successfully: " + artwork);
+    
+            // Return success message
+            return ResponseEntity.ok(UpdateArtworkResponse.builder()
+                    .message("Artwork updated successfully")
+                    .id(artwork.getId())
+                    .build());
+        } catch (Exception e) {
+            // Print stack trace for debugging
+            e.printStackTrace();
+    
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(UpdateArtworkResponse.builder()
+                            .message("An unexpected error occurred")
+                            .id(null)
+                            .build());
+        }
+    }
+    
     }

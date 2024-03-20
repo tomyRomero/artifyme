@@ -13,7 +13,7 @@ import { useAppContext } from '../../lib/AppContext';
 
 export default function HomeScreen() {
 
-  const { authenticated, screen, setScreen , newArtwork, deleted} = useAppContext();
+  const { authenticated, screen, setScreen , newArtwork, deleted, updateArtwork} = useAppContext();
 
   const [artworks, setArtworks] = useState([])
   const [isNext, setIsNext] = useState(false);
@@ -73,7 +73,7 @@ export default function HomeScreen() {
     }else{
       setArtworks([]);
     }
-  }, [authenticated, pageNumber , newArtwork, deleted]);
+  }, [authenticated, pageNumber , newArtwork, deleted, updateArtwork]);
   
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.backgroundlight }}>

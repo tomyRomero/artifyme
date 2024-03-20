@@ -1,7 +1,6 @@
 import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react';
 import { useColorScheme } from 'react-native';
 import { authenticate } from './utils';
-import { useIsFocused } from '@react-navigation/native';
 
 // Define the types for the context
 type AppContextProps = {
@@ -26,6 +25,12 @@ type AppContextProps = {
 
   deleted: any;
   setDeleted: React.Dispatch<React.SetStateAction<any>>;
+
+  pathsChanged: any;
+  setPathsChanged: React.Dispatch<React.SetStateAction<any>>;
+
+  updateArtwork: any;
+  setUpdateArtwork: React.Dispatch<React.SetStateAction<any>>;
 };
 
 // Create the AppContext with an initial value of undefined
@@ -56,6 +61,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   //Marker for when an artwork is deleted
   const [deleted, setDeleted] = useState(false);
 
+  //Marker if init paths have been changed when editing, to decide whether to generate new image
+  const [pathsChanged, setPathsChanged] = useState(false);
+
+  //Marker for when an artwork is updated
+  const [updateArtwork , setUpdateArtwork] = useState(false);
+
   // Provide the context value to the children components, include additional states if there are any
   const contextValue: AppContextProps = {
     setTheme, theme,
@@ -64,7 +75,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     authenticated, setAuthenticated,
     screen, setScreen,
     newArtwork , setNewArtwork,
-    deleted, setDeleted
+    deleted, setDeleted, 
+    pathsChanged, setPathsChanged,
+    updateArtwork, setUpdateArtwork
   };
 
   useEffect(()=> {

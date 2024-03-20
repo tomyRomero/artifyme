@@ -5,6 +5,7 @@ import { router} from 'expo-router';
 import { getImageData } from '../../lib/utils';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import DeleteArtwork from './Delete';
+import { useAppContext } from '../../lib/AppContext';
 
 
 const { width } = Dimensions.get('window');
@@ -24,7 +25,7 @@ interface ArtworkProps{
 
 const Artwork = ({title, aiImage, sketchedImage, description, id }: ArtworkProps) => {
 
-  const [isVisible, setIsVisible] = useState(false);
+  const {updateArtwork} = useAppContext();
   const [sketchedS3Image, setSketchS3Image] = useState<string|null>(null);
   const [aiS3Image, setAiS3Image] = useState<null|string>(null);
   const [loading, setLoading] = useState(true);
@@ -60,12 +61,16 @@ const Artwork = ({title, aiImage, sketchedImage, description, id }: ArtworkProps
 
     fetchImages();
 
-  }, [])
+  }, [updateArtwork])
 
   const handleDelete = ()=> {
     if (sheet.current) {
       sheet.current.open();
     }
+  }
+
+  const handleEdit = ()=> {
+   router.push(`/editartwork/${id}`)
   }
 
   return (
@@ -153,7 +158,9 @@ const Artwork = ({title, aiImage, sketchedImage, description, id }: ArtworkProps
       </View>
       <View style={styles.buttonContainer}>
         {/* Edit Button */}
-        <TouchableOpacity style={[styles.button , styles.editButton]}>
+        <TouchableOpacity 
+        onPress = {handleEdit}
+        style={[styles.button , styles.editButton]}>
           <View style={styles.buttonContent}>
             <Image source={require('../../assets/icons/edit.png')} style={styles.buttonIcon} />
             <Text style={styles.buttonText}>Edit</Text>

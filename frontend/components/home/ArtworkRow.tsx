@@ -12,6 +12,7 @@ import {
 import { calculateTimeAgo, getImageData } from '../../lib/utils';
 import { Colors } from '../../constants';
 import { router } from 'expo-router';
+import { useAppContext } from '../../lib/AppContext';
 
 interface Props{
     aiImage: string;
@@ -23,6 +24,7 @@ interface Props{
 
 const ArtworkRow = ({aiImage, creationDateTime, title , id} : Props) => {
 
+    const {updateArtwork} = useAppContext();
     const [loading, setLoading] = useState(true);
     const [s3Image, setS3Image] = useState<null|string>(null);
 
@@ -43,7 +45,7 @@ const ArtworkRow = ({aiImage, creationDateTime, title , id} : Props) => {
         };
       
         loadImage();
-      }, []);
+      }, [updateArtwork]);
       
 
   return (
