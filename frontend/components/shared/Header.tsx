@@ -1,7 +1,8 @@
 import React from 'react'
 import { View, Image, StyleSheet, Pressable, Platform, SafeAreaView , Text, StatusBar} from 'react-native';
 import { Link } from 'expo-router';
-import { Colors } from '../../constants';
+import { Colors } from '../../lib/constants';
+import RainbowTitle from './RainbowTitle';
 
 const Header = () => {
   return (
@@ -15,9 +16,7 @@ const Header = () => {
             })}
         >
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Text style={styles.title}>
-                ArtifyMe
-            </Text>
+            <RainbowTitle titleText='ArtifyMe' />
             <Image
                 source={require('../../assets/icons/art.png')} 
                 resizeMode='contain'

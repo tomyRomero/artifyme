@@ -22,12 +22,13 @@ public class Artwork {
     private String id;
     
     @Indexed
-    private String userEmail; // Reference to user by email
+    private String userEmail; 
 
     private String sketchedImage;
     private String aiImage;
     private String title;
     private String description;
     private LocalDateTime creationDateTime;
-    private List<List<String>> paths;
+    private List<PathData> paths;
 }
+

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
-import { Colors } from '../../constants';
+import { Colors } from '../../lib/constants';
 
 interface Props {
   pageNumber: number;

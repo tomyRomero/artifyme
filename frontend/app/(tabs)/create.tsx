@@ -1,7 +1,7 @@
 import React from 'react';
 import { View,  StyleSheet, Keyboard, TouchableWithoutFeedback} from 'react-native';
 import CreateImageForm from '../../components/forms/CreateImageForm';
-import { Colors } from '../../constants';
+import { Colors } from '../../lib/constants';
 
 
 export default function TabCreateScreen() {
@@ -13,7 +13,7 @@ export default function TabCreateScreen() {
   return (
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
       <View style={styles.container}>
-        <CreateImageForm id={null}/>
+        <CreateImageForm />
       </View>
     </TouchableWithoutFeedback>
   );

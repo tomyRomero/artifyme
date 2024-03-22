@@ -1,7 +1,7 @@
 import React from 'react'
 import { StatusBar } from 'expo-status-bar';
 import { BottomTabBar } from "@react-navigation/bottom-tabs"
-import { Colors } from '../../constants';
+import { Colors } from '../../lib/constants';
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 
 interface CustomTabBarProps {

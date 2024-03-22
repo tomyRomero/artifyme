@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { fetchUserDetailsWithReturn, removeToken } from '../../lib/utils';
 import { useIsFocused } from '@react-navigation/native';
-import { Colors } from '../../constants';
+import { Colors } from '../../lib/constants';
 import { useAppContext } from '../../lib/AppContext';
 
 export default function TabAccountScreen() {

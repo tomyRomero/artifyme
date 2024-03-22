@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
-import { Colors } from '../../constants';
+import { Colors } from '../../lib/constants';
 import { router } from 'expo-router';
 
 const EmptyGallery = ({auth}: {auth: boolean}) => {

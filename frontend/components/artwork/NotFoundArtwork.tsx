@@ -1,6 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, View, Image, Text, StyleSheet, Dimensions } from 'react-native';
-import { Colors } from '../../constants';
+import { Colors } from '../../lib/constants';
 import { router } from 'expo-router';
 
 const { width } = Dimensions.get('window');

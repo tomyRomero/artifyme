@@ -14,7 +14,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { router } from 'expo-router';
-import { Colors } from '../../constants';
+import { Colors } from '../../lib/constants';
 
 const SignUpForm = () => {
     const [ loading, setLoading] = useState(false);

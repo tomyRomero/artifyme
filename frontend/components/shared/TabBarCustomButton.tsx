@@ -1,6 +1,6 @@
 import React from 'react';
 import { View,  TouchableOpacity, GestureResponderEvent } from 'react-native';
-import { Colors } from '../../constants';
+import { Colors } from '../../lib/constants';
 import Svg, { Path } from 'react-native-svg';
 
 interface TabBarCustomButtonProps {

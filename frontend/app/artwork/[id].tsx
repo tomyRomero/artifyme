@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { router, useLocalSearchParams } from 'expo-router';
 import { Alert, SafeAreaView, StyleSheet , Text, TouchableOpacity, View , Image, Dimensions, ActivityIndicator} from 'react-native';
-import { Colors } from '../../constants';
+import { Colors } from '../../lib/constants';
 import Artwork from '../../components/artwork/Artwork';
 import NotFoundArtwork from '../../components/artwork/NotFoundArtwork';
 import { getToken, isTokenExpired } from '../../lib/utils';

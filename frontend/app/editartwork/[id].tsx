@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Keyboard, TouchableWithoutFeedback, Alert, SafeAreaView, TouchableOpacity, Image, ActivityIndicator} from 'react-native';
-import { Colors } from '../../constants';
+import { Colors } from '../../lib/constants';
 import { router, useLocalSearchParams } from 'expo-router';
 import { getToken, isTokenExpired } from '../../lib/utils';
 import axios from 'axios';

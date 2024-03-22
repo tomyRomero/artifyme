@@ -22,6 +22,7 @@ export default function RootLayout() {
   const [loaded, error] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     DancingScript: require('../assets/fonts/DancingScript-VariableFont_wght.ttf'),
+    Pacifico: require('../assets/fonts/Pacifico-Regular.ttf'),
     ...FontAwesome.font,
   });
 

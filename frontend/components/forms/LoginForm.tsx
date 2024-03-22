@@ -13,7 +13,7 @@ import {
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { storeToken } from '../../lib/utils';
-import { Colors } from '../../constants';
+import { Colors } from '../../lib/constants';
 import { useAppContext } from '../../lib/AppContext';
 
 

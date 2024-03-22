@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { Platform, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import { Colors } from '../constants';
+import { Colors } from '../lib/constants';
 
 export default function ModalScreen() {
   const onClose = ()=> {

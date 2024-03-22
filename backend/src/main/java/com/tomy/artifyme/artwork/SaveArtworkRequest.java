@@ -15,5 +15,5 @@ public class SaveArtworkRequest {
     private String aiImage;
     private String title;
     private String description;
-    private List<List<String>> paths;
+    private List<PathData> paths;
 }

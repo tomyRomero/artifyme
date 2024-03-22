@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions,Keyboard, TouchableWithoutFeedback, Image , Animated, ActivityIndicator, Alert} from 'react-native';
 import { Path, Svg } from 'react-native-svg';
-import { Colors } from '../../constants';
+import { Colors } from '../../lib/constants';
 import { Link, router, useLocalSearchParams } from 'expo-router';
 import { useAppContext } from '../../lib/AppContext';
 import * as FileSystem from 'expo-file-system';
@@ -347,16 +347,19 @@ const UpdateImageForm = ({initTitle, initDescription, initPaths, id} : updatePro
                   <Link href="/canvas" asChild>
                     <TouchableOpacity style={styles.pressableRect}>
                       <View style={styles.rectContainer}>
-                        <Svg ref={svgRef} height={height * 0.32} width={width * 0.8} viewBox={`0 0 ${width * 0.9} ${height * 0.9}`}>
-                          <Path
-                            d={paths.join('')}
-                            stroke="red"
-                            fill="transparent"
-                            strokeWidth={2}
-                            strokeLinejoin="round"
-                            strokeLinecap="round"
-                          />
-                        </Svg>
+                        <Svg ref={svgRef} height={height * (authenticated ? 0.32 : 0.29)} width={width * 0.8} viewBox={`0 0 ${width * 0.8} ${height * 0.7}`}>
+                              {paths.map((item: { path: string[]; color: string; size: number; }, index: number) => (
+                                <Path
+                                  key={`path-${index}`}
+                                  d={item.path.join('')}
+                                  stroke={item.color}
+                                  fill="transparent"
+                                  strokeWidth={item.size}
+                                  strokeLinejoin="round"
+                                  strokeLinecap="round"
+                                />
+                              ))}
+                            </Svg>
                         <Text style={styles.drawingPreviewDescription}>Any sketches you create will be transformed into images using artificial intelligence (AI), Happy sketching! 🎨✨</Text>
                         <Text style={styles.drawingPreviewText}>Draw me</Text>
                       </View>

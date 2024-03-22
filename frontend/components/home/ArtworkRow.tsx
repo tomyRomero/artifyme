@@ -10,7 +10,7 @@ import {
     ActivityIndicator,
   } from 'react-native';
 import { calculateTimeAgo, getImageData } from '../../lib/utils';
-import { Colors } from '../../constants';
+import { Colors } from '../../lib/constants';
 import { router } from 'expo-router';
 import { useAppContext } from '../../lib/AppContext';
 

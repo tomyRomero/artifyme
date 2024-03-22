@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Image, SafeAreaView, Dimensions, TouchableOpacity, Text } from 'react-native';
 import { useAppContext } from '../../lib/AppContext';
 import { router } from 'expo-router';
-import { Colors } from '../../constants';
+import { Colors } from '../../lib/constants';
 
 const { width, height } = Dimensions.get('window');
 

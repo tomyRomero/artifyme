@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { StyleSheet , Text, TouchableOpacity, View , Image, Dimensions, ActivityIndicator} from 'react-native';
-import { Colors } from '../../constants';
+import { Colors } from '../../lib/constants';
 import { router} from 'expo-router';
 import { getImageData } from '../../lib/utils';
 import RBSheet from 'react-native-raw-bottom-sheet';

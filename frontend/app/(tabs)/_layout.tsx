@@ -1,7 +1,7 @@
 import React from 'react';
 import { Image, StyleSheet, SafeAreaView, View, StatusBar} from 'react-native';
 import {Tabs } from 'expo-router';
-import { Colors } from '../../constants';
+import { Colors } from '../../lib/constants';
 import { useAppContext } from '../../lib/AppContext';
 import Header from '../../components/shared/Header';
 import TabBarCustomButton from '../../components/shared/TabBarCustomButton';

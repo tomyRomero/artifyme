@@ -1,6 +1,6 @@
 import { Alert, SafeAreaView, StyleSheet , Text, View } from 'react-native';
 import EmptyGallery from '../../components/home/EmptyGallery';
-import { Colors } from '../../constants';
+import { Colors } from '../../lib/constants';
 import Gallery from '../../components/home/Gallery';
 import { useLocalSearchParams } from 'expo-router';
 import Pagination from '../../components/shared/Pagination';

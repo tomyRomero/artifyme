@@ -44,7 +44,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [theme, setTheme] = useState(useColorScheme());
 
   //Save the state of the drawing
-  const [paths, setPaths] = useState<string[][]>([]);
+  const [paths, setPaths] = useState<{ path: string[], color: string, size: number }[]>([]);
 
   //JWT Token
   const [token, setToken] = useState(null);
