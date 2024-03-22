@@ -103,15 +103,31 @@ export default function CanvasScreen({}) {
     <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <RainbowTitle titleText='Canvas' />
+          
+                {/* Display currently selected brush size */}
+                <TouchableOpacity onPress={handleSheet} style={[styles.circle, {marginTop: 10, marginLeft: 85}]}>
+                  <View style={[styles.circleInside, { backgroundColor: 'transparent' }]}>
+                    <Svg height={40} width={40}>
+                      <Path d={`M10,20 L30,20`} stroke={sketchcolors[selectedColorIndex]} strokeWidth={selectedBrushSize} strokeLinejoin="round" strokeLinecap="round" />
+                    </Svg>
+                  </View>
+                </TouchableOpacity>
+
+                {/* Display currently selected color */}
+                <TouchableOpacity onPress={handleSheet} style={[styles.circle, { marginTop: 10 , marginRight: 0}]}>
+                  <View style={[styles.circleInside, { backgroundColor: sketchcolors[selectedColorIndex] }]} />
+                </TouchableOpacity>
+
           <View style={{marginRight: -20}}>
           <TouchableOpacity style={[styles.button, styles.clearbtn]} onPress={onClose}>
             <View style={styles.buttonContent}>
-            <Image source={require('../assets/icons/back.png')} style={styles.buttonIcon} />
+            <Image source={require('../assets/icons/close.png')} style={styles.buttonIcon} />
               <Text style={[styles.buttonText]}>Close</Text>
               
             </View>
           </TouchableOpacity>
           </View>
+      
         </View>
       <View style={styles.svgContainer} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
         <Svg height={height * 0.78} width={width}>
@@ -223,7 +239,7 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     width: '100%',
     paddingHorizontal: 20,

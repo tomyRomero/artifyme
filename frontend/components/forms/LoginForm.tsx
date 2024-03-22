@@ -15,6 +15,7 @@ import * as yup from 'yup';
 import { storeToken } from '../../lib/utils';
 import { Colors } from '../../lib/constants';
 import { useAppContext } from '../../lib/AppContext';
+import RainbowTitle from '../shared/RainbowTitle';
 
 
 const INPUT_OFFSET = 110;
@@ -93,14 +94,16 @@ const LoginForm = () => {
               source={require('../../assets/icons/art.png')}
               resizeMode="contain"
               style={{
-                width: 35,
-                height: 35,
+                width: 55,
+                height: 55,
               }}
             />
           </View>
-          <Text style={styles.title}>
-            Welcome to <Text style={{ color: '#0742fc' }}>ArtifyMe</Text>
-          </Text>
+         
+            <Text style={styles.title}>
+              Welcome to 
+            </Text>
+            <RainbowTitle titleText='ArtifyMe'/>
           <Text style={styles.subtitle}>Sign In To View Save Your Creations and View Saved Gallery</Text>
         </View>
         <Formik
@@ -147,7 +150,7 @@ const LoginForm = () => {
                   <TouchableOpacity onPress={() => handleSubmit()}>
                     <View style={[styles.btn, { opacity: loading ? 0.5 : 1 }]}>
                       {loading ? (
-                        <ActivityIndicator color="#fff" />
+                        <ActivityIndicator color={Colors.primary} />
                       ) : (
                         <Text style={styles.btnText}>Sign in</Text>
                       )}
@@ -179,13 +182,14 @@ export default LoginForm
 
 const styles = StyleSheet.create({
     title: {
-      fontSize: 27,
+      fontSize: 28,
       fontWeight: '700',
-      color: '#1d1d1d',
+      color: 'black',
       marginBottom: 6,
       textAlign: 'center',
     },
     subtitle: {
+      marginTop: 5,
       fontSize: 15,
       fontWeight: '500',
       color: '#929292',
@@ -193,6 +197,7 @@ const styles = StyleSheet.create({
     },
     /** Header */
     header: {
+      marginTop: -5,
       marginVertical: 36,
     },
     headerIcon: {
@@ -219,11 +224,11 @@ const styles = StyleSheet.create({
       marginVertical: 8,
     },
     formFooter: {
-      marginTop: 'auto',
+      marginTop: 10,
       fontSize: 14,
       lineHeight: 20,
       fontWeight: '400',
-      color: '#929292',
+      color: 'black',
       textAlign: 'center',
     },
     input: {
@@ -241,7 +246,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       fontSize: 13,
       fontWeight: '500',
-      color: '#c0c0c0',
+      color: Colors.primary,
       zIndex: 9,
     },
     inputControl: {
@@ -262,7 +267,7 @@ const styles = StyleSheet.create({
       paddingVertical: 10,
       paddingHorizontal: 20,
       borderWidth: 1,
-      backgroundColor: '#000',
+      backgroundColor: Colors.primary,
       borderColor: '#000',
     },
     btnText: {
@@ -278,6 +283,7 @@ const styles = StyleSheet.create({
     },
     orContainer: {
       alignItems: 'center',
+      marginTop: -10,
       marginVertical: 16,
     },
     orText: {
@@ -314,7 +320,7 @@ const styles = StyleSheet.create({
     errorText: {
       color: 'red',
       marginTop: -10, 
-      marginBottom: 10, 
+      marginBottom: 10
     },
   });
   

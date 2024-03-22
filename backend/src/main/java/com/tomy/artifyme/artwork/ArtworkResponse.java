@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SaveArtworkResponse {
+public class ArtworkResponse {
     private String message;
     private String id;
 }

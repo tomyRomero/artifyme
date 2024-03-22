@@ -18,7 +18,7 @@ public class ArtworkController {
     private final ArtworkService artworkService;
 
     @PostMapping("/api/v1/artwork")
-    public ResponseEntity<SaveArtworkResponse> saveArtwork(@RequestBody SaveArtworkRequest request) {
+    public ResponseEntity<ArtworkResponse> saveArtwork(@RequestBody ArtworkRequest request) {
         return artworkService.saveArtwork(request);
     }
 
@@ -43,7 +43,7 @@ public class ArtworkController {
     }
 
      @PatchMapping("/api/v1/artwork")
-    public ResponseEntity<Object> updateArtwork(@RequestParam(value = "id", required = true) String id, @RequestBody UpdateArtworkRequest request) {
+    public ResponseEntity<Object> updateArtwork(@RequestParam(value = "id", required = true) String id, @RequestBody ArtworkRequest request) {
         // Call the updateArtwork method of the artworkService and return its response
         return artworkService.updateArtwork(id, request);
     }

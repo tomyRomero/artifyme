@@ -25,7 +25,7 @@ public class ArtworkService {
     private final ArtworkRepository artworkRepository;
 
     @SuppressWarnings("null")
-    public ResponseEntity<SaveArtworkResponse> saveArtwork(SaveArtworkRequest request) {
+    public ResponseEntity<ArtworkResponse> saveArtwork(ArtworkRequest request) {
         try {
             // Debug print to show the received request
             System.out.println("Request received: " + request);
@@ -65,7 +65,7 @@ public class ArtworkService {
             System.out.println("Artwork saved successfully");
             // Return success message
           
-            return ResponseEntity.ok(SaveArtworkResponse.builder()
+            return ResponseEntity.ok(ArtworkResponse.builder()
                     .message("Artwork saved successfully")
                     .id(artwork.getId())
                     .build());
@@ -73,7 +73,7 @@ public class ArtworkService {
             // Print stack trace for debugging
             e.printStackTrace();
 
-           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(SaveArtworkResponse.builder()
+           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ArtworkResponse.builder()
                 .message("An unexpected error occurred")
                 .id(null)
                 .build());
@@ -189,13 +189,13 @@ public class ArtworkService {
     }
 
     @SuppressWarnings("null")
-    public ResponseEntity<Object> updateArtwork(String id, UpdateArtworkRequest request) {
+    public ResponseEntity<Object> updateArtwork(String id, ArtworkRequest request) {
         try {
             // Find the artwork by its ID
             Optional<Artwork> optionalArtwork = artworkRepository.findById(id);
             if (!optionalArtwork.isPresent()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(UpdateArtworkResponse.builder()
+                        .body(ArtworkResponse.builder()
                                 .message("Artwork not found")
                                 .build());
             }
@@ -226,7 +226,7 @@ public class ArtworkService {
             System.out.println("Artwork updated successfully: " + artwork);
     
             // Return success message
-            return ResponseEntity.ok(UpdateArtworkResponse.builder()
+            return ResponseEntity.ok(ArtworkResponse.builder()
                     .message("Artwork updated successfully")
                     .id(artwork.getId())
                     .build());
@@ -235,7 +235,7 @@ public class ArtworkService {
             e.printStackTrace();
     
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(UpdateArtworkResponse.builder()
+                    .body(ArtworkResponse.builder()
                             .message("An unexpected error occurred")
                             .id(null)
                             .build());

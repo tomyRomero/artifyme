@@ -5,6 +5,7 @@ import {
   View,
 } from 'react-native';
 import LoginForm from '../components/forms/LoginForm';
+import { Colors } from '../lib/constants';
 
 export default function LoginScreen() {
 
@@ -24,5 +25,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     flexShrink: 1,
     flexBasis: 0,
+    backgroundColor: Colors.backgroundlight
   } 
 });

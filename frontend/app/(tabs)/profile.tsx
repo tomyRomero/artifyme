@@ -251,29 +251,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-
-  profileAction: {
-    position: 'absolute',
-    right: -4,
-    bottom: -10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 28,
-    height: 28,
-    borderRadius: 9999,
-    backgroundColor: '#007bff',
-  },
   profileName: {
     marginTop: 20,
     fontSize: 19,
     fontWeight: '600',
-    color: '#414d63',
+    color: 'black',
     textAlign: 'center',
   },
   profileEmail: {
     marginTop: 5,
     fontSize: 16,
-    color: '#414d63',
+    color: 'black',
     textAlign: 'center',
   },
 

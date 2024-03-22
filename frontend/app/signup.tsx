@@ -5,6 +5,7 @@ import {
   View,
 } from 'react-native';
 import SignUpForm from '../components/forms/SignUpForm';
+import { Colors } from '../lib/constants';
 
 export default function SignUpScreen() {
 
@@ -24,6 +25,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     flexShrink: 1,
     flexBasis: 0,
+    backgroundColor: Colors.backgroundlight
   },
 
 });

@@ -21,17 +21,30 @@ const SignUpForm = () => {
     const [form, setForm] = useState({
       email: '',
       password: '',
+      confirmPassword: '',
       firstname: '',
       lastname: '',
     });
   
     const validationSchema = yup.object().shape({
       email: yup.string().email('Invalid email').required('Email is required'),
-      password: yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
+      password: yup
+        .string()
+        .min(6, 'Password must be at least 6 characters')
+        .matches(
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[%&,!#])[A-Za-z\d%&,!#]{12,}$/,
+          'Password must contain at least 1 uppercase letter, 1 number, and 1 symbol'
+        )
+        .required('Password is required'),
+      confirmPassword: yup
+        .string()
+        .oneOf([yup.ref('password'), undefined], 'Passwords must match')
+        .required('Confirm Password is required'),
       firstname: yup.string().required('First name is required'),
       lastname: yup.string().required('Last name is required'),
     });
-  
+    
+    
     const submitForm = async (values: { email: string; password: string; firstname: string; lastname: string; }) => {
       setLoading(true)
       try {
@@ -79,7 +92,16 @@ const SignUpForm = () => {
         }}
       />
     </TouchableOpacity>
-
+    <View style={styles.headerIcon}>
+            <Image
+              source={require('../../assets/icons/art.png')}
+              resizeMode="contain"
+              style={{
+                width: 55,
+                height: 55,
+              }}
+            />
+          </View>
     <Text style={styles.title}>Create Account</Text>
   </View>
 
@@ -95,14 +117,13 @@ const SignUpForm = () => {
     >
       {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
         <View style={styles.form}>
-
           <View style={styles.input}>
             <Text style={styles.inputLabel}>First Name</Text>
 
             <TextInput
               onChangeText={handleChange('firstname')}
               onBlur={handleBlur('firstname')}
-              placeholder="e.g. John"
+              placeholder="John"
               placeholderTextColor="#6b7280"
               style={styles.inputControl}
               value={values.firstname} />
@@ -117,7 +138,7 @@ const SignUpForm = () => {
             <TextInput
               onChangeText={handleChange('lastname')}
               onBlur={handleBlur('lastname')}
-              placeholder="e.g. Doe"
+              placeholder="Doe"
               placeholderTextColor="#6b7280"
               style={styles.inputControl}
               value={values.lastname} />
@@ -135,7 +156,7 @@ const SignUpForm = () => {
               autoCapitalize="none"
               autoCorrect={false}
               keyboardType="email-address"
-              placeholder="e.g. john@example.com"
+              placeholder="john@example.com"
               placeholderTextColor="#6b7280"
               style={styles.inputControl}
               value={values.email} />
@@ -143,6 +164,58 @@ const SignUpForm = () => {
           {touched.email && errors.email &&
             <Text style={styles.errorText}>{errors.email}</Text>
           }
+
+    <View style={styles.inputValidation}>
+              <View style={styles.inputValidationRow}>
+              <Image
+                  source={require("../../assets/icons/checkmark.png")}
+                  style={{ width: 20, height: 20 }}
+                 />
+
+                <Text style={styles.inputValidationRowText}>
+                  Minimum of 6 characters
+                </Text>
+              </View>
+
+              <View
+                style={[
+                  styles.inputValidationRow,
+                ]}>
+                <Image
+                  source={require("../../assets/icons/checkmark.png")}
+                  style={{ width: 20, height: 20 }}
+                 />
+
+                <Text style={styles.inputValidationRowText}>
+                  At least 1 upper case (A-Z)
+                </Text>
+              </View>
+
+              <View style={styles.inputValidationRow}>
+                <Image
+                  source={require("../../assets/icons/checkmark.png")}
+                  style={{ width: 20, height: 20 }}
+                 />
+
+                <Text style={styles.inputValidationRowText}>
+                  At least 1 number (0-9)
+                </Text>
+              </View>
+
+              <View
+                style={[
+                  styles.inputValidationRow,
+                ]}>
+                 <Image
+                  source={require("../../assets/icons/checkmark.png")}
+                  style={{ width: 20, height: 20 }}
+                 />
+
+                <Text style={styles.inputValidationRowText}>
+                  At least 1 symbol (%&,!#)
+                </Text>
+              </View>
+            </View>
 
           <View style={styles.input}>
             <Text style={styles.inputLabel}>Password</Text>
@@ -159,6 +232,23 @@ const SignUpForm = () => {
           </View>
           {touched.password && errors.password &&
             <Text style={styles.errorText}>{errors.password}</Text>
+          }
+
+        <View style={styles.input}>
+            <Text style={styles.inputLabel}>Confirm Password</Text>
+
+            <TextInput
+              onChangeText={handleChange('confirmPassword')}
+              onBlur={handleBlur('confirmPassword')}
+              autoCorrect={false}
+              placeholder="********"
+              placeholderTextColor="#6b7280"
+              style={styles.inputControl}
+              secureTextEntry={true}
+              value={values.confirmPassword} />
+          </View>
+          {touched.confirmPassword && errors.confirmPassword &&
+            <Text style={styles.errorText}>{errors.confirmPassword}</Text>
           }
 
           <View style={styles.formAction}>
@@ -189,6 +279,7 @@ export default SignUpForm
 const styles = StyleSheet.create({
 header: {
     paddingHorizontal: 24,
+    marginBottom: -20
   },
   backBtn: {
     width: 40,
@@ -202,8 +293,9 @@ header: {
   title: {
     fontSize: 34,
     fontWeight: 'bold',
-    color: '#181818',
+    color: Colors.primary,
     marginBottom: 36,
+    alignSelf: "center"
   },
   /** Form */
   form: {
@@ -216,7 +308,7 @@ header: {
     fontSize: 15,
     lineHeight: 20,
     fontWeight: '400',
-    color: '#9fa5af',
+    color: 'black',
     textAlign: 'center',
   },
   /** Input */
@@ -247,8 +339,8 @@ header: {
     paddingVertical: 16,
     paddingHorizontal: 24,
     borderWidth: 1,
-    backgroundColor: '#FD6B68',
-    borderColor: '#FD6B68',
+    backgroundColor: Colors.primary,
+    borderColor: 'black',
   },
   btnText: {
     fontSize: 17,
@@ -260,5 +352,30 @@ header: {
     color: 'red',
     marginTop: -10, 
     marginBottom: 10, 
-  }
+  },
+  inputValidation: {
+    marginBottom: 12,
+  },
+  inputValidationRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    marginBottom: 6,
+  },
+  inputValidationRowText: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: '#292b32',
+    marginLeft: 5,
+  },
+  headerIcon: {
+    alignSelf: 'center',
+    width: 80,
+    height: 80,
+    marginBottom: 20,
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 })

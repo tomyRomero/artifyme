@@ -1,6 +1,5 @@
 package com.tomy.artifyme.artwork;
 
-
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -10,8 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateArtworkRequest {
-
+public class ArtworkRequest {
     private String userEmail;
     private String sketchedImage;
     private String aiImage;
@@ -19,4 +17,3 @@ public class UpdateArtworkRequest {
     private String description;
     private List<PathData> paths;
 }
-

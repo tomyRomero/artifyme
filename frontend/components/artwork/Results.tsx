@@ -69,7 +69,7 @@ export default function Results({setGeneratedImage, generatedImage, title , desc
           onPress={toggleAiImageFullScreen}
           style={[styles.button, { position: 'absolute', top: 40, right: 20, zIndex: 1, backgroundColor: 'red'}]}>
               <View style={styles.buttonContent}>
-              <Image source={require('../../assets/icons/back.png')} style={styles.buttonIcon} />
+              <Image source={require('../../assets/icons/close.png')} style={styles.buttonIcon} />
                 <Text style={[styles.buttonText]}>Close</Text>
               </View>
             </TouchableOpacity>
