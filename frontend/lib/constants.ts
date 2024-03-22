@@ -7,13 +7,15 @@ export const Colors = {
 };
 
 export const sketchcolors = [
+  '#171A21', // Charcoal
+  '#FFFFFF', // White
   '#FF0000', // Red
   '#FF7F00', // Orange
   '#FFFF00', // Yellow
   '#00FF00', // Green
   '#0000FF', // Blue
-  '#4B0082', // Indigo
   '#9400D3', // Violet
+  '#8B4513', // Brown
   '#6874e7', // Light Blue
   '#b8304f', // Crimson
   '#758E4F', // Olive
@@ -23,8 +25,6 @@ export const sketchcolors = [
   '#DFAEB4', // Pink
   '#7A93AC', // Slate Blue
   '#33658A', // Steel Blue
-  '#3d2b56', // Plum
-  '#171A21', // Charcoal
 ];
 
 

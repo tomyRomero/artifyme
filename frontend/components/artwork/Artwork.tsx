@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { StyleSheet , Text, TouchableOpacity, View , Image, Dimensions, ActivityIndicator} from 'react-native';
+import { StyleSheet , Text, TouchableOpacity, View , Image, Dimensions, ActivityIndicator, Share, Alert, Modal} from 'react-native';
 import { Colors } from '../../lib/constants';
 import { router} from 'expo-router';
 import { getImageData } from '../../lib/utils';
@@ -23,14 +23,26 @@ interface ArtworkProps{
   id: string|string[];
 }
 
+
+
 const Artwork = ({title, aiImage, sketchedImage, description, id }: ArtworkProps) => {
 
   const {updateArtwork} = useAppContext();
   const [sketchedS3Image, setSketchS3Image] = useState<string|null>(null);
   const [aiS3Image, setAiS3Image] = useState<null|string>(null);
   const [loading, setLoading] = useState(true);
-  const sheet = useRef<RBSheet>(null);
+  const [isSketchImageFullScreen, setIsSketchImageFullScreen] = useState(false);
+  const [isAiImageFullScreen, setIsAiImageFullScreen] = useState(false);
 
+  const sheet = useRef<RBSheet>(null);
+  
+  const toggleSketchImageFullScreen = () => {
+    setIsSketchImageFullScreen(!isSketchImageFullScreen);
+  };
+  
+  const toggleAiImageFullScreen = () => {
+    setIsAiImageFullScreen(!isAiImageFullScreen);
+  };
 
   const fetchImages = async ()=> {
     try{
@@ -73,6 +85,21 @@ const Artwork = ({title, aiImage, sketchedImage, description, id }: ArtworkProps
    router.push(`/editartwork/${id}`)
   }
 
+  const handleShare = async ()=> {
+    try {
+      if(aiS3Image){
+        await Share.share({ url: aiS3Image });
+      }else{
+        Alert.alert(`Still fetching image from server, try again`);
+      }
+      
+    } 
+    catch (error) 
+    {
+      Alert.alert(`Error sharing image:, ${error}`);
+    }
+  }
+
   return (
     <>
     <View style={styles.content}>
@@ -95,7 +122,7 @@ const Artwork = ({title, aiImage, sketchedImage, description, id }: ArtworkProps
           <View style={styles.circles}>
               {/* Sketch Circle */}
               <TouchableOpacity
-                onPress={fullscreen}
+                onPress={toggleSketchImageFullScreen}
                 style={[
                   styles.circle,
                   { top: 0, left: 0}, 
@@ -126,7 +153,7 @@ const Artwork = ({title, aiImage, sketchedImage, description, id }: ArtworkProps
               </TouchableOpacity>
               {/* AI Image Circle */}
               <TouchableOpacity
-              onPress={fullscreen}
+              onPress={toggleAiImageFullScreen}
                 style={[
                   styles.circle,
                   { top: 180, left: 120 }, 
@@ -154,6 +181,68 @@ const Artwork = ({title, aiImage, sketchedImage, description, id }: ArtworkProps
                 </View>
               </View>
               </TouchableOpacity>
+
+      {/* Sketch Image Full-Screen Modal */}
+      <Modal visible={isSketchImageFullScreen} animationType="slide">
+        <View style={styles.modalContainer}>
+          <TouchableOpacity
+          onPress={toggleSketchImageFullScreen}
+          style={[styles.button, { position: 'absolute', top: 40, right: 20, zIndex: 1, backgroundColor: 'red'}]}>
+              <View style={styles.buttonContent}>
+              <Image source={require('../../assets/icons/back.png')} style={styles.buttonIcon} />
+                <Text style={[styles.buttonText]}>Close</Text>
+              </View>
+            </TouchableOpacity>
+            {loading ? 
+                  (
+                    <ActivityIndicator size={"large"} color={Colors.primary} style={{marginTop: 80}}/>
+                  ) :
+                  (<>
+                      {sketchedS3Image ? 
+                        (
+                          <Image source={{uri: sketchedS3Image}} style={styles.image} />
+                        ) 
+                        : 
+                        (
+                          <Image source={require('../../assets/icons/notfound.png')} style={styles.image} />
+                        )
+                        }
+                    </>
+            )
+            }
+        </View>
+      </Modal>
+
+      {/* AI Image Full-Screen Modal */}
+      <Modal visible={isAiImageFullScreen} animationType="slide">
+        <View style={styles.modalContainer}>
+        <TouchableOpacity
+          onPress={toggleAiImageFullScreen}
+          style={[styles.button, { position: 'absolute', top: 40, right: 20, zIndex: 1, backgroundColor: 'red'}]}>
+              <View style={styles.buttonContent}>
+              <Image source={require('../../assets/icons/back.png')} style={styles.buttonIcon} />
+                <Text style={[styles.buttonText]}>Close</Text>
+              </View>
+            </TouchableOpacity>
+          {loading ? 
+                (
+                  <ActivityIndicator size={"large"} color={Colors.primary} style={{marginTop: 80}}/>
+                ) :
+                  (<>
+                      {aiS3Image ? 
+                        (
+                          <Image source={{uri: aiS3Image}}  style={styles.image} />
+                        ) 
+                        : 
+                        (
+                          <Image source={require('../../assets/icons/notfound.png')} style={styles.image} />
+                        )
+                        }
+                    </>
+                  )
+                }
+        </View>
+      </Modal>
         </View>
       </View>
       <View style={styles.buttonContainer}>
@@ -173,6 +262,15 @@ const Artwork = ({title, aiImage, sketchedImage, description, id }: ArtworkProps
           <View style={styles.buttonContent}>
             <Image source={require('../../assets/icons/trash.png')} style={styles.buttonIcon} />
             <Text style={styles.buttonText}>Delete</Text>
+          </View>
+        </TouchableOpacity>
+        {/* Share Button */}
+        <TouchableOpacity
+          onPress={handleShare}
+          style={[styles.button, {backgroundColor: Colors.primary}]}>
+            <View style={styles.buttonContent}>
+            <Image source={require('../../assets/icons/share.png')} style={styles.buttonIcon} />
+            <Text style={styles.buttonText}>Share</Text>
           </View>
         </TouchableOpacity>
         </View>
@@ -296,5 +394,15 @@ const styles =  StyleSheet.create({
         fontWeight: '700',
         color: Colors.primary,
       },
-      
+      modalContainer: {
+        flex: 1,
+        backgroundColor: Colors.backgroundlight,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      image: {
+        width: '95%',
+        height: '95%',
+        resizeMode: 'contain'
+      },
 })

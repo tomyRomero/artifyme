@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, View, Image, SafeAreaView, Dimensions, TouchableOpacity, Text } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, Image, SafeAreaView, Dimensions, TouchableOpacity, Text, Share, Alert, Modal } from 'react-native';
 import { useAppContext } from '../../lib/AppContext';
 import { router } from 'expo-router';
 import { Colors } from '../../lib/constants';
@@ -16,7 +16,9 @@ interface ResultsProps {
   update: boolean
 }
 
-export default function Results({setGeneratedImage, generatedImage, title , description, id, update}: ResultsProps) {
+export default function Results({setGeneratedImage, generatedImage, title , description, id, update}: ResultsProps) 
+{
+  const [isAiImageFullScreen, setIsAiImageFullScreen] = useState(false);
 
   const {setPaths, authenticated } = useAppContext();
 
@@ -33,14 +35,47 @@ export default function Results({setGeneratedImage, generatedImage, title , desc
     setPaths([])
   }
 
+  const handleShare = async ()=> {
+    try {
+      await Share.share({ url: generatedImage });
+    } 
+    catch (error) 
+    {
+      Alert.alert(`Error sharing image:, ${error}`);
+    }
+  }
+
+  const toggleAiImageFullScreen = () => {
+    setIsAiImageFullScreen(!isAiImageFullScreen);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
+
+      <Text style={[styles.title, {marginTop: 10 , color: "black"}]}>Results</Text>
       <View style={styles.imageContainer}>
+        <TouchableOpacity onPress={toggleAiImageFullScreen}>
         <Image
           style={styles.image}
           source={{ uri: generatedImage }}
         />
+        </TouchableOpacity>
       </View>
+
+      {/* AI Image Full-Screen Modal */}
+      <Modal visible={isAiImageFullScreen} animationType="slide">
+        <View style={styles.modalContainer}>
+        <TouchableOpacity
+          onPress={toggleAiImageFullScreen}
+          style={[styles.button, { position: 'absolute', top: 40, right: 20, zIndex: 1, backgroundColor: 'red'}]}>
+              <View style={styles.buttonContent}>
+              <Image source={require('../../assets/icons/back.png')} style={styles.buttonIcon} />
+                <Text style={[styles.buttonText]}>Close</Text>
+              </View>
+            </TouchableOpacity>
+            <Image source={{uri: generatedImage}}  style={styles.fullscreenImage} />     
+        </View>
+      </Modal>
 
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.text}>{description}</Text>
@@ -49,10 +84,10 @@ export default function Results({setGeneratedImage, generatedImage, title , desc
       <TouchableOpacity
           onPress={handleReset}
           style={styles.button}>
-          <Text style={styles.btnText}>Try Again</Text>
-          <Image
-            source={require("./../../assets/icons/reset.png")}
-            style={styles.imageStyle} />
+          <View style={styles.buttonContent}>
+            <Image source={require('../../assets/icons/reset.png')} style={styles.buttonIcon} />
+            <Text style={styles.buttonText}>Try Again</Text>
+          </View>
         </TouchableOpacity>}
     
       {authenticated ? 
@@ -63,10 +98,10 @@ export default function Results({setGeneratedImage, generatedImage, title , desc
         {!update && (<TouchableOpacity
           onPress={handleView}
           style={styles.button}>
-          <Text style={styles.btnText}>View</Text>
-          <Image
-            source={require("./../../assets/icons/details.png")}
-            style={styles.imageStyle} />
+            <View style={styles.buttonContent}>
+            <Image source={require('../../assets/icons/details.png')} style={styles.buttonIcon} />
+            <Text style={styles.buttonText}>View</Text>
+          </View>
         </TouchableOpacity>)}
         </>
       )}
@@ -77,15 +112,24 @@ export default function Results({setGeneratedImage, generatedImage, title , desc
         {!update && <TouchableOpacity
           onPress={handleLogin}
           style={styles.button}>
-          <Text style={styles.btnText}>Login</Text>
-          <Image
-            source={require("./../../assets/icons/whiteright.png")}
-            style={styles.imageStyle} />
+            <View style={styles.buttonContent}>
+            <Image source={require('../../assets/icons/whiteright.png')} style={styles.buttonIcon} />
+            <Text style={styles.buttonText}>Login</Text>
+          </View>
         </TouchableOpacity>}
         </>
       )}
-      </View>
 
+        <TouchableOpacity
+          onPress={handleShare}
+          style={styles.button}>
+            <View style={styles.buttonContent}>
+            <Image source={require('../../assets/icons/share.png')} style={styles.buttonIcon} />
+            <Text style={styles.buttonText}>Share</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+     
     </SafeAreaView>
   );
 }
@@ -114,27 +158,8 @@ const styles = StyleSheet.create({
     shadowRadius: 7.49,
     transform: [{ rotate: '3deg' }], 
   },
-  button: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 8,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderWidth: 1,
-    backgroundColor: Colors.primary,
-    borderColor: '#000',
-    alignSelf: 'center',
-    marginBottom: 10,
-    marginRight: 20
-  },
-  btnText: {
-    fontSize: 18,
-    lineHeight: 26,
-    fontWeight: '600',
-    color: '#fff',
-    marginRight: 8
-  },
+ 
+
   imageStyle: {
     width: 20,
     height: 20,
@@ -161,4 +186,46 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 10
   },
+
+  button: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+    marginHorizontal: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.primary
+  },
+  clearbtn: {
+    backgroundColor: "red"
+  },
+  undobtn: {
+    backgroundColor: "#FBA834"
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  buttonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonIcon: {
+    width: 20,
+    height: 20,
+    marginRight: 5,
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: Colors.backgroundlight,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  fullscreenImage: {
+    width: '95%',
+    height: '95%',
+    resizeMode: 'contain'
+  }
 });
