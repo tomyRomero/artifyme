@@ -6,7 +6,7 @@ import RainbowTitle from './RainbowTitle';
 
 const Header = () => {
   return (
-        <View style={styles.headerContainer}>
+    <SafeAreaView style={styles.headerContainer}>
         <Link href="/modal" asChild>
         <Pressable
             style={({ pressed }) => ({
@@ -25,7 +25,7 @@ const Header = () => {
             </View>
         </Pressable>
         </Link>
-    </View>
+    </SafeAreaView>
   )
 }
 

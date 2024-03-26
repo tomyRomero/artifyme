@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, StyleSheet, SafeAreaView, View, StatusBar} from 'react-native';
+import { Image, StyleSheet, SafeAreaView, View, StatusBar, Platform} from 'react-native';
 import {Tabs } from 'expo-router';
 import { Colors } from '../../lib/constants';
 import { useAppContext } from '../../lib/AppContext';
@@ -14,20 +14,19 @@ export default function TabLayout() {
   StatusBar.setBarStyle('dark-content', true);
   
   return ( 
-
-  <SafeAreaView style={{ flex: 1 , backgroundColor: Colors.backgroundlight }}>
       <Tabs
       screenOptions={{
         tabBarShowLabel: false,
         tabBarStyle: {
             position: 'absolute',
-            bottom: 10,
+            bottom: -15,
             left: 0,
             right: 0,
             backgroundColor: "transparent",
             borderRadius: 15,
             borderTopColor: "transparent",
-            ...styles.shadow
+            ...styles.shadow,
+            
         } ,
         header: () => (
           <Header />
@@ -105,7 +104,6 @@ export default function TabLayout() {
                 }}
             />
         </Tabs>
-        </SafeAreaView>
     )
 }
 

@@ -10,7 +10,7 @@ import { Colors } from '../lib/constants';
 export default function SignUpScreen() {
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#F4EFF3' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.backgroundlight }}>
       <View style={styles.container}>
           <SignUpForm />
       </View>

@@ -11,7 +11,7 @@ export default function LoginScreen() {
 
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#e8ecf4' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.backgroundlight }}>
       <View style={styles.container}>
         <LoginForm />
       </View>

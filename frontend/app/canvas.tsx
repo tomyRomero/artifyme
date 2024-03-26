@@ -22,7 +22,6 @@ export default function CanvasScreen({}) {
   const sheet = useRef<RBSheet>(null);
 
   useEffect(() => {
-    console.log(paths)
     setPathsChanged(true);
   }, [paths]);
 
@@ -105,7 +104,7 @@ export default function CanvasScreen({}) {
           <RainbowTitle titleText='Canvas' />
           
                 {/* Display currently selected brush size */}
-                <TouchableOpacity onPress={handleSheet} style={[styles.circle, {marginTop: 10, marginLeft: 85}]}>
+                <TouchableOpacity onPress={handleSheet} style={[styles.circle, {marginTop: 10, marginLeft: width * 0.15}]}>
                   <View style={[styles.circleInside, { backgroundColor: 'transparent' }]}>
                     <Svg height={40} width={40}>
                       <Path d={`M10,20 L30,20`} stroke={sketchcolors[selectedColorIndex]} strokeWidth={selectedBrushSize} strokeLinejoin="round" strokeLinecap="round" />
@@ -260,7 +259,7 @@ const styles = StyleSheet.create({
   },
 
   buttonContainer: {
-    marginTop: 15,
+    marginTop: 8,
     flexDirection: 'row',
     alignSelf: 'center'
   },
@@ -313,7 +312,7 @@ const styles = StyleSheet.create({
     color: 'black'
   },
   sheetBody: {
-    marginTop: -15,
+    marginTop: -25,
     padding: 15,
   },
 

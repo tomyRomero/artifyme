@@ -18,16 +18,11 @@ import { useAppContext } from '../../lib/AppContext';
 
 export default function TabAccountScreen() {
 
-  const { authenticated, setAuthenticated, screen, setScreen} = useAppContext();
+  const { authenticated, setAuthenticated, screen, setScreen, theme, setTheme} = useAppContext();
 
   const [loading, setLoading] =  useState(true);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [form, setForm] = useState({
-    darkMode: false,
-  });
-
-
 
   const initializeProfile = async ()=> {
     //If the screen is focused that means the screen has changed, 
@@ -120,8 +115,9 @@ export default function TabAccountScreen() {
              <View style={styles.rowSpacer} />
 
              <Switch
-               onValueChange={darkMode => setForm({ ...form, darkMode })}
-               value={form.darkMode} />
+                onValueChange={(value) => setTheme(value ? "dark" : "light")}
+                value={theme === "dark"}
+              />
            </View>
 
 
