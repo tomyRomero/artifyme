@@ -3,8 +3,14 @@ import { View, Image, StyleSheet, Pressable, Platform, SafeAreaView , Text, Stat
 import { Link } from 'expo-router';
 import { Colors } from '../../lib/constants';
 import RainbowTitle from './RainbowTitle';
+import { useAppContext } from '../../lib/AppContext';
 
 const Header = () => {
+
+  const {theme} = useAppContext();
+
+  const styles = getStyles(theme);
+
   return (
     <SafeAreaView style={styles.headerContainer}>
         <Link href="/modal" asChild>
@@ -31,18 +37,20 @@ const Header = () => {
 
 export default Header;
 
-const styles = StyleSheet.create({
+const getStyles = (theme: string) => {
+  return StyleSheet.create({
     headerContainer: {
+        marginTop: -10,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
         flexGrow: 1,
         width: '100%',
         borderBottomWidth: 1, 
-        borderBottomColor: 'rgba(0,0,0,0.1)',
+        borderBottomColor: theme === "light" ?  'rgba(0,0,0,0.1)' : 'rgba(255, 255, 255, 0.1)',
         ...Platform.select({
           ios: {
-            shadowColor: 'black',
+            shadowColor: theme === "light" ? 'black' : 'white',
             shadowOpacity: 0.2,
             shadowRadius: 4,
             shadowOffset: {
@@ -51,20 +59,8 @@ const styles = StyleSheet.create({
             },
           },
         }),
-        backgroundColor: Colors.backgroundlight
-      },
-      title: {
-        color: Colors.primary,
-        fontFamily: 'DancingScript',
-        fontWeight: 'bold',
-        fontSize: 30,
-        marginTop: 15,
-        marginBottom: 15,
-        marginRight: 5,
-        textShadowColor: 'rgba(0, 0, 0, 0.25)',
-        textShadowOffset: { width: 0, height: 2 },
-        textShadowRadius: 4,
         
+        backgroundColor: theme === "light" ?  Colors.backgroundlight : Colors.backgrounddark
       },
       icon: {
         width: 30,
@@ -72,9 +68,10 @@ const styles = StyleSheet.create({
         marginTop: 15,
         marginBottom: 15,
         marginLeft: 5,
-        shadowColor: '#000',
+        shadowColor: theme === "light" ?  '#000' : '#fff',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
         shadowRadius: 4,
       },
 })
+}

@@ -11,8 +11,8 @@ interface CustomTabBarProps {
 const CustomTabBar = (props: CustomTabBarProps) => {
   return (
     <>
-    <StatusBar style="light" backgroundColor={Colors.primary} />
-    <BottomTabBar {...props.props} />
+      <StatusBar style="light" backgroundColor={Colors.primary} />
+      <BottomTabBar {...props.props} />
     </>
   )
 }

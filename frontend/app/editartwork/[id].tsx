@@ -6,10 +6,11 @@ import { getToken, isTokenExpired } from '../../lib/utils';
 import axios from 'axios';
 import NotFoundArtwork from '../../components/artwork/NotFoundArtwork';
 import UpdateImageForm from '../../components/forms/UpdateImageForm';
+import { useAppContext } from '../../lib/AppContext';
 
 
 const editartwork = () => {
-
+    const {theme} = useAppContext();
     const [loading, setLoading] = useState(true);
     const [artwork, setArtwork] = useState<Artwork|null>(null);
 
@@ -51,14 +52,14 @@ const editartwork = () => {
   const searchParams = useLocalSearchParams();
 
   useEffect(()=> {
-
     fetchArtwork();
-
   }, [])
+
+  const styles = getStyles(theme);
 
   return (
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
-       <SafeAreaView style={{ flex: 1, backgroundColor: Colors.backgroundlight }}>
+       <SafeAreaView style={{ flex: 1, backgroundColor: theme === "light" ? Colors.backgroundlight : Colors.backgrounddark }}>
       {loading ? (
         <View style={styles.content}>
         <TouchableOpacity
@@ -75,7 +76,7 @@ const editartwork = () => {
             }}
           />
         </TouchableOpacity>
-        <ActivityIndicator color={Colors.primary} size={"large"} style={{marginTop: 50}} />
+        <ActivityIndicator color={theme === "light" ? Colors.primary : Colors.third} size={"large"} style={{marginTop: 50}} />
         <Text style={styles.loadingText}>Loading...</Text>
         </View>
       ) 
@@ -100,7 +101,8 @@ const editartwork = () => {
 
 export default editartwork;
 
-const styles =  StyleSheet.create({
+const getStyles = (theme: string) => {
+  return StyleSheet.create({
     content: {
       justifyContent: 'center',
       paddingVertical: 24,
@@ -112,7 +114,7 @@ const styles =  StyleSheet.create({
       borderRadius: 9999,
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: Colors.primary,
+      backgroundColor: theme === "light" ? Colors.primary : Colors.third,
       marginTop: 10,
       marginBottom: 16,
     },
@@ -121,7 +123,9 @@ const styles =  StyleSheet.create({
       marginTop: 20, 
       fontSize: 20,
       fontWeight: "400",
-      color: Colors.primary,
+      color:theme === "light" ? Colors.primary : Colors.third,
     },
   })
+}
+
   

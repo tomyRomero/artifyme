@@ -24,7 +24,7 @@ interface Props{
 
 const ArtworkRow = ({aiImage, creationDateTime, title , id} : Props) => {
 
-    const {updateArtwork} = useAppContext();
+    const {updateArtwork, theme} = useAppContext();
     const [loading, setLoading] = useState(true);
     const [s3Image, setS3Image] = useState<null|string>(null);
 
@@ -47,6 +47,7 @@ const ArtworkRow = ({aiImage, creationDateTime, title , id} : Props) => {
         loadImage();
       }, [updateArtwork]);
       
+  const styles = getStyles(theme);
 
   return (
     <TouchableOpacity
@@ -56,7 +57,7 @@ const ArtworkRow = ({aiImage, creationDateTime, title , id} : Props) => {
 
     <View style={styles.card}>
         {loading ? (<>
-        <ActivityIndicator color={Colors.primary} size={"large"} style={{marginRight: 10}}/>
+        <ActivityIndicator color={theme === "light" ? Colors.primary : Colors.third} size={"large"} style={{marginRight: 10}}/>
         </>) : 
         (
         <>
@@ -85,15 +86,28 @@ const ArtworkRow = ({aiImage, creationDateTime, title , id} : Props) => {
 
         <View style={styles.cardStats}>
           <View style={styles.cardStatsItem}>
-                <Image
+            {theme === "light" ? (
+            <Image
                 source={require('../../assets/icons/clock.png')}
                 resizeMode="contain"
                 style={{
                 width: 18,
                 height: 18,
-            }}
+                }}
              />
-
+             ) 
+             : 
+             (
+             <Image
+              source={require('../../assets/icons/whiteclock.png')}
+              resizeMode="contain"
+              style={{
+              width: 18,
+              height: 18,
+            }}
+           />
+           )}
+            
             <Text style={styles.cardStatsItemText}>
                 {calculateTimeAgo(creationDateTime)}
             </Text>
@@ -103,6 +117,8 @@ const ArtworkRow = ({aiImage, creationDateTime, title , id} : Props) => {
       </View>
 
       <View style={styles.cardAction}>
+        {theme === "light" ? 
+        (
         <Image
             source={require('../../assets/icons/right.png')}
             resizeMode="contain"
@@ -111,6 +127,19 @@ const ArtworkRow = ({aiImage, creationDateTime, title , id} : Props) => {
             height: 35,
         }}
         />
+        )
+        :
+        (
+        <Image
+          source={require('../../assets/icons/whiteindexright.png')}
+          resizeMode="contain"
+          style={{
+          width: 35,
+          height: 35,
+      }}
+      />
+      )
+      }
       </View>
     </View>
   </TouchableOpacity>
@@ -119,7 +148,8 @@ const ArtworkRow = ({aiImage, creationDateTime, title , id} : Props) => {
 
 export default ArtworkRow
 
-const styles = StyleSheet.create({
+const getStyles = (theme: string) => {
+return StyleSheet.create({
     title: {
       fontSize: 32,
       fontWeight: '700',
@@ -142,7 +172,7 @@ const styles = StyleSheet.create({
     cardTitle: {
       fontSize: 15,
       fontWeight: '600',
-      color: '#000',
+      color: theme === "light" ? '#000' : "#fff",
       marginBottom: 8,
     },
     cardStats: {
@@ -160,10 +190,11 @@ const styles = StyleSheet.create({
     cardStatsItemText: {
       fontSize: 13,
       fontWeight: '500',
-      color: '#636a73',
+      color: theme === "light" ? '#636a73' : "#788094",
       marginLeft: 2,
     },
     cardAction: {
       marginLeft: 'auto',
     },
   });
+}

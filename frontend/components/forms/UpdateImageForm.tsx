@@ -21,7 +21,7 @@ interface updateProps{
 
 const { height, width } = Dimensions.get('window');
 const UpdateImageForm = ({initTitle, initDescription, initPaths, id} : updateProps) => {
-    const {paths, setPaths, authenticated, updateArtwork, setUpdateArtwork, pathsChanged, setPathsChanged} = useAppContext();
+    const {paths, setPaths, authenticated, updateArtwork, setUpdateArtwork, pathsChanged, setPathsChanged, theme} = useAppContext();
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [generatedImage, setGeneratedImage] = useState<null | string>(null); // State to store the generated image URI
@@ -269,6 +269,8 @@ const UpdateImageForm = ({initTitle, initDescription, initPaths, id} : updatePro
         setPaths(initPaths);
     }, [])
 
+    const styles = getStyles(theme);
+
   return (
     <>
     <TouchableOpacity
@@ -380,7 +382,7 @@ const UpdateImageForm = ({initTitle, initDescription, initPaths, id} : updatePro
                 </TouchableOpacity>
               )}
               {loading && (
-                <ActivityIndicator size="large" color={Colors.primary} />
+                <ActivityIndicator size="large" color={theme === "light" ? Colors.primary : Colors.third} />
               )}
               </>
             )}
@@ -392,10 +394,10 @@ const UpdateImageForm = ({initTitle, initDescription, initPaths, id} : updatePro
 
 export default UpdateImageForm;
 
-const styles = StyleSheet.create({
+const getStyles= (theme: string) => {
+  return StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: `#FFFFFF`
     },
     formContainer: {
       marginTop: -height * 0.001,
@@ -406,7 +408,7 @@ const styles = StyleSheet.create({
     },
     title: {
       fontWeight: '500',
-      color: Colors.primary,
+      color: theme === "light" ? Colors.primary : Colors.third,
       fontSize: 30,
       textAlign: 'center',
       marginBottom: 10,
@@ -421,7 +423,7 @@ const styles = StyleSheet.create({
       borderRadius: 10,
       paddingHorizontal: width * 0.05,
       borderWidth: 2, 
-      borderColor: Colors.canvas, 
+      borderColor: theme === "light" ? Colors.canvas : Colors.third, 
     },
     drawingPreviewText: {
       marginTop: 5,
@@ -435,14 +437,14 @@ const styles = StyleSheet.create({
       marginTop: 5,
     },
     submitButton: {
-      backgroundColor: Colors.primary,
+      backgroundColor: theme === "light" ? Colors.primary : Colors.third,
       padding: 10,
       borderRadius: 5,
       alignSelf: 'center',
       marginTop: 10
     },
     buttonText: {
-      color: '#ffffff',
+      color: theme === "light" ? '#ffffff' : '#000000',
       fontSize: 16,
       fontWeight: 'bold',
     },
@@ -458,7 +460,7 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 15,
     fontWeight: 'bold',
-    color: Colors.primary,
+    color: theme === "light" ? Colors.primary : Colors.third,
     marginBottom: 5,
   },
   inputControl: {
@@ -476,12 +478,14 @@ const styles = StyleSheet.create({
     borderRadius: 9999,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Colors.primary,
+    backgroundColor: theme === "light" ? Colors.primary : Colors.third,
     marginTop: 10,
     marginBottom: 16,
     marginLeft: 20
   },
 
   });
+}
+
   
   

@@ -41,7 +41,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   // Initialize the state using the useState hook
 
   //For theme purposes
-  const [theme, setTheme] = useState(useColorScheme());
+  const [theme, setTheme] = useState("dark");
 
   //Save the state of the drawing
   const [paths, setPaths] = useState<{ path: string[], color: string, size: number }[]>([]);
@@ -81,7 +81,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   useEffect(()=> {
-
     const startUpAuthenticate = async () => {
       setAuthenticated(await authenticate());
     }

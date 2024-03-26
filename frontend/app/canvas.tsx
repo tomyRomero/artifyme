@@ -11,13 +11,12 @@ const { height, width } = Dimensions.get('window');
 
 export default function CanvasScreen({}) {
 
- 
   const [isClearButtonClicked, setClearButtonClicked] = useState(false);
   const [selectedColorIndex, setSelectedColorIndex] = useState(0);
   const [selectedBrushSize, setSelectedBrushSize] = useState(2); 
   const [currentPath, setCurrentPath] = useState<{ path: string[], color: string, size: number }>({ path: [], color: sketchcolors[selectedColorIndex], size: selectedBrushSize });
 
-  const { paths, setPaths , setPathsChanged} = useAppContext(); // Access the paths state and setPaths method from the global context
+  const { paths, setPaths , setPathsChanged, theme} = useAppContext(); // Access the paths state and setPaths method from the global context
 
   const sheet = useRef<RBSheet>(null);
 
@@ -96,7 +95,7 @@ export default function CanvasScreen({}) {
     );
   };
   
-  
+  const styles = getStyles(theme);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -227,146 +226,146 @@ export default function CanvasScreen({}) {
   );
 }
 
+const getStyles = (theme: string) => {
+  const CIRCLE_SIZE = 40;
+  const CIRCLE_RING_SIZE = 2;
+    return StyleSheet.create({
+      container: {
+        flex: 1,
+        alignItems: 'center',
+        backgroundColor: theme === "light" ? Colors.backgroundlight : Colors.backgrounddark
+      },
+      header: {
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        width: '100%',
+        paddingHorizontal: 20,
+      },
+      svgContainer: {
+        height: height * 0.78,
+        width: width -10,
+        backgroundColor: 'white',
+        borderWidth: 2, 
+        borderColor: theme === "light" ? Colors.canvas : Colors.third, 
+      },
+      group: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        flexWrap: 'wrap',
+        marginTop: 40,
+        marginBottom: 12,
+      },
 
-const CIRCLE_SIZE = 40;
-const CIRCLE_RING_SIZE = 2;
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    backgroundColor: Colors.backgroundlight
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    width: '100%',
-    paddingHorizontal: 20,
-  },
-  svgContainer: {
-    height: height * 0.78,
-    width: width -10,
-    backgroundColor: 'white',
-    borderWidth: 2, 
-    borderColor: Colors.canvas, 
-  },
-  group: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-    marginTop: 40,
-    marginBottom: 12,
-  },
+      buttonContainer: {
+        marginTop: 8,
+        flexDirection: 'row',
+        alignSelf: 'center'
+      },
+      button: {
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        borderRadius: 8,
+        marginHorizontal: 8,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: Colors.primary
+      },
+      clearbtn: {
+        backgroundColor: "red"
+      },
+      undobtn: {
+        backgroundColor: "#FBA834"
+      },
+      buttonText: {
+        color: 'white',
+        fontWeight: 'bold',
+      },
+      buttonContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+      buttonIcon: {
+        width: 20,
+        height: 20,
+        marginRight: 5,
+      },
 
-  buttonContainer: {
-    marginTop: 8,
-    flexDirection: 'row',
-    alignSelf: 'center'
-  },
-  button: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 8,
-    marginHorizontal: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: Colors.primary
-  },
-  clearbtn: {
-    backgroundColor: "red"
-  },
-  undobtn: {
-    backgroundColor: "#FBA834"
-  },
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  buttonContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  buttonIcon: {
-    width: 20,
-    height: 20,
-    marginRight: 5,
-  },
+      /** Sheet */
+      sheet: {
+        borderTopLeftRadius: 14,
+        borderTopRightRadius: 14,
+        backgroundColor: theme === "light" ? Colors.backgroundlight : Colors.backgrounddark
+      },
+      sheetHeader: {
+        borderBottomWidth: 1,
+        borderBottomColor: theme === "light" ? '#efefef' : "#ffffff",
+        paddingHorizontal: 24,
+        paddingVertical: 14,
+        alignSelf: "center",
+      },
+      sheetHeaderTitle: {
+        fontSize: 20,
+        fontWeight: '600',
+        color: theme === "light" ? 'black' : 'white'
+      },
+      sheetBody: {
+        marginTop: -25,
+        padding: 15,
+      },
 
-  /** Sheet */
-  sheet: {
-    borderTopLeftRadius: 14,
-    borderTopRightRadius: 14,
-    backgroundColor: Colors.backgroundlight
-  },
-  sheetHeader: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#efefef',
-    paddingHorizontal: 24,
-    paddingVertical: 14,
-    alignSelf: "center",
-  },
-  sheetHeaderTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: 'black'
-  },
-  sheetBody: {
-    marginTop: -25,
-    padding: 15,
-  },
+      /** Circle */
+      circle: {
+        width: CIRCLE_SIZE + CIRCLE_RING_SIZE * 4,
+        height: CIRCLE_SIZE + CIRCLE_RING_SIZE * 4,
+        borderRadius: 9999,
+        backgroundColor: 'white',
+        borderWidth: CIRCLE_RING_SIZE,
+        borderColor: 'transparent',
+        marginRight: 8,
+        marginBottom: 12,
+      },
+      circleInside: {
+        width: CIRCLE_SIZE,
+        height: CIRCLE_SIZE,
+        borderRadius: 9999,
+        position: 'absolute',
+        top: CIRCLE_RING_SIZE,
+        left: CIRCLE_RING_SIZE,
+      },
 
-  /** Circle */
-  circle: {
-    width: CIRCLE_SIZE + CIRCLE_RING_SIZE * 4,
-    height: CIRCLE_SIZE + CIRCLE_RING_SIZE * 4,
-    borderRadius: 9999,
-    backgroundColor: 'white',
-    borderWidth: CIRCLE_RING_SIZE,
-    borderColor: 'transparent',
-    marginRight: 8,
-    marginBottom: 12,
-  },
-  circleInside: {
-    width: CIRCLE_SIZE,
-    height: CIRCLE_SIZE,
-    borderRadius: 9999,
-    position: 'absolute',
-    top: CIRCLE_RING_SIZE,
-    left: CIRCLE_RING_SIZE,
-  },
-
-  /**Sheet Button */
-  btn: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 6,
-    padding: 14,
-    borderWidth: 1,
-    borderColor: '#000',
-    backgroundColor: Colors.primary,
-    marginBottom: 12,
-  },
-  btnText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#fff',
-  },
-  brushSizeContainer: {
-    marginTop: 20,
-  },
-  strokePreview: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    borderWidth: 2,
-    borderColor: 'transparent',
-    marginHorizontal: 5,
-    marginVertical: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
-
+      /**Sheet Button */
+      btn: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 6,
+        padding: 14,
+        borderWidth: 1,
+        borderColor: '#000',
+        backgroundColor: Colors.primary,
+        marginBottom: 12,
+      },
+      btnText: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#fff',
+      },
+      brushSizeContainer: {
+        marginTop: 20,
+      },
+      strokePreview: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        borderWidth: 2,
+        borderColor: 'transparent',
+        marginHorizontal: 5,
+        marginVertical: 5,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+    });
+}
 
 

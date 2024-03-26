@@ -11,15 +11,17 @@ export default function TabLayout() {
 
   const { theme } = useAppContext();
 
-  StatusBar.setBarStyle('dark-content', true);
+  theme === "light" ? StatusBar.setBarStyle('dark-content', true) :  StatusBar.setBarStyle('light-content', true)
   
+  const styles = getStyles(theme);
+
   return ( 
       <Tabs
       screenOptions={{
         tabBarShowLabel: false,
         tabBarStyle: {
             position: 'absolute',
-            bottom: -15,
+            bottom: -20,
             left: 0,
             right: 0,
             backgroundColor: "transparent",
@@ -48,7 +50,9 @@ export default function TabLayout() {
                             style={{
                                 width: 35,
                                 height: 35,
-                                tintColor: focused ? Colors.primary : Colors.secondary
+                                tintColor: focused ? 
+                                (theme === "light" ? Colors.primary : Colors.third)   
+                                : Colors.secondary
                             }}
                         />
                     ),
@@ -70,7 +74,9 @@ export default function TabLayout() {
                             style={{
                                 width: 35,
                                 height: 35,
-                                tintColor: focused ? Colors.primary : Colors.secondary
+                                tintColor: focused ? 
+                                (theme === "light" ? Colors.primary : Colors.third)   
+                                : Colors.secondary
                             }}
                         />
                     ),
@@ -92,7 +98,9 @@ export default function TabLayout() {
                             style={{
                                 width: 35,
                                 height: 35,
-                                tintColor: focused ? Colors.primary : Colors.secondary
+                                tintColor: focused ? 
+                                (theme === "light" ? Colors.primary : Colors.third)   
+                                : Colors.secondary
                             }}
                         />
                     ),
@@ -107,16 +115,18 @@ export default function TabLayout() {
     )
 }
 
-const styles = StyleSheet.create({
-  shadow: {
-    shadowColor: '#7F5Df0',
-    shadowOffset: {
-      width: 0, 
-      height: 10
+const getStyles = (theme: string) => {
+    return StyleSheet.create({
+    shadow: {
+        shadowColor: theme === "light" ?  '#7F5Df0' : "#A19DE7" ,
+        shadowOffset: {
+        width: 0, 
+        height: 10
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.5,
+        elevation: 5
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.5,
-    elevation: 5
-  },
-});
+    });
+}
 

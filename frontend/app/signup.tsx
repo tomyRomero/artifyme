@@ -6,11 +6,14 @@ import {
 } from 'react-native';
 import SignUpForm from '../components/forms/SignUpForm';
 import { Colors } from '../lib/constants';
+import { useAppContext } from '../lib/AppContext';
 
 export default function SignUpScreen() {
 
+  const {theme} = useAppContext();
+
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.backgroundlight }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme === "light" ? Colors.backgroundlight : Colors.backgrounddark }}>
       <View style={styles.container}>
           <SignUpForm />
       </View>
@@ -25,7 +28,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     flexShrink: 1,
     flexBasis: 0,
-    backgroundColor: Colors.backgroundlight
   },
 
 });

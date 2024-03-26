@@ -5,15 +5,15 @@ import Gallery from '../../components/home/Gallery';
 import { useLocalSearchParams } from 'expo-router';
 import Pagination from '../../components/shared/Pagination';
 import { useEffect, useState } from 'react';
-import { useIsFocused } from '@react-navigation/native';
-import { authenticate, getToken, getTokenSubject, isTokenExpired } from '../../lib/utils';
+import { getToken, getTokenSubject, isTokenExpired } from '../../lib/utils';
 import axios from 'axios';
 import { useAppContext } from '../../lib/AppContext';
 
 
+
 export default function HomeScreen() {
 
-  const { authenticated, screen, setScreen , newArtwork, deleted, updateArtwork} = useAppContext();
+  const { authenticated, screen, setScreen , newArtwork, deleted, updateArtwork, theme} = useAppContext();
 
   const [artworks, setArtworks] = useState([])
   const [isNext, setIsNext] = useState(false);
@@ -66,7 +66,6 @@ export default function HomeScreen() {
   
   useEffect(() => {
     setScreen(!screen);
-
     if(authenticated)
     {
       fetchArtworks();
@@ -75,8 +74,10 @@ export default function HomeScreen() {
     }
   }, [authenticated, pageNumber , newArtwork, deleted, updateArtwork]);
   
+  const styles = getStyles(theme);
+
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.backgroundlight }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme === "light" ? Colors.backgroundlight : Colors.backgrounddark}}>
     <View style={styles.container}>
       <Text style={styles.title}>Gallery</Text>
         {
@@ -101,27 +102,29 @@ export default function HomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    flexShrink: 1,
-    flexBasis: 0,
-    paddingBottom: 140,
-    padding: 24,
-    backgroundColor: Colors.backgroundlight
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: '700',
-    color: Colors.primary,
-    marginTop: -12,
-    marginBottom: 12,
-  },
-  paginationContainer: {
-    position: 'absolute',
-    bottom: 70,
-    left: 0,
-    right: 0,
-    justifyContent: 'flex-end'
-  },
-});
+const getStyles = (theme: string) => {
+  return StyleSheet.create({
+    container: {
+      flexGrow: 1,
+      flexShrink: 1,
+      flexBasis: 0,
+      paddingBottom: 140,
+      padding: 24,
+      backgroundColor: theme === 'light' ? Colors.backgroundlight : Colors.backgrounddark
+    },
+    title: {
+      fontSize: 22,
+      fontWeight: '700',
+      color: theme === "light" ? Colors.primary : Colors.third,
+      marginTop: -12,
+      marginBottom: 12,
+    },
+    paginationContainer: {
+      position: 'absolute',
+      bottom: 70,
+      left: 0,
+      right: 0,
+      justifyContent: 'flex-end'
+    },
+  });
+}

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
   StyleSheet,
-  SafeAreaView,
   View,
   TouchableOpacity,
   Text,
@@ -15,8 +14,11 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import { router } from 'expo-router';
 import { Colors } from '../../lib/constants';
+import { useAppContext } from '../../lib/AppContext';
 
 const SignUpForm = () => {
+    const {theme} = useAppContext();
+
     const [ loading, setLoading] = useState(false);
     const [form, setForm] = useState({
       email: '',
@@ -73,6 +75,8 @@ const SignUpForm = () => {
       
       setLoading(false)
     };
+
+  const styles = getStyles(theme);
 
   return (
     <>
@@ -167,10 +171,15 @@ const SignUpForm = () => {
 
     <View style={styles.inputValidation}>
               <View style={styles.inputValidationRow}>
-              <Image
-                  source={require("../../assets/icons/checkmark.png")}
-                  style={{ width: 20, height: 20 }}
-                 />
+                {theme === "light" ? ( <Image
+                    source={require("../../assets/icons/checkmark.png")}
+                    style={{ width: 20, height: 20 }}
+                  />):(
+                    <Image
+                    source={require("../../assets/icons/whitecheckmark.png")}
+                    style={{ width: 20, height: 20 }}
+                  />
+                    )}
 
                 <Text style={styles.inputValidationRowText}>
                   Minimum of 6 characters
@@ -181,10 +190,15 @@ const SignUpForm = () => {
                 style={[
                   styles.inputValidationRow,
                 ]}>
-                <Image
-                  source={require("../../assets/icons/checkmark.png")}
-                  style={{ width: 20, height: 20 }}
-                 />
+                {theme === "light" ? ( <Image
+                    source={require("../../assets/icons/checkmark.png")}
+                    style={{ width: 20, height: 20 }}
+                  />):(
+                    <Image
+                    source={require("../../assets/icons/whitecheckmark.png")}
+                    style={{ width: 20, height: 20 }}
+                  />
+                    )}
 
                 <Text style={styles.inputValidationRowText}>
                   At least 1 upper case (A-Z)
@@ -192,10 +206,15 @@ const SignUpForm = () => {
               </View>
 
               <View style={styles.inputValidationRow}>
-                <Image
+                {theme === "light" ? ( <Image
                   source={require("../../assets/icons/checkmark.png")}
                   style={{ width: 20, height: 20 }}
+                 />):(
+                  <Image
+                  source={require("../../assets/icons/whitecheckmark.png")}
+                  style={{ width: 20, height: 20 }}
                  />
+                  )}
 
                 <Text style={styles.inputValidationRowText}>
                   At least 1 number (0-9)
@@ -206,10 +225,15 @@ const SignUpForm = () => {
                 style={[
                   styles.inputValidationRow,
                 ]}>
-                 <Image
+                  {theme === "light" ? ( <Image
                   source={require("../../assets/icons/checkmark.png")}
                   style={{ width: 20, height: 20 }}
+                 />):(
+                  <Image
+                  source={require("../../assets/icons/whitecheckmark.png")}
+                  style={{ width: 20, height: 20 }}
                  />
+                  )}
 
                 <Text style={styles.inputValidationRowText}>
                   At least 1 symbol (%&,!#)
@@ -276,106 +300,108 @@ const SignUpForm = () => {
 
 export default SignUpForm
 
-const styles = StyleSheet.create({
-header: {
-    paddingHorizontal: 24,
-    marginBottom: -20
-  },
-  backBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 9999,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: Colors.primary,
-    marginBottom: 16,
-  },
-  title: {
-    fontSize: 34,
-    fontWeight: 'bold',
-    color: Colors.primary,
-    marginBottom: 36,
-    alignSelf: "center"
-  },
-  /** Form */
-  form: {
-    paddingHorizontal: 24,
-  },
-  formAction: {
-    marginVertical: 24,
-  },
-  formFooter: {
-    fontSize: 15,
-    lineHeight: 20,
-    fontWeight: '400',
-    color: 'black',
-    textAlign: 'center',
-  },
-  /** Input */
-  input: {
-    marginBottom: 16,
-  },
-  inputLabel: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    color: '#1c1c1e',
-    marginBottom: 6,
-  },
-  inputControl: {
-    height: 44,
-    backgroundColor: '#fff',
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    fontSize: 15,
-    fontWeight: '500',
-    color: '#24262e',
-  },
-  /** Button */
-  btn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 8,
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    borderWidth: 1,
-    backgroundColor: Colors.primary,
-    borderColor: 'black',
-  },
-  btnText: {
-    fontSize: 17,
-    lineHeight: 22,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  errorText: {
-    color: 'red',
-    marginTop: -10, 
-    marginBottom: 10, 
-  },
-  inputValidation: {
-    marginBottom: 12,
-  },
-  inputValidationRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    marginBottom: 6,
-  },
-  inputValidationRowText: {
-    fontSize: 13,
-    fontWeight: '500',
-    color: '#292b32',
-    marginLeft: 5,
-  },
-  headerIcon: {
-    alignSelf: 'center',
-    width: 80,
-    height: 80,
-    marginBottom: 20,
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-})
+const getStyles = (theme: string) => {
+  return StyleSheet.create({
+    header: {
+        paddingHorizontal: 24,
+        marginBottom: -20
+      },
+      backBtn: {
+        width: 40,
+        height: 40,
+        borderRadius: 9999,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: theme === "light" ? Colors.primary : Colors.third,
+        marginBottom: 16,
+      },
+      title: {
+        fontSize: 34,
+        fontWeight: 'bold',
+        color: theme === "light" ? Colors.primary : Colors.third,
+        marginBottom: 36,
+        alignSelf: "center"
+      },
+      /** Form */
+      form: {
+        paddingHorizontal: 24,
+      },
+      formAction: {
+        marginVertical: 24,
+      },
+      formFooter: {
+        fontSize: 15,
+        lineHeight: 20,
+        fontWeight: '400',
+        color: theme === "light" ? 'black' : 'white',
+        textAlign: 'center',
+      },
+      /** Input */
+      input: {
+        marginBottom: 16,
+      },
+      inputLabel: {
+        fontSize: 15,
+        fontWeight: 'bold',
+        color: theme === "light" ? '#1c1c1e' : "#fff",
+        marginBottom: 6,
+      },
+      inputControl: {
+        height: 44,
+        backgroundColor: '#fff',
+        paddingHorizontal: 16,
+        borderRadius: 12,
+        fontSize: 15,
+        fontWeight: '500',
+        color: '#24262e',
+      },
+      /** Button */
+      btn: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 8,
+        paddingVertical: 16,
+        paddingHorizontal: 24,
+        borderWidth: 1,
+        backgroundColor: theme === "light" ? Colors.primary : Colors.third,
+        borderColor: 'black',
+      },
+      btnText: {
+        fontSize: 17,
+        lineHeight: 22,
+        fontWeight: 'bold',
+        color: theme === "light" ? '#fff' : "#000",
+      },
+      errorText: {
+        color: 'red',
+        marginTop: -10, 
+        marginBottom: 10, 
+      },
+      inputValidation: {
+        marginBottom: 12,
+      },
+      inputValidationRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        marginBottom: 6,
+      },
+      inputValidationRowText: {
+        fontSize: 13,
+        fontWeight: '500',
+        color: theme === "light" ? '#292b32' : "white",
+        marginLeft: 5,
+      },
+      headerIcon: {
+        alignSelf: 'center',
+        width: 80,
+        height: 80,
+        marginBottom: 20,
+        backgroundColor: '#fff',
+        borderRadius: 16,
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+    })
+}

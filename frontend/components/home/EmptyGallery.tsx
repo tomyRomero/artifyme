@@ -2,8 +2,14 @@ import React from 'react'
 import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
 import { Colors } from '../../lib/constants';
 import { router } from 'expo-router';
+import { useAppContext } from '../../lib/AppContext';
 
 const EmptyGallery = ({auth}: {auth: boolean}) => {
+
+  const { theme } = useAppContext();
+
+  const styles = getStyles(theme);
+
   return (
         <View style={styles.empty}>
           <View style={styles.fake}>
@@ -61,9 +67,11 @@ const EmptyGallery = ({auth}: {auth: boolean}) => {
                 {auth ? "Create" : "Login"}
                 </Text>
               <View style={{ marginLeft: 12 }}>
-                <Image
+                {theme === "light" ? ( <Image
                     source={require("./../../assets/icons/whiteright.png")}
-                    style={styles.imageStyle} />
+                    style={styles.imageStyle} />) : ( <Image
+                      source={require("./../../assets/icons/blackright.png")}
+                      style={styles.imageStyle} />)}
                 </View>
             </View>
           </TouchableOpacity>
@@ -75,8 +83,8 @@ const EmptyGallery = ({auth}: {auth: boolean}) => {
 
 export default EmptyGallery;
 
-
-const styles = StyleSheet.create({
+const getStyles = (theme: string) => {
+  return StyleSheet.create({
     empty: {
       flexGrow: 1,
       flexShrink: 1,
@@ -89,7 +97,7 @@ const styles = StyleSheet.create({
     emptyTitle: {
       fontSize: 19,
       fontWeight: '700',
-      color: '#222',
+      color: theme === "light" ? '#222' : "#fff",
       marginBottom: 8,
       marginTop: 12,
     },
@@ -97,7 +105,7 @@ const styles = StyleSheet.create({
       fontSize: 15,
       lineHeight: 22,
       fontWeight: '500',
-      color: '#8c9197',
+      color: theme === "light" ? '#8c9197' : "#A0A5AB",
       textAlign: 'center',
     },
     fake: {
@@ -132,14 +140,14 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderWidth: 1,
-        backgroundColor: Colors.primary,
+        backgroundColor: theme === "light" ? Colors.primary : Colors.third,
         borderColor: '#000',
       },
       btnText: {
         fontSize: 18,
         lineHeight: 26,
         fontWeight: '600',
-        color: '#fff',
+        color: theme === "light" ? '#fff' : "#000",
       },
       imageStyle: {
         width: 20, 
@@ -147,3 +155,4 @@ const styles = StyleSheet.create({
       },
       
   });
+}

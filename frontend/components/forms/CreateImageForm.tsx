@@ -16,7 +16,8 @@ import Results from '../artwork/Results';
 
 const { height, width } = Dimensions.get('window');
 const CreateImageForm = () => {
-    const {paths, authenticated, screen, setScreen , newArtwork, setNewArtwork, setPathsChanged } = useAppContext();
+
+    const {paths, authenticated, screen, setScreen , newArtwork, setNewArtwork, setPathsChanged, theme } = useAppContext();
     const [title, setTitle] = useState("");
     const [artworkId , setArtworkId] = useState("");
     const [description, setDescription] = useState("");
@@ -238,6 +239,8 @@ const CreateImageForm = () => {
       router.push("/login")
     }
 
+    const styles = getStyles(theme);
+
   return (
     <>
         <View style={styles.formContainer}>
@@ -340,7 +343,7 @@ const CreateImageForm = () => {
                 </TouchableOpacity>
               )}
               {loading && (
-                <ActivityIndicator size="large" color={Colors.primary} />
+                <ActivityIndicator size="large" color={theme === "light" ? Colors.primary : Colors.third} />
               )}
               </>
             )}
@@ -352,89 +355,90 @@ const CreateImageForm = () => {
 
 export default CreateImageForm
 
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: `#FFFFFF`
+const getStyles = (theme: string) => {
+  return StyleSheet.create({
+      container: {
+        flex: 1,
+      },
+      formContainer: {
+        marginTop: -height * 0.001,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingHorizontal: 20,
+        paddingTop: height * 0.02
+      },
+      pressableRect: {
+        alignItems: 'center',
+        marginBottom: 20,
+      },
+      rectContainer: {
+        alignItems: 'center',
+        backgroundColor: 'lightgray',
+        borderRadius: 10,
+        paddingHorizontal: width * 0.05,
+        borderWidth: 2, 
+        borderColor: theme === "light" ?  Colors.primary : Colors.third, 
+      },
+      drawingPreviewText: {
+        marginTop: 5,
+        fontSize: 20,
+        fontFamily: "DancingScript"
+      },
+      drawingPreviewDescription: {
+        fontSize: 14,
+        color: '#666', 
+        textAlign: 'center',
+        marginTop: 5,
+      },
+      submitButton: {
+        backgroundColor: theme === "light" ? Colors.primary : Colors.third, 
+        padding: 10,
+        borderRadius: 5,
+        alignSelf: 'center',
+        marginTop: -13
+      },
+      buttonText: {
+        color: theme === "light" ? '#ffffff' : "#000000",
+        fontSize: 16,
+        fontWeight: 'bold',
+      },
+      errorText: {
+        color: 'red', 
+        marginTop: -5, 
+        marginBottom: 5, 
+      },
+      loginText: {
+        textDecorationLine: 'underline',
+        color: theme === "light" ? Colors.primary : Colors.third,
+        marginRight: 5,
+      },
+    input: {
+      width: "100%",
+      marginBottom: 10,
     },
-    formContainer: {
-      marginTop: -height * 0.001,
+    inputLabel: {
+      fontSize: 15,
+      fontWeight: 'bold',
+      color: theme === "light" ? Colors.primary : Colors.third,
+      marginBottom: 5,
+    },
+    inputControl: {
+      height: 44,
+      backgroundColor: '#fff',
+      paddingHorizontal: 16,
+      borderRadius: 12,
+      fontSize: 15,
+      fontWeight: '500',
+      color: '#24262e',
+    },
+    loginPrompt: {
+      flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
-      paddingHorizontal: 20,
-      paddingTop: height * 0.02
-    },
-    pressableRect: {
-      alignItems: 'center',
-      marginBottom: 20,
-    },
-    rectContainer: {
-      alignItems: 'center',
-      backgroundColor: 'lightgray',
-      borderRadius: 10,
-      paddingHorizontal: width * 0.05,
-      borderWidth: 2, 
-      borderColor: Colors.canvas, 
-    },
-    drawingPreviewText: {
-      marginTop: 5,
-      fontSize: 20,
-      fontFamily: "DancingScript"
-    },
-    drawingPreviewDescription: {
-      fontSize: 14,
-      color: '#666', 
-      textAlign: 'center',
-      marginTop: 5,
-    },
-    submitButton: {
-      backgroundColor: Colors.primary,
-      padding: 10,
-      borderRadius: 5,
-      alignSelf: 'center',
-      marginTop: -13
-    },
-    buttonText: {
-      color: '#ffffff',
-      fontSize: 16,
-      fontWeight: 'bold',
-    },
-    errorText: {
-      color: 'red', 
-      marginTop: -5, 
-      marginBottom: 5, 
-    },
-    loginText: {
-      textDecorationLine: 'underline',
-      color: 'blue',
-      marginRight: 5,
-    },
-  input: {
-    width: "100%",
-    marginBottom: 10,
-  },
-  inputLabel: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    color: Colors.primary,
-    marginBottom: 5,
-  },
-  inputControl: {
-    height: 44,
-    backgroundColor: '#fff',
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    fontSize: 15,
-    fontWeight: '500',
-    color: '#24262e',
-  },
-  loginPrompt: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: -15,
-    marginBottom: 20
-  }
-  });
-  
+      marginTop: -15,
+      marginBottom: 20
+    }
+    });
+    
+}
   

@@ -1,12 +1,5 @@
 import React from 'react'
 import {
-    StyleSheet,
-    SafeAreaView,
-    ScrollView,
-    Text,
-    TouchableOpacity,
-    View,
-    Image,
     FlatList,
   } from 'react-native';
 import ArtworkRow from './ArtworkRow';

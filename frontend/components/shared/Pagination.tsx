@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 import { Colors } from '../../lib/constants';
+import { useAppContext } from '../../lib/AppContext';
 
 interface Props {
   pageNumber: number;
@@ -9,6 +10,8 @@ interface Props {
 }
 
 const Pagination = ({ pageNumber, isNext }: Props) => {
+
+  const {theme} =  useAppContext();
 
   const handleNavigation = (type: string) => {
     let nextPageNumber = pageNumber;
@@ -31,15 +34,15 @@ const Pagination = ({ pageNumber, isNext }: Props) => {
       <TouchableOpacity
         onPress={() => handleNavigation('prev')}
         disabled={pageNumber === 1}
-        style={{ backgroundColor: Colors.primary, padding: 10, margin: 5 , borderRadius: 8, opacity: pageNumber === 1 ? 0.2 : 1}}
+        style={{ backgroundColor: theme === "light" ? Colors.primary : Colors.third, padding: 10, margin: 5 , borderRadius: 8, opacity: pageNumber === 1 ? 0.2 : 1}}
       >
          <Text style={{ color: 'white' }}>Prev</Text>
       </TouchableOpacity>
-      <Text style={{ marginHorizontal: 10 }}>{`${pageNumber}`}</Text>
+      <Text style={{ marginHorizontal: 10 , color: theme === "light" ? "black" : "white"}}>{`${pageNumber}`}</Text>
       <TouchableOpacity
         onPress={() => handleNavigation('next')}
         disabled={!isNext}
-        style={{ backgroundColor: 'blue', padding: 10, margin: 5, borderRadius: 8 , opacity: isNext ? 1 : 0.2}}
+        style={{ backgroundColor: theme === "light" ? Colors.primary : Colors.third, padding: 10, margin: 5, borderRadius: 8 , opacity: isNext ? 1 : 0.2}}
       >
         <Text style={{ color: 'white' }}>Next</Text>
       </TouchableOpacity>

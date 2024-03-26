@@ -67,9 +67,10 @@ export default function TabAccountScreen() {
     router.push('/');
   };
 
+  const styles = getStyles(theme);
  
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+    <SafeAreaView style={{ flex: 1 , backgroundColor: theme === "light" ? Colors.backgroundlight : Colors.backgrounddark }}>
     {loading ? (
      <View style={styles.container}>
       <View style={{marginTop:100}}>
@@ -78,7 +79,6 @@ export default function TabAccountScreen() {
       </View>
     ): (
        <View style={styles.container}>
-
        <View style={styles.profile}>
          {authenticated ? ( 
          <View>
@@ -97,7 +97,6 @@ export default function TabAccountScreen() {
        <ScrollView>
          <View style={styles.section}>
            <Text style={styles.sectionTitle}>Preferences</Text>
-
            <View style={styles.row}>
              <View style={[styles.rowIcon]}>
              <Image
@@ -109,18 +108,13 @@ export default function TabAccountScreen() {
               }}
               />
              </View>
-
              <Text style={styles.rowLabel}>Dark Mode</Text>
-
              <View style={styles.rowSpacer} />
-
              <Switch
                 onValueChange={(value) => setTheme(value ? "dark" : "light")}
                 value={theme === "dark"}
               />
            </View>
-
-
            <TouchableOpacity
              onPress={() => {
                // handle onPress
@@ -136,11 +130,8 @@ export default function TabAccountScreen() {
               }}
               />
              </View>
-
              <Text style={styles.rowLabel}>About</Text>
-
              <View style={styles.rowSpacer} />
-
              <Image
             source={require('../../assets/icons/right.png')}
             resizeMode="contain"
@@ -150,10 +141,8 @@ export default function TabAccountScreen() {
              }}
              />
            </TouchableOpacity>
-
            <TouchableOpacity
              onPress={() => {
-               // handle onPress
              }}
              style={styles.row}>
              <View style={[styles.rowIcon]}>
@@ -166,11 +155,8 @@ export default function TabAccountScreen() {
               }}
               />
              </View>
-
              <Text style={styles.rowLabel}>Contact Dev</Text>
-
              <View style={styles.rowSpacer} />
-
              <Image
              source={require('../../assets/icons/right.png')}
              resizeMode="contain"
@@ -180,7 +166,6 @@ export default function TabAccountScreen() {
              }}
              />
            </TouchableOpacity>
-
           {authenticated && ( <TouchableOpacity
              onPress={() => {
               
@@ -215,7 +200,7 @@ export default function TabAccountScreen() {
 
          <View style={styles.centered}>
           {authenticated ? ( <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-           <Text style={styles.authButtonText}>Logout</Text>
+           <Text style={styles.logoutButtonText}>Logout</Text>
          </TouchableOpacity>) : ( <TouchableOpacity onPress={handleLogin} style={styles.loginButton}>
            {loading ? (<ActivityIndicator color="#fff" />) : (<Text style={styles.authButtonText}>Login</Text>)}
          </TouchableOpacity>)}
@@ -231,138 +216,140 @@ export default function TabAccountScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 0,
-    flexGrow: 1,
-    flexShrink: 1,
-    flexBasis: 0,
-    backgroundColor: Colors.backgroundlight,
-  },
-
-  profile: {
-    marginTop: -20,
-    padding: 24,
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  profileName: {
-    marginTop: 20,
-    fontSize: 19,
-    fontWeight: '600',
-    color: 'black',
-    textAlign: 'center',
-  },
-  profileEmail: {
-    marginTop: 5,
-    fontSize: 16,
-    color: 'black',
-    textAlign: 'center',
-  },
-
-  section: {
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    paddingVertical: 12,
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#9e9e9e',
-    textTransform: 'uppercase',
-    letterSpacing: 1.1,
-  },
-
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    height: 50,
-    backgroundColor: '#ffffff',
-    borderRadius: 8,
-    marginBottom: 12,
-    paddingLeft: 12,
-    paddingRight: 12,
-  },
-  rowIcon: {
-    width: 32,
-    height: 32,
-    borderRadius: 9999,
-    marginRight: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  rowLabel: {
-    fontSize: 17,
-    fontWeight: '400',
-    color: '#0c0c0c',
-  },
-  rowSpacer: {
-    flexGrow: 1,
-    flexShrink: 1,
-    flexBasis: 0,
-  },
-
-  sectionBody: {
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
+const getStyles = (theme: string) => {
+  return StyleSheet.create({
+    container: {
+      padding: 0,
+      flexGrow: 1,
+      flexShrink: 1,
+      flexBasis: 0,
+      backgroundColor: theme === "light" ? Colors.backgroundlight : Colors.backgrounddark,
     },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
-    elevation: 2,
-  },
+  
+    profile: {
+      marginTop: -20,
+      padding: 24,
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    profileName: {
+      marginTop: 20,
+      fontSize: 19,
+      fontWeight: '600',
+      color: theme === "light" ? 'black' : "white",
+      textAlign: 'center',
+    },
+    profileEmail: {
+      marginTop: 5,
+      fontSize: 16,
+      color: theme === "light" ? 'black' : "white",
+      textAlign: 'center',
+    },
+  
+    section: {
+      paddingHorizontal: 24,
+    },
+    sectionTitle: {
+      paddingVertical: 12,
+      fontSize: 12,
+      fontWeight: '600',
+      color: theme === "light" ? '#9e9e9e' : '#B0B0B0',
+      textTransform: 'uppercase',
+      letterSpacing: 1.1,
+    },
+  
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+      height: 50,
+      backgroundColor: '#ffffff',
+      borderRadius: 8,
+      marginBottom: 12,
+      paddingLeft: 12,
+      paddingRight: 12,
+    },
+    rowIcon: {
+      width: 32,
+      height: 32,
+      borderRadius: 9999,
+      marginRight: 12,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    rowLabel: {
+      fontSize: 17,
+      fontWeight: '400',
+      color: '#0c0c0c',
+    },
+    rowSpacer: {
+      flexGrow: 1,
+      flexShrink: 1,
+      flexBasis: 0,
+    },
+  
+    sectionBody: {
+      borderRadius: 12,
+      shadowColor: theme === "light" ? '#000' : "#fff",
+      shadowOffset: {
+        width: 0,
+        height: 1,
+      },
+      shadowOpacity: 0.2,
+      shadowRadius: 1.41,
+      elevation: 2,
+    },
+  
+    profileAvatar: {
+      width: 60,
+      height: 60,
+      borderRadius: 9999,
+      marginRight: 12,
+    },
+    profileBody: {
+      marginRight: 'auto',
+    },
+    centered: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: '100%', 
+    },
+    logoutButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: 50,
+      backgroundColor: '#FF0000', 
+      borderRadius: 8,
+      marginBottom: 12,
+      paddingLeft: 12,
+      paddingRight: 12,
+      width: '90%'
+    },
+    loginButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: 50,
+      backgroundColor: theme === "light" ? Colors.primary : Colors.third, 
+      borderRadius: 8,
+      marginBottom: 12,
+      paddingLeft: 12,
+      paddingRight: 12,
+      width: '90%'
+    },
+    authButtonText: {
+      fontSize: 17,
+      fontWeight: '400',
+      color: theme === "light" ? '#fff' : "#000", 
+    },
 
-  profileAvatar: {
-    width: 60,
-    height: 60,
-    borderRadius: 9999,
-    marginRight: 12,
-  },
-  profileBody: {
-    marginRight: 'auto',
-  },
-  profileHandle: {
-    marginTop: 2,
-    fontSize: 16,
-    fontWeight: '400',
-    color: '#858585',
-  },
-  centered: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%', 
-  },
-  logoutButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 50,
-    backgroundColor: '#FF0000', 
-    borderRadius: 8,
-    marginBottom: 12,
-    paddingLeft: 12,
-    paddingRight: 12,
-    width: '90%'
-  },
-  loginButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 50,
-    backgroundColor: Colors.primary, 
-    borderRadius: 8,
-    marginBottom: 12,
-    paddingLeft: 12,
-    paddingRight: 12,
-    width: '90%'
-  },
-  authButtonText: {
-    fontSize: 17,
-    fontWeight: '400',
-    color: '#fff', 
-  },
-});
+    logoutButtonText: {
+      fontSize: 17,
+      fontWeight: '400',
+      color: '#fff', 
+    }
+  });
+}

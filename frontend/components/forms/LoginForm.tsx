@@ -23,7 +23,7 @@ const INPUT_OFFSET = 110;
 const LoginForm = () => {
     const [loading, setLoading] = useState(false);
 
-    const {setAuthenticated} = useAppContext();
+    const {setAuthenticated, theme} = useAppContext();
 
     const validationSchema = yup.object().shape({
         email: yup.string().email('Invalid email').required('Email is required'),
@@ -71,11 +71,12 @@ const LoginForm = () => {
       };
 
 
+  const styles = getStyles(theme);    
+
   return (
     <>
      <TouchableOpacity
           onPress={() => {
-            // handle onPress
             router.back();
           }}
           style={styles.backBtn}>
@@ -150,7 +151,7 @@ const LoginForm = () => {
                   <TouchableOpacity onPress={() => handleSubmit()}>
                     <View style={[styles.btn, { opacity: loading ? 0.5 : 1 }]}>
                       {loading ? (
-                        <ActivityIndicator color={Colors.primary} />
+                        <ActivityIndicator color={theme === "light" ? Colors.primary : 'white'} />
                       ) : (
                         <Text style={styles.btnText}>Sign in</Text>
                       )}
@@ -180,11 +181,12 @@ const LoginForm = () => {
 
 export default LoginForm
 
-const styles = StyleSheet.create({
+const getStyles = (theme : string) => {
+  return StyleSheet.create({
     title: {
       fontSize: 28,
       fontWeight: '700',
-      color: 'black',
+      color: theme === "light" ? 'black' : 'white',
       marginBottom: 6,
       textAlign: 'center',
     },
@@ -192,7 +194,7 @@ const styles = StyleSheet.create({
       marginTop: 5,
       fontSize: 15,
       fontWeight: '500',
-      color: '#929292',
+      color: theme === "light" ? '#929292' : '#A1A1A1',
       textAlign: 'center',
     },
     /** Header */
@@ -228,7 +230,7 @@ const styles = StyleSheet.create({
       fontSize: 14,
       lineHeight: 20,
       fontWeight: '400',
-      color: 'black',
+      color: theme === "light" ? 'black' : 'white',
       textAlign: 'center',
     },
     input: {
@@ -246,7 +248,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       fontSize: 13,
       fontWeight: '500',
-      color: Colors.primary,
+      color: theme === "light" ?  Colors.primary : "black",
       zIndex: 9,
     },
     inputControl: {
@@ -267,18 +269,18 @@ const styles = StyleSheet.create({
       paddingVertical: 10,
       paddingHorizontal: 20,
       borderWidth: 1,
-      backgroundColor: Colors.primary,
+      backgroundColor: theme === "light" ? Colors.primary : Colors.third,
       borderColor: '#000',
     },
     btnText: {
       fontSize: 18,
       lineHeight: 26,
       fontWeight: '600',
-      color: '#fff',
+      color: theme ==="light" ? '#fff' : '#000',
     },
     separator: {
       height: 1,
-      backgroundColor: '#ccc',
+      backgroundColor: theme === "light" ? '#ccc' : "fff",
       marginVertical: 20,
     },
     orContainer: {
@@ -289,7 +291,7 @@ const styles = StyleSheet.create({
     orText: {
       fontSize: 16,
       fontWeight: '500',
-      color: '#929292',
+      color: theme === "light" ?  '#929292' : "#fff",
     },
     btnSecondary: {
       flexDirection: 'row',
@@ -300,13 +302,13 @@ const styles = StyleSheet.create({
       paddingHorizontal: 20,
       borderWidth: 1,
       backgroundColor: 'transparent',
-      borderColor: '#000',
+      borderColor: theme === "light" ? '#000' : '#fff',
     },
     btnSecondaryText: {
       fontSize: 18,
       lineHeight: 26,
       fontWeight: '600',
-      color: '#000',
+      color: theme === "light" ? '#000' : '#fff',
     },
     backBtn: {
       width: 40,
@@ -314,7 +316,7 @@ const styles = StyleSheet.create({
       borderRadius: 9999,
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: Colors.primary,
+      backgroundColor: theme === "light" ? Colors.primary : Colors.third,
       marginRight: 24,
     },
     errorText: {
@@ -324,3 +326,4 @@ const styles = StyleSheet.create({
     },
   });
   
+}

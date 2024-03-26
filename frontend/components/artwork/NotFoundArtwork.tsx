@@ -2,15 +2,18 @@ import React from 'react';
 import { TouchableOpacity, View, Image, Text, StyleSheet, Dimensions } from 'react-native';
 import { Colors } from '../../lib/constants';
 import { router } from 'expo-router';
+import { useAppContext } from '../../lib/AppContext';
 
 const { width } = Dimensions.get('window');
 const CIRCLE_SIZE = width / 2;
 
-const fullscreen = ()=> {
-
-}
 
 const NotFoundArtwork = () => {
+
+  const {theme} = useAppContext();
+
+  const styles = getStyles(theme)
+
   return (
     <>
        <View style={styles.content}>
@@ -31,7 +34,7 @@ const NotFoundArtwork = () => {
     <Text style={styles.title}>Error</Text>
         <Text style={styles.text}>The following artwork does not exist or was deleted, or an error occured.</Text>
         <View style={styles.circleContainer}>
-          <TouchableOpacity onPress={fullscreen} style={styles.circle}>
+          <TouchableOpacity onPress={()=> {}} style={styles.circle}>
             <Image source={require('../../assets/icons/notfound.png')} style={styles.circleImage} />
           </TouchableOpacity>
         </View>
@@ -42,7 +45,8 @@ const NotFoundArtwork = () => {
 
 export default NotFoundArtwork;
 
-const styles =  StyleSheet.create({
+const getStyles = (theme: string)=> {
+  return StyleSheet.create({
     title: {
         fontSize: 40,
         fontWeight: '300',
@@ -90,7 +94,7 @@ const styles =  StyleSheet.create({
         borderRadius: 9999,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: Colors.primary,
+        backgroundColor: theme === "light" ? Colors.primary : Colors.third,
         marginTop: 10,
         marginBottom: 16,
       },
@@ -100,3 +104,4 @@ const styles =  StyleSheet.create({
         alignItems: 'center',
       },
 })
+}

@@ -20,7 +20,7 @@ export default function Results({setGeneratedImage, generatedImage, title , desc
 {
   const [isAiImageFullScreen, setIsAiImageFullScreen] = useState(false);
 
-  const {setPaths, authenticated } = useAppContext();
+  const {setPaths, authenticated, theme } = useAppContext();
 
   const handleView = ()=> {
     router.push(`/artwork/${id}`)
@@ -49,10 +49,12 @@ export default function Results({setGeneratedImage, generatedImage, title , desc
     setIsAiImageFullScreen(!isAiImageFullScreen);
   };
 
+  const styles = getStyles(theme);
+
   return (
     <SafeAreaView style={styles.container}>
 
-      <Text style={[styles.title, {marginTop: 10 , color: "black"}]}>Results</Text>
+      <Text style={[styles.title, {marginTop: 10 , color: theme === "light" ? "black" : "white" }]}>Results</Text>
       <View style={styles.imageContainer}>
         <TouchableOpacity onPress={toggleAiImageFullScreen}>
         <Image
@@ -134,98 +136,101 @@ export default function Results({setGeneratedImage, generatedImage, title , desc
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: Colors.backgroundlight,
-  },
-  imageContainer: {
-    marginTop: -50,
-    width: width,
-    height: 0.6 * height,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  image: {
-    width: width * 0.8,
-    height: width * 0.6,
-    borderRadius: 24,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 6,
+const getStyles = (theme : string)=> {
+  return StyleSheet.create({
+    container: {
+      backgroundColor: theme === "light" ? Colors.backgroundlight : Colors.backgrounddark,
     },
-    shadowOpacity: 0.37,
-    shadowRadius: 7.49,
-    transform: [{ rotate: '3deg' }], 
-  },
- 
+    imageContainer: {
+      marginTop: -50,
+      width: width,
+      height: 0.6 * height,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    image: {
+      width: width * 0.8,
+      height: width * 0.6,
+      borderRadius: 24,
+      shadowColor: theme === "light" ? '#000' : "#fff",
+      shadowOffset: {
+        width: 0,
+        height: 6,
+      },
+      shadowOpacity: 0.37,
+      shadowRadius: 7.49,
+      transform: [{ rotate: '3deg' }], 
+    },
+   
+    imageStyle: {
+      width: 20,
+      height: 20,
+    },
+    title: {
+      marginTop: -70,
+      fontSize: 40,
+      fontWeight: '300',
+      color: theme === "light" ? Colors.primary : Colors.third,
+      marginLeft: 40,
+      textAlign: 'left',
+    },
+    text: {
+      fontSize: 14,
+      lineHeight: 20,
+      fontWeight: '400',
+      color: theme === "light" ? '#000' : '#fff',
+      marginLeft: 40,
+      textAlign: 'left',
+      marginBottom: 45
+    },
+    
+     buttonsContainer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      marginBottom: 10
+    },
+  
+    button: {
+      paddingHorizontal: 20,
+      paddingVertical: 10,
+      borderRadius: 8,
+      marginHorizontal: 8,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: Colors.primary
+    },
+    clearbtn: {
+      backgroundColor: "red"
+    },
+    undobtn: {
+      backgroundColor: "#FBA834"
+    },
+    buttonText: {
+      color: 'white',
+      fontWeight: 'bold',
+    },
+    buttonContent: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    buttonIcon: {
+      width: 20,
+      height: 20,
+      marginRight: 5,
+    },
+    modalContainer: {
+      flex: 1,
+      backgroundColor: theme === "light" ?  Colors.backgroundlight : Colors.backgrounddark,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+  
+    fullscreenImage: {
+      width: '95%',
+      height: '95%',
+      resizeMode: 'contain'
+    }
+  });
+}
 
-  imageStyle: {
-    width: 20,
-    height: 20,
-  },
-  title: {
-    marginTop: -70,
-    fontSize: 40,
-    fontWeight: '300',
-    color: Colors.primary,
-    marginLeft: 40,
-    textAlign: 'left',
-  },
-  text: {
-    fontSize: 14,
-    lineHeight: 20,
-    fontWeight: '400',
-    color: '#000',
-    marginLeft: 40,
-    textAlign: 'left',
-    marginBottom: 45
-  },
-   buttonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 10
-  },
-
-  button: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 8,
-    marginHorizontal: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: Colors.primary
-  },
-  clearbtn: {
-    backgroundColor: "red"
-  },
-  undobtn: {
-    backgroundColor: "#FBA834"
-  },
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  buttonContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  buttonIcon: {
-    width: 20,
-    height: 20,
-    marginRight: 5,
-  },
-  modalContainer: {
-    flex: 1,
-    backgroundColor: Colors.backgroundlight,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-  fullscreenImage: {
-    width: '95%',
-    height: '95%',
-    resizeMode: 'contain'
-  }
-});

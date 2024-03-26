@@ -12,7 +12,7 @@ const artwork = () => {
   const [loading, setLoading] = useState(true);
   const [artwork, setArtwork] = useState<Artwork|null>(null);
 
-  const {updateArtwork} = useAppContext();
+  const {updateArtwork, theme} = useAppContext();
 
   const searchParams = useLocalSearchParams();
 
@@ -51,9 +51,10 @@ const artwork = () => {
     fetchArtwork();
   }, [updateArtwork]);
 
- 
+  const styles = getStyles(theme);
+
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.backgroundlight }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme === "light" ? Colors.backgroundlight : Colors.backgrounddark }}>
       {loading ? (
         <View style={styles.content}>
         <TouchableOpacity
@@ -70,7 +71,7 @@ const artwork = () => {
             }}
           />
         </TouchableOpacity>
-        <ActivityIndicator color={Colors.primary} size={"large"} style={{marginTop: 50}} />
+        <ActivityIndicator color={ theme === "light" ? Colors.primary : Colors.third} size={"large"} style={{marginTop: 50}} />
         <Text style={styles.loadingText}>Loading...</Text>
         </View>
       ) 
@@ -96,27 +97,29 @@ const artwork = () => {
 
 export default artwork;
 
-const styles =  StyleSheet.create({
-  content: {
-    justifyContent: 'center',
-    paddingVertical: 24,
-    paddingHorizontal: 24,
-  },
-  backBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 9999,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: Colors.primary,
-    marginTop: 10,
-    marginBottom: 16,
-  },
-  loadingText: {
-    alignSelf: "center",
-    marginTop: 20, 
-    fontSize: 20,
-    fontWeight: "400",
-    color: Colors.primary,
-  },
-})
+const getStyles = (theme: string)=> {
+  return StyleSheet.create({
+    content: {
+      justifyContent: 'center',
+      paddingVertical: 24,
+      paddingHorizontal: 24,
+    },
+    backBtn: {
+      width: 40,
+      height: 40,
+      borderRadius: 9999,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: theme === "light" ? Colors.primary : Colors.third,
+      marginTop: 10,
+      marginBottom: 16,
+    },
+    loadingText: {
+      alignSelf: "center",
+      marginTop: 20, 
+      fontSize: 20,
+      fontWeight: "400",
+      color: theme === "light" ? Colors.primary : Colors.third,
+    },
+  })
+}

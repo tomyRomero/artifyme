@@ -6,12 +6,14 @@ import {
 } from 'react-native';
 import LoginForm from '../components/forms/LoginForm';
 import { Colors } from '../lib/constants';
+import { useAppContext } from '../lib/AppContext';
 
 export default function LoginScreen() {
 
+  const { theme} = useAppContext();
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.backgroundlight }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme === "light" ? Colors.backgroundlight : Colors.backgrounddark}}>
       <View style={styles.container}>
         <LoginForm />
       </View>
@@ -25,6 +27,5 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     flexShrink: 1,
     flexBasis: 0,
-    backgroundColor: Colors.backgroundlight
   } 
 });

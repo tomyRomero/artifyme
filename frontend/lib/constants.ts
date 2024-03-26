@@ -1,9 +1,12 @@
 export const Colors = {
-  white: "#FFFFFF",
-  primary: "#5800FF", 
-  secondary: "#CDCDD2",
-  canvas: "#5800FF",
-  backgroundlight: "#faebd7",
+  white: "#FFFFFF", //white
+  black: "#000000", //black
+  primary: "#5800FF", //purple
+  secondary: "#CDCDD2", //gray
+  third: "#f3ccff", // light purple
+  canvas: "#5800FF", //purple
+  backgroundlight: "#faebd7", //khaki
+  backgrounddark: "#000035" //navyblue
 };
 
 export const sketchcolors = [

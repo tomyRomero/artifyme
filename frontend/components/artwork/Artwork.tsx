@@ -27,7 +27,7 @@ interface ArtworkProps{
 
 const Artwork = ({title, aiImage, sketchedImage, description, id }: ArtworkProps) => {
 
-  const {updateArtwork} = useAppContext();
+  const {updateArtwork, theme} = useAppContext();
   const [sketchedS3Image, setSketchS3Image] = useState<string|null>(null);
   const [aiS3Image, setAiS3Image] = useState<null|string>(null);
   const [loading, setLoading] = useState(true);
@@ -100,6 +100,8 @@ const Artwork = ({title, aiImage, sketchedImage, description, id }: ArtworkProps
     }
   }
 
+  const styles = getStyles(theme);
+
   return (
     <>
     <View style={styles.content}>
@@ -129,7 +131,7 @@ const Artwork = ({title, aiImage, sketchedImage, description, id }: ArtworkProps
                 ]}>
                 {loading ? 
                 (
-                  <ActivityIndicator size={"large"} color={Colors.primary} style={{marginTop: 80}}/>
+                  <ActivityIndicator size={"large"} color={theme === "light" ? Colors.primary : Colors.third} style={{marginTop: 80}}/>
                 ) :
                  (<>
                     {sketchedS3Image ? 
@@ -160,7 +162,7 @@ const Artwork = ({title, aiImage, sketchedImage, description, id }: ArtworkProps
                 ]}>
                  {loading ? 
                 (
-                  <ActivityIndicator size={"large"} color={Colors.primary} style={{marginTop: 80}}/>
+                  <ActivityIndicator size={"large"} color={theme === "light" ? Colors.primary : Colors.third} style={{marginTop: 80}}/>
                 ) :
                   (<>
                       {aiS3Image ? 
@@ -187,7 +189,7 @@ const Artwork = ({title, aiImage, sketchedImage, description, id }: ArtworkProps
         <View style={styles.modalContainer}>
           <TouchableOpacity
           onPress={toggleSketchImageFullScreen}
-          style={[styles.button, { position: 'absolute', top: 40, right: 20, zIndex: 1, backgroundColor: 'red'}]}>
+          style={[styles.button, { position: 'absolute', top: 40, right: width * 0.001, zIndex: 1, backgroundColor: 'red'}]}>
               <View style={styles.buttonContent}>
               <Image source={require('../../assets/icons/close.png')} style={styles.buttonIcon} />
                 <Text style={[styles.buttonText]}>Close</Text>
@@ -195,12 +197,12 @@ const Artwork = ({title, aiImage, sketchedImage, description, id }: ArtworkProps
             </TouchableOpacity>
             {loading ? 
                   (
-                    <ActivityIndicator size={"large"} color={Colors.primary} style={{marginTop: 80}}/>
+                    <ActivityIndicator size={"large"} color={theme === "light" ? Colors.primary : Colors.third} style={{marginTop: 80}}/>
                   ) :
                   (<>
                       {sketchedS3Image ? 
                         (
-                          <Image source={{uri: sketchedS3Image}} style={styles.image} />
+                          <Image source={{uri: sketchedS3Image}} style={[styles.sketchimage,]} />
                         ) 
                         : 
                         (
@@ -226,7 +228,7 @@ const Artwork = ({title, aiImage, sketchedImage, description, id }: ArtworkProps
             </TouchableOpacity>
           {loading ? 
                 (
-                  <ActivityIndicator size={"large"} color={Colors.primary} style={{marginTop: 80}}/>
+                  <ActivityIndicator size={"large"} color={theme === "light" ? Colors.primary : Colors.third} style={{marginTop: 80}}/>
                 ) :
                   (<>
                       {aiS3Image ? 
@@ -281,20 +283,22 @@ const Artwork = ({title, aiImage, sketchedImage, description, id }: ArtworkProps
 
 export default Artwork
 
-const styles =  StyleSheet.create({
+const getStyles = (theme : string) => {
+  return StyleSheet.create({
     title: {
         fontSize: 40,
         fontWeight: '300',
-        color: Colors.primary,
+        color: theme === "light" ? Colors.primary : Colors.third,
         marginBottom: 16,
         marginTop: -10,
         textAlign: 'center',
+        fontFamily: "Pacifico"
       },
       text: {
-        fontSize: 14,
+        fontSize: 20,
         lineHeight: 20,
         fontWeight: '400',
-        color: '#000',
+        color: theme === "light" ? '#000' : "#fff",
         textAlign: 'center',
         marginBottom: 15,
       },
@@ -309,7 +313,7 @@ const styles =  StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: 9999,
         position: 'absolute',
-        shadowColor: '#000',
+        shadowColor: theme === "light" ? '#000' : "#fff",
         shadowOffset: {
           width: 0,
           height: 2,
@@ -369,7 +373,7 @@ const styles =  StyleSheet.create({
         borderRadius: 9999,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: Colors.primary,
+        backgroundColor: theme === "light" ? Colors.primary : Colors.third,
         marginTop: 10,
         marginBottom: 16,
       },
@@ -381,7 +385,7 @@ const styles =  StyleSheet.create({
         alignItems: 'center',
       },
       circleTextBackground: {
-        backgroundColor: "white",
+        backgroundColor: theme === "light" ? "white" : "black",
         paddingHorizontal: 10,
         paddingVertical: 5,
         borderRadius: 10,
@@ -392,17 +396,29 @@ const styles =  StyleSheet.create({
         fontSize: 15,
         lineHeight: 20,
         fontWeight: '700',
-        color: Colors.primary,
+        color: theme === "light" ? Colors.primary : Colors.third,
       },
       modalContainer: {
         flex: 1,
-        backgroundColor: Colors.backgroundlight,
+        backgroundColor: theme === "light" ? Colors.backgroundlight : Colors.backgrounddark,
         justifyContent: 'center',
         alignItems: 'center',
+      },
+      sketchimage: {
+        marginTop: 10,
+        width: '90%',
+        height: '70%',
+        resizeMode: 'contain',
+        backgroundColor: "#fff",
+        borderRadius: 20
       },
       image: {
         width: '95%',
         height: '95%',
-        resizeMode: 'contain'
+        resizeMode: 'contain',
+        borderRadius: 50
       },
+
+
 })
+}
