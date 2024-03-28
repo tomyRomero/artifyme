@@ -121,7 +121,7 @@ const getStyles = (theme: string) => {
     },
     paginationContainer: {
       position: 'absolute',
-      bottom: 70,
+      bottom: 100,
       left: 0,
       right: 0,
       justifyContent: 'flex-end'
