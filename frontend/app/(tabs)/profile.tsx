@@ -117,7 +117,7 @@ export default function TabAccountScreen() {
            </View>
            <TouchableOpacity
              onPress={() => {
-               // handle onPress
+             router.push('/about')
              }}
              style={styles.row}>
              <View style={[styles.rowIcon]}>
@@ -143,6 +143,7 @@ export default function TabAccountScreen() {
            </TouchableOpacity>
            <TouchableOpacity
              onPress={() => {
+              router.push('/contact')
              }}
              style={styles.row}>
              <View style={[styles.rowIcon]}>
@@ -168,7 +169,7 @@ export default function TabAccountScreen() {
            </TouchableOpacity>
           {authenticated && ( <TouchableOpacity
              onPress={() => {
-              
+              router.push('/password')
              }}
              style={styles.row}>
              <View style={[styles.rowIcon]}>

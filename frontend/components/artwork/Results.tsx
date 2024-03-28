@@ -142,7 +142,7 @@ const getStyles = (theme : string)=> {
       backgroundColor: theme === "light" ? Colors.backgroundlight : Colors.backgrounddark,
     },
     imageContainer: {
-      marginTop: -50,
+      marginTop: -90,
       width: width,
       height: 0.6 * height,
       justifyContent: 'center',
@@ -167,7 +167,8 @@ const getStyles = (theme : string)=> {
       height: 20,
     },
     title: {
-      marginTop: -70,
+      fontFamily: "Pacifico",
+      marginTop: -80,
       fontSize: 40,
       fontWeight: '300',
       color: theme === "light" ? Colors.primary : Colors.third,
@@ -183,7 +184,7 @@ const getStyles = (theme : string)=> {
       textAlign: 'left',
       marginBottom: 45
     },
-    
+
      buttonsContainer: {
       flexDirection: 'row',
       justifyContent: 'center',

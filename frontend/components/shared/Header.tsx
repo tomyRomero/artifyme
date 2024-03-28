@@ -13,7 +13,7 @@ const Header = () => {
 
   return (
     <SafeAreaView style={styles.headerContainer}>
-        <Link href="/modal" asChild>
+        <Link href="/about" asChild>
         <Pressable
             style={({ pressed }) => ({
             flexDirection: 'row', 
