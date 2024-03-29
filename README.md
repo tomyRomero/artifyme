@@ -11,8 +11,8 @@
 - [Acknowledgments](#acknowledgments) 🙌
 
 ## <a name="overview">🌐 Overview </a>
-ArtifyMe is a mobile application that allows users to convert sketches into images using AI. The app has a React Native frontend for the mobile interface, a Java Spring Boot backend with jwt authentication that handles server operations, and a Python FastAPI for generating images from sketches using Stable Diffusion.
-ß
+ArtifyMe is a mobile application that allows users to convert sketches into images using AI. The app has a React Native frontend for the mobile interface, a JAVA Spring Boot backend with JWT authentication that handles server operations, and a Python FastAPI for generating images from sketches using Stable Diffusion.
+
 ## <a name="technologies">⚙️ Technologies Used </a>
 - Frontend: [React Native](https://reactnative.dev/)
   ![React Native](https://img.shields.io/badge/-React_Native-61DAFB?style=flat&logo=react&logoColor=white)
@@ -21,11 +21,11 @@ ArtifyMe is a mobile application that allows users to convert sketches into imag
   - Form Validation: [Yup](https://github.com/jquense/yup)
     ![Yup](https://img.shields.io/badge/-Yup-663399?style=flat)
 
-- Backend: Java Spring Boot, Python FastAPI
-  ![Java Spring Boot](https://img.shields.io/badge/-Java_Spring_Boot-6DB33F?style=flat&logo=spring&logoColor=white)
+- Backend: JAVA Spring Boot, Python FastAPI
+  ![JAVA Spring Boot](https://img.shields.io/badge/-Java_Spring_Boot-6DB33F?style=flat&logo=spring&logoColor=white)
   ![Python FastAPI](https://img.shields.io/badge/-Python_FastAPI-009688?style=flat&logo=fastapi&logoColor=white)
 
-- Authentication: [Java Spring Boot Security JWT Authentication](https://spring.io/projects/spring-security)
+- Authentication: [JAVA Spring Boot Security JWT Authentication](https://spring.io/projects/spring-security)
   ![JWT Authentication](https://img.shields.io/badge/-JWT_Authentication-000000?style=flat)
 
 - Database: [Spring Data MongoDB](https://spring.io/projects/spring-data-mongodb)
@@ -43,7 +43,7 @@ ArtifyMe is a mobile application that allows users to convert sketches into imag
 - **Interactive Canvas:** Enjoy a fully interactive canvas experience with adjustable brush sizes, a diverse range of colors to choose from, and convenient options for clearing and undoing actions.
 - **Secure Authentication:** Robust JWT token-based authentication and authorization mechanisms, seamlessly integrated with a secure Java Spring Boot backend, ensuring the safety and privacy of user data.
 - **CRUD Operations:** Explore comprehensive CRUD (Create, Read, Update, Delete) functionalities to manage creations efficiently. Save, edit, and delete your sketches with ease, and share your masterpieces effortlessly with friends.
-- **Profile Management:** Experience seamless user account management, including user sign-up, login, and password management, all backed by a secure Java backend for enhanced security and reliability.
+- **Profile Management:** Experience seamless user account management, including user sign-up, login, and password management, all backed by a secure JAVA backend for enhanced security and reliability.
 - **Cloud Storage Integration and Database:** All user creations are stored in Amazon Web Services (AWS) S3 bucket, providing scalable and reliable cloud storage solution for enhanced accessibility. Additionally, leverage MongoDB Atlas database for efficient data management and storage.
 - **Dark Mode:** Enhance your user experience with a sleek and modern dark mode interface.
 - **Pagination:** Navigate through your artwork collection effortlessly with pagination.
@@ -62,7 +62,7 @@ Please place close attention to the env examples for the frontend as well as the
 2. Install dependencies: `npm install`
 3. Start the development server: `npm start`
 
-Ensure that you have java and maven installed with the necessary versions, they can be found in the pom.xml, for example the java I used was 20, and Maven was 4.0.0, spring-boot was 3.2.3. Ensure that you have these systems up and running if you want to test the server locally, ensure that you have maven and java as environmental variables on your pc.
+Ensure that you have JAVA and MAVEN installed with the necessary versions, they can be found in the pom.xml, for example the JAVA I used was 20, and MAVEN was 4.0.0, spring-boot was 3.2.3. Ensure that you have these systems up and running if you want to test the server locally, ensure that you have MAVEN and JAVA as environmental variables on your PC.
 
 **Backend:**
 1. Navigate to the project directory: `cd backend`
