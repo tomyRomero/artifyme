@@ -56,7 +56,7 @@ const LoginForm = () => {
             await storeToken(data.token)
             setAuthenticated(true);+
             
-            router.back();
+            router.push('/');
             
           } else {
             // Handle login errors

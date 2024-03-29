@@ -2,6 +2,7 @@ package com.tomy.artifyme.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +28,13 @@ public class AuthenticationController {
       @RequestBody AuthenticationRequest request
   ) {
     return ResponseEntity.ok(service.authenticate(request));
+  }
+
+  @PatchMapping("/change-password")
+    public ResponseEntity<Object> changePassword(
+      @RequestBody AuthenticationRequest request
+  ) {
+      return service.changePassword(request);
   }
 
 }

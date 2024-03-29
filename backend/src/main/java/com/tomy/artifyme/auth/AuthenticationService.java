@@ -5,6 +5,8 @@ import com.tomy.artifyme.user.User;
 import com.tomy.artifyme.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Optional;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,7 +25,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-   @SuppressWarnings("null")
+@SuppressWarnings("null")
 public ResponseEntity<AuthenticationResponse> register(RegisterRequest request) {
     try {
         // Check if user with provided email already exists
@@ -79,4 +81,41 @@ public ResponseEntity<AuthenticationResponse> register(RegisterRequest request) 
         .token(jwtToken)
         .build();
     }
+
+    public ResponseEntity<Object> changePassword(AuthenticationRequest request) {
+        try {
+
+            System.out.println("change password request: "+ request);
+            // Check if email and password are provided
+            if (request.getEmail() == null || request.getPassword() == null) {
+                throw new IllegalArgumentException("Email and password are required.");
+            }
+            
+            // Find the user by email
+            Optional<User> optionalUser = repository.findByEmail(request.getEmail());
+            
+            if (optionalUser.isPresent()) {
+                // Update the password
+                User user = optionalUser.get();
+                user.setPassword(passwordEncoder.encode(request.getPassword())); // Encode the new password
+                
+                // Save the updated user
+                repository.save(user);
+                
+                return ResponseEntity.ok().build();
+            } else {
+                // User with the provided email not found
+                return ResponseEntity.notFound().build();
+            }
+        } catch (IllegalArgumentException e) {
+            // Handle case where email or password was not provided
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            // Handle any unexpected errors
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    
+    
+
 }

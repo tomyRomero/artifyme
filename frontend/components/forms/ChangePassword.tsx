@@ -15,9 +15,10 @@ import * as yup from 'yup';
 import { router } from 'expo-router';
 import { Colors } from '../../lib/constants';
 import { useAppContext } from '../../lib/AppContext';
+import { getToken, getTokenSubject, isTokenExpired, removeToken, storeToken } from '../../lib/utils';
 
 const ChangePasswordForm = () => {
-    const {theme} = useAppContext();
+    const {theme, setAuthenticated} = useAppContext();
 
     const [ loading, setLoading] = useState(false);
     const [form, setForm] = useState({
@@ -27,13 +28,8 @@ const ChangePasswordForm = () => {
     });
   
     const validationSchema = yup.object().shape({
-    currentpassword:  yup
+    currentpassword: yup
     .string()
-    .min(6, 'Current Password must be at least 6 characters')
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[%&,!#])[A-Za-z\d%&,!#]{12,}$/,
-      'Current Password must contain at least 1 uppercase letter, 1 number, and 1 symbol'
-    )
     .required('Current Password is required'),
       password: yup
         .string()
@@ -52,7 +48,75 @@ const ChangePasswordForm = () => {
     
     const submitForm = async (values: { currentpassword:string, password: string }) => {
       setLoading(true)
-     
+      
+      try{
+      const token =  await getToken();
+
+      if(!token || isTokenExpired(token))
+      {
+        Alert.alert('Token invalid or expired, please try signing again before chnaging password')
+        setAuthenticated(false);
+        router.push('/login');
+        return;
+      }
+
+      const apiUrl = process.env.EXPO_PUBLIC_JAVA_API_URL;
+      const useremail = getTokenSubject(token)
+
+      const loginvalues = {
+        email: useremail,
+        password: values.currentpassword
+      }
+
+      //attempt to login to ensure current password is correct
+      const response = await fetch(`${apiUrl}/api/v1/auth/authenticate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(loginvalues),
+      });
+
+      // Handle the response
+      if (response.ok) {
+        //Login successful
+        //Refresh Token incase update fails and user wants to remain logged in
+        const data = await response.json();
+        await storeToken(data.token);
+        const token =  await getToken();
+
+        //If current password worked, update to new one
+        const updateresponse = await fetch(`${apiUrl}/api/v1/auth/change-password`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            email:  useremail,
+            password: values.password
+          })
+        })
+
+        if(updateresponse.ok)
+        {
+          Alert.alert('Success, login in with new password!')
+          await removeToken();
+          setAuthenticated(false);
+          router.push('/login')
+        }else{
+          Alert.alert(`Failed to update password: ${updateresponse.statusText}`)
+        }
+
+      } else {
+        // Handle login errors
+        Alert.alert('Incorrect Password:', response.statusText);
+      }
+    }catch(error)
+    {
+      Alert.alert(`An error occured: ${error}`)
+    }
+
       setLoading(false)
     };
 
@@ -106,17 +170,17 @@ const ChangePasswordForm = () => {
             <Text style={styles.inputLabel}>Current Password</Text>
 
             <TextInput
-              onChangeText={handleChange('password')}
-              onBlur={handleBlur('password')}
+              onChangeText={handleChange('currentpassword')}
+              onBlur={handleBlur('currentpassword')}
               autoCorrect={false}
               placeholder="********"
               placeholderTextColor="#6b7280"
               style={styles.inputControl}
               secureTextEntry={true}
-              value={values.password} />
+              value={values.currentpassword} />
           </View>
-          {touched.password && errors.password &&
-            <Text style={styles.errorText}>{errors.password}</Text>
+          {touched.currentpassword && errors.currentpassword &&
+            <Text style={styles.errorText}>{errors.currentpassword}</Text>
           }
 
     <View style={styles.inputValidation}>
