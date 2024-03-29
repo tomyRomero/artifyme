@@ -95,19 +95,19 @@ For any inquiries or support, please contact me: tomyfletcher99@hotmail.com
 
 ## <a name="screenshots"> 📸 Screenshots </a>
 Screenshots of the mobile app interface and functionalities.<br><br>
-<img src="./images/about.png" alt="Screenshot of about screen" style="max-width: 300px;"><br>
-<img src="./images/canvas.png" alt="Screenshot of canvas screen" style="max-width: 300px;"><br>
-<img src="./images/colorpicker.png" alt="Screenshot of colorpicker screen" style="max-width: 300px;" ><br>
-<img src="./images/login.png" alt="Screenshot of login screen" style="max-width: 300px;"><br>
-<img src="./images/home.png" alt="Screenshot of home screen" style="max-width: 300px;"><br>
-<img src="./images/homedark.png" alt="Screenshot of home screen in darkmode" style="max-width: 300px;"><br>
-<img src="./images/details.png" alt="Screenshot of details screen" style="max-width: 300px;"><br>
-<img src="./images/create.png" alt="Screenshot of create screen" style="max-width: 300px;" ><br>
-<img src="./images/results.png" alt="Screenshot of create screen" style="max-width: 300px;" ><br>
-<img src="./images/signup.png" alt="Screenshot of signup screen" style="max-width: 300px;"><br>
-<img src="./images/profile.png" alt="Screenshot of profile screen" style="max-width: 300px;"><br>
-<img src="./images/profiledark.png" alt="Screenshot of profile screen in dark mode" style="max-width:300px;"><br>
-<img src="./images/contact.png" alt="Screenshot of contact screen" style="max-width: 300px;"><br>
+<img src="./images/about.png" alt="Screenshot of about screen" width="200" height="400"><br>
+<img src="./images/canvas.png" alt="Screenshot of canvas screen" width="200" height="400"><br>
+<img src="./images/colorpicker.png" alt="Screenshot of colorpicker screen" width="200" height="400" ><br>
+<img src="./images/login.png" alt="Screenshot of login screen" width="200" height="400"><br>
+<img src="./images/home.png" alt="Screenshot of home screen" width="200" height="400"><br>
+<img src="./images/homedark.png" alt="Screenshot of home screen in darkmode" width="200" height="400"><br>
+<img src="./images/details.png" alt="Screenshot of details screen" width="200" height="400"><br>
+<img src="./images/create.png" alt="Screenshot of create screen" width="200" height="400" ><br>
+<img src="./images/results.png" alt="Screenshot of create screen" width="200" height="400"><br>
+<img src="./images/signup.png" alt="Screenshot of signup screen" width="200" height="400"><br>
+<img src="./images/profile.png" alt="Screenshot of profile screen" width="200" height="400"><br>
+<img src="./images/profiledark.png" alt="Screenshot of profile screen in dark mode" width="200" height="400"><br>
+<img src="./images/contact.png" alt="Screenshot of contact screen" width="200" height="400"><br>
 
 ## <a name="acknowledgments"> 🙌 Acknowledgments </a>
 Shout out to https://loading.io/ and https://icons8.com/ for all the icons provided
