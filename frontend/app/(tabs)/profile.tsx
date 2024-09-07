@@ -11,7 +11,7 @@ import {
   Image,
   ActivityIndicator,
 } from 'react-native';
-import { fetchUserDetailsWithReturn, removeToken } from '../../lib/utils';
+import { fetchUserDetailsWithReturn, getEmail, removeToken } from '../../lib/utils';
 import { useIsFocused } from '@react-navigation/native';
 import { Colors } from '../../lib/constants';
 import { useAppContext } from '../../lib/AppContext';
@@ -21,7 +21,6 @@ export default function TabAccountScreen() {
   const { authenticated, setAuthenticated, screen, setScreen, theme, setTheme} = useAppContext();
 
   const [loading, setLoading] =  useState(true);
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
 
   const initializeProfile = async ()=> {
@@ -31,13 +30,11 @@ export default function TabAccountScreen() {
 
       if(authenticated)
       {
-        const data = await fetchUserDetailsWithReturn()
+        const data = await getEmail();
 
         if(data)
         {
-          const { name , email} = data;
-          setName(name);
-          setEmail(email);
+          setEmail(data);
         }else{
           setAuthenticated(false);
         }
@@ -82,10 +79,8 @@ export default function TabAccountScreen() {
        <View style={styles.profile}>
          {authenticated ? ( 
          <View>
-           <Text style={styles.profileName}>{name}</Text>
-           <Text style={styles.profileEmail}>
-             {email}
-           </Text>
+          <Text style={styles.profileName}>Welcome User</Text>
+           <Text style={styles.profileName}>{email}</Text>
          </View>) 
          : 
          (<View>

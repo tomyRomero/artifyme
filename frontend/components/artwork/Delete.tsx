@@ -38,9 +38,9 @@ export default function DeleteArtwork({sheet, id}: any) {
             Authorization: `Bearer ${token}`,
           };
 
-        const javaApiUrl = process.env.EXPO_PUBLIC_JAVA_API_URL;
+        const apiUrl = process.env.EXPO_PUBLIC_DOTNET_API_URL;
 
-        const response = await axios.delete(`${javaApiUrl}/api/v1/artwork?id=${id}`, { headers });
+        const response = await axios.delete(`${apiUrl}/api/v1/Artwork/artwork?id=${id}`);
         
         if (response.status === 200) {
             setDeleted(!deleted)

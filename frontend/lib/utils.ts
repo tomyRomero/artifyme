@@ -43,6 +43,8 @@ export const isTokenExpired = (token: string): boolean => {
   try {
     const decoded = jwtDecode(token);
 
+    console.log("decoded token:" ,decoded);
+
     if (!decoded.exp) return false; 
 
     //decoded time comes in seconds , make sure both are in seconds format
@@ -66,7 +68,10 @@ export const isTokenExpired = (token: string): boolean => {
 export const getTokenSubject = (token: string): string => {
   try {
     const decoded = jwtDecode(token);
-    return decoded.sub || ''; // Return the subject or null if not found
+    //@ts-ignore
+    console.log("subject:" ,decoded.unique_name);
+    //@ts-ignore
+    return decoded.unique_name || ''; // Return the subject or null if not found
   } catch (e) {
     console.error("Error decoding token:", e);
     return '';
@@ -88,13 +93,86 @@ export const authenticate = async ()=> {
     return false;
    }else{
     //If token is not expired, make a request to a protected api route to get user details
-    //inside fetchUser details we determine if user is fully authenticated(has peermissons to protected api endpoints) 
-    //and then return boolean based on success
-    return await fetchUserDetails(token);
+    const decoded = jwtDecode(token);
+    
+    if(decoded)
+    {
+      return true;
+    }else{
+      return false;
+    }
    }
   }
 }
 
+
+export const calculateTimeAgo = (timestamp: string): string => {
+  const eventDate = new Date(timestamp); // Parse the timestamp directly
+  const currentDate = new Date(); // Get the current date/time
+
+  const timeDifference = currentDate.getTime() - eventDate.getTime();
+  const minutes = Math.floor(timeDifference / 60000); // 1 minute = 60,000 milliseconds
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+
+  if (minutes < 1) {
+      return 'just now';
+  } else if (minutes < 60) {
+      return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+  } else if (hours < 24) {
+      return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+  } else {
+      return `${days} day${days > 1 ? 's' : ''} ago`;
+  }
+};
+
+
+export const getImageData = async (filename: string)=> {
+const apiUrl = process.env.EXPO_PUBLIC_DOTNET_API_URL;
+
+const token = await getToken();
+
+if(!token || isTokenExpired(token))
+{
+  Alert.alert("Login Credentials invalid/expired, login again to accept images")
+  return null;
+}
+
+const getImageUrl = `${apiUrl}/api/s3/get?key=${encodeURIComponent(filename)}`;
+
+try {
+  const imgresponse = await fetch(getImageUrl, {
+    headers: {
+        // Authorization: `Bearer ${token}`
+    }
+  });
+
+  if (!imgresponse.ok) {
+      throw new Error('Failed to retrieve image from server');
+  }
+
+  const data = await imgresponse.json();
+  const { base64ImageData , contentType } = data; 
+  console.log("Got image uri")
+  const uri = `data:${contentType};base64,${base64ImageData}`;
+  return uri;
+} catch(error) {
+  console.error('Error:', error);
+  return null;
+}
+};
+
+export const getEmail = async () => {
+  const token = await getToken();
+  if(!token || isTokenExpired(token))
+  {
+    Alert.alert("Login Credentials invalid/expired, login again")
+    return null;
+  }
+  return getTokenSubject(token);
+}
+
+//Old Java Functions for Previous Verison Backend
 // Function to fetch user details from the API protected route to ensure token is working
 export const fetchUserDetails = async (token: string) => {
   //The IP address of the same network my server and device using (iphone) are sharing ,
@@ -165,58 +243,4 @@ export const fetchUserDetailsWithReturn = async () => {
   }
 };
 
-  export const calculateTimeAgo = (timestamp: string): string => {
-    const eventDate = new Date(timestamp); // Parse the timestamp directly
-    const currentDate = new Date(); // Get the current date/time
-
-    const timeDifference = currentDate.getTime() - eventDate.getTime();
-    const minutes = Math.floor(timeDifference / 60000); // 1 minute = 60,000 milliseconds
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
-  
-    if (minutes < 1) {
-        return 'just now';
-    } else if (minutes < 60) {
-        return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
-    } else if (hours < 24) {
-        return `${hours} hour${hours > 1 ? 's' : ''} ago`;
-    } else {
-        return `${days} day${days > 1 ? 's' : ''} ago`;
-    }
-};
-
-
-export const getImageData = async (filename: string)=> {
-  const apiUrl = process.env.EXPO_PUBLIC_JAVA_API_URL;
-
-  const token = await getToken();
-
-  if(!token || isTokenExpired(token))
-  {
-    Alert.alert("Login Credentials invalid/expired, login again to accept images")
-    return null;
-  }
-
-  const getImageUrl = `${apiUrl}/api/s3/image/${encodeURIComponent(filename)}`;
-  
-  try {
-    const imgresponse = await fetch(getImageUrl, {
-      headers: {
-          Authorization: `Bearer ${token}`
-      }
-    });
-
-    if (!imgresponse.ok) {
-        throw new Error('Failed to retrieve image from server');
-    }
-
-    const data = await imgresponse.json();
-    const { base64ImageData , contentType } = data; 
-    console.log("Got image uri")
-    const uri = `data:${contentType};base64,${base64ImageData}`;
-    return uri;
-  } catch(error) {
-    console.error('Error:', error);
-    return null;
-  }
-};
+ 

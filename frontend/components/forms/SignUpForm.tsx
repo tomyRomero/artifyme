@@ -47,17 +47,19 @@ const SignUpForm = () => {
     });
     
     
+    
     const submitForm = async (values: { email: string; password: string; firstname: string; lastname: string; }) => {
       setLoading(true)
       try {
-        //The IP address of the same network my server and device using (iphone) are sharing ,
+        //The IP address of the same network my server and device using (iphone) are sharing,
         // the port number of where the sever tomcat for java is running
-        const apiUrl = process.env.EXPO_PUBLIC_JAVA_API_URL;
+        const apiUrl = process.env.EXPO_PUBLIC_DOTNET_API_URL;
   
-        const response = await fetch(`${apiUrl}/api/v1/auth/register`, {
+        const response = await fetch(`${apiUrl}/api/Users/register`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Accept': '*/*'
           },
           body: JSON.stringify(values),
         });
@@ -70,6 +72,7 @@ const SignUpForm = () => {
           Alert.alert('Registration Failed', data.errorMessage || 'An error occurred during registration.');
         }
       } catch (error) {
+        console.log(error);
         Alert.alert('Error', 'An error occurred. Please try again later.');
       }
       

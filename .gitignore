@@ -100,3 +100,18 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# macOS file
+.DS_Store
+
+# Ignore obj and bin directories
+obj/
+bin/
+
+#Backend Files
+# macOS file
+.DS_Store
+
+# Ignore obj and bin directories
+obj/
+bin/

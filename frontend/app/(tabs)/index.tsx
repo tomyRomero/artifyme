@@ -33,7 +33,7 @@ export default function HomeScreen() {
   }
 
   const fetchArtworks = async () => {
-    const javaApiUrl = process.env.EXPO_PUBLIC_JAVA_API_URL;
+    const apiUrl = process.env.EXPO_PUBLIC_DOTNET_API_URL;
     const token = await getToken();
 
     if(!token || isTokenExpired(token))
@@ -44,18 +44,18 @@ export default function HomeScreen() {
     }
 
     try {
-      const response = await axios.get(`${javaApiUrl}/api/v1/artworks?pageNumber=${pageNumber}
+      const response = await axios.get(`${apiUrl}/api/v1/Artwork/artworks?pageNumber=${pageNumber}
       &pageSize=${pageSize}&useremail=${getTokenSubject(token)}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        // headers: {
+        //   Authorization: `Bearer ${token}`,
+        // },
       });
 
       const data = response.data;
-   
+      console.log("data: ", data);
       if (response.status == 200) {
         setArtworks(data.content)
-        setIsNext(data.next)
+        setIsNext(data.isNext)
       }else{
         Alert.alert(`${data.message}`)
       }

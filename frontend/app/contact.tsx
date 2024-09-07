@@ -14,10 +14,10 @@ import { Colors } from '../lib/constants';
 import * as WebBrowser from 'expo-web-browser';
 import { useAppContext } from '../lib/AppContext';
 
-const tags = ['react','next','java','mysql','web','aws'];
+const tags = ['react','c# dotnet','asp.net','sqlserver','azure','aws'];
 const stats = [
   { label: 'Location', value: 'USA' },
-  { label: 'Job Type', value: 'In search' },
+  { label: 'Job Type', value: 'Full Stack' },
   { label: 'Experience', value: 'junior' },
 ];
 
@@ -72,7 +72,7 @@ export default function Contact() {
               </View>
             </View>
             <Text style={styles.profileDescription}>
-              Skilled in creating typescript react/react native frontends, as java and node backends, with cloud developer foundations in AWS as well as experience with mySQL and MongoDB
+              Skilled in creating typescript react/react native frontends, and dotnet backends, with cloud developer foundations in AWS/Azure as well as experience with SQL Server
             </Text>
             <View style={styles.profileTags}>
               {tags.map((tag, index) => (

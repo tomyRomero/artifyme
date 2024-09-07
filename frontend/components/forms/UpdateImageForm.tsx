@@ -68,11 +68,11 @@ const UpdateImageForm = ({initTitle, initDescription, initPaths, id} : updatePro
             return;
           }
       
-          const javaApiUrl = process.env.EXPO_PUBLIC_JAVA_API_URL;
+          const apiUrl = process.env.EXPO_PUBLIC_DOTNET_API_URL;
       
           if(drawingChanged)
           {
-            const response = await fetch(`${javaApiUrl}/api/v1/artwork?id=${artworkId}`, {
+            const response = await fetch(`${apiUrl}/api/v1/Artwork/artwork?id=${artworkId}`, {
                 method: 'PATCH',
                 headers: {
                   'Content-Type': 'application/json',
@@ -96,7 +96,7 @@ const UpdateImageForm = ({initTitle, initDescription, initPaths, id} : updatePro
                 Alert.alert(`Failed to update artwork: ${responseData.message}`);
               }
           }else{
-            const response = await fetch(`${javaApiUrl}/api/v1/artwork?id=${artworkId}`, {
+            const response = await fetch(`${apiUrl}/api/v1/Artwork/artwork?id=${artworkId}`, {
                 method: 'PATCH',
                 headers: {
                   'Content-Type': 'application/json',
@@ -170,9 +170,9 @@ const UpdateImageForm = ({initTitle, initDescription, initPaths, id} : updatePro
                   {
                   //start by uploading the sketch image to an s3 bucket
                   const uniqueSketchImageName = `sketchimage_${Date.now()}`; // Generating a unique name using timestamp
-                  const javaApiUrl = process.env.EXPO_PUBLIC_JAVA_API_URL;
+                  const apiUrl = process.env.EXPO_PUBLIC_DOTNET_API_URL;
               
-                  const sketchimageresponse = await fetch(`${javaApiUrl}/api/s3/upload`, {
+                  const sketchimageresponse = await fetch(`${apiUrl}/api/s3/upload`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json', 
@@ -195,7 +195,7 @@ const UpdateImageForm = ({initTitle, initDescription, initPaths, id} : updatePro
     
                   //Begin uploading AI Image
                   const uniqueAIImageName = `aiimage_${Date.now()}`; // Generating a unique name using timestamp
-                  const aiimageresponse = await fetch(`${javaApiUrl}/api/s3/upload`, {
+                  const aiimageresponse = await fetch(`${apiUrl}/api/s3/upload`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json', 

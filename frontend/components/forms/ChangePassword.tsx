@@ -60,7 +60,7 @@ const ChangePasswordForm = () => {
         return;
       }
 
-      const apiUrl = process.env.EXPO_PUBLIC_JAVA_API_URL;
+      const apiUrl = process.env.EXPO_PUBLIC_DOTNET_API_URL;
       const useremail = getTokenSubject(token)
 
       const loginvalues = {
@@ -69,7 +69,7 @@ const ChangePasswordForm = () => {
       }
 
       //attempt to login to ensure current password is correct
-      const response = await fetch(`${apiUrl}/api/v1/auth/authenticate`, {
+      const response = await fetch(`${apiUrl}/api/Auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -85,19 +85,24 @@ const ChangePasswordForm = () => {
         await storeToken(data.token);
         const token =  await getToken();
 
+        console.log("step 1");
+
+
         //If current password worked, update to new one
-        const updateresponse = await fetch(`${apiUrl}/api/v1/auth/change-password`, {
+        const updateresponse = await fetch(`${apiUrl}/api/Auth/change-password`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
+            // 'Authorization': `Bearer ${token}`
           },
           body: JSON.stringify({
             email:  useremail,
-            password: values.password
+            currentPassword: values.currentpassword,
+            newPassword: values.password
           })
         })
 
+       
         if(updateresponse.ok)
         {
           Alert.alert('Success, login in with new password!')
@@ -105,7 +110,7 @@ const ChangePasswordForm = () => {
           setAuthenticated(false);
           router.push('/login')
         }else{
-          Alert.alert(`Failed to update password: ${updateresponse.statusText}`)
+          Alert.alert(`Failed to update password: ${updateresponse}`)
         }
 
       } else {

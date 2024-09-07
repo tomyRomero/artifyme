@@ -38,10 +38,10 @@ const LoginForm = () => {
       
           //The IP address of the same network my server and device using (iphone) are sharing ,
           // the port number of where the sever tomcat for java is running
-          const apiUrl = process.env.EXPO_PUBLIC_JAVA_API_URL;
+          const apiUrl = process.env.EXPO_PUBLIC_DOTNET_API_URL;
 
           // If validation passes, attempt to log in
-          const response = await fetch(`${apiUrl}/api/v1/auth/authenticate`, {
+          const response = await fetch(`${apiUrl}/api/Auth/login`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -54,9 +54,8 @@ const LoginForm = () => {
             const data = await response.json();
             // Save the token to local storage or state
             await storeToken(data.token)
-            setAuthenticated(true);+
-            
-            router.push('/');
+            setAuthenticated(true);
+            router.back();
             
           } else {
             // Handle login errors

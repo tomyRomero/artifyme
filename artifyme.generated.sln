@@ -1,0 +1,45 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.002.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotnetbackend", "dotnetbackend\dotnetbackend.csproj", "{38FFEF65-CB70-4054-AE09-43E65B12C9B2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "frontend", "frontend", "{6E700AE5-CBB3-4340-8238-5C7B0E11D531}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "node_modules", "node_modules", "{5EDEAE3B-C630-4689-AFC9-788345A46413}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "react-native-view-shot", "react-native-view-shot", "{85890801-192A-4D37-87ED-D92F35CE682E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "windows", "windows", "{DFC5CDE2-F20B-4253-AB9B-C1B7702C9BFD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RNViewShot", "frontend\node_modules\react-native-view-shot\windows\RNViewShot\RNViewShot.csproj", "{C3B3B1F3-8423-4371-B8E0-7546E2FC0305}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{38FFEF65-CB70-4054-AE09-43E65B12C9B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38FFEF65-CB70-4054-AE09-43E65B12C9B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38FFEF65-CB70-4054-AE09-43E65B12C9B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38FFEF65-CB70-4054-AE09-43E65B12C9B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3B3B1F3-8423-4371-B8E0-7546E2FC0305}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3B3B1F3-8423-4371-B8E0-7546E2FC0305}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3B3B1F3-8423-4371-B8E0-7546E2FC0305}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3B3B1F3-8423-4371-B8E0-7546E2FC0305}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5EDEAE3B-C630-4689-AFC9-788345A46413} = {6E700AE5-CBB3-4340-8238-5C7B0E11D531}
+		{85890801-192A-4D37-87ED-D92F35CE682E} = {5EDEAE3B-C630-4689-AFC9-788345A46413}
+		{DFC5CDE2-F20B-4253-AB9B-C1B7702C9BFD} = {85890801-192A-4D37-87ED-D92F35CE682E}
+		{C3B3B1F3-8423-4371-B8E0-7546E2FC0305} = {DFC5CDE2-F20B-4253-AB9B-C1B7702C9BFD}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7D1AA1AE-8E68-4F6B-9C78-AAE27286A768}
+	EndGlobalSection
+EndGlobal

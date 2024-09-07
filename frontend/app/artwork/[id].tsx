@@ -17,7 +17,7 @@ const artwork = () => {
   const searchParams = useLocalSearchParams();
 
   const fetchArtwork = async ()=> {
-    const javaApiUrl = process.env.EXPO_PUBLIC_JAVA_API_URL;
+    const apiUrl = process.env.EXPO_PUBLIC_DOTNET_API_URL;
     const token = await getToken();
 
     if(!token || isTokenExpired(token))
@@ -27,7 +27,7 @@ const artwork = () => {
       return;
     }
     try {
-      const response = await axios.get(`${javaApiUrl}/api/v1/artwork?id=${searchParams.id}`, {
+      const response = await axios.get(`${apiUrl}/api/v1/Artwork/artwork?id=${searchParams.id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -83,13 +83,13 @@ const CreateImageForm = () => {
           return;
         }
 
-        const javaApiUrl = process.env.EXPO_PUBLIC_JAVA_API_URL;
+        const apiUrl = process.env.EXPO_PUBLIC_DOTNET_API_URL;
         
-        const response = await fetch(`${javaApiUrl}/api/v1/artwork`, {
+        const response = await fetch(`${apiUrl}/api/v1/Artwork`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json', 
-            'Authorization': `Bearer ${token}`
+            // 'Authorization': `Bearer ${token}`
           },
           body: JSON.stringify({
             userEmail: getTokenSubject(token),
@@ -102,12 +102,14 @@ const CreateImageForm = () => {
         });
     
         if (response.ok) {
+          console.log('Artwork saved successfully');
           const responseData = await response.json(); 
           console.log(responseData.message);
           setArtworkId(responseData.id);
           setNewArtwork(!newArtwork);
       } else {
           const responseData = await response.json(); 
+          console.error('save artwork error:', responseData.message);
           Alert.alert(`Failed to save artwork to database: ${responseData.message}`);
       }
       } catch (error) {
@@ -154,14 +156,14 @@ const CreateImageForm = () => {
               {
               //start by uploading the sketch image to an s3 bucket
               const uniqueSketchImageName = `sketchimage_${Date.now()}`; // Generating a unique name using timestamp
-              const javaApiUrl = process.env.EXPO_PUBLIC_JAVA_API_URL;
+              const apiUrl = process.env.EXPO_PUBLIC_DOTNET_API_URL;
               //Get Token from asyncstorage
               const token = await getToken();
-              const sketchimageresponse = await fetch(`${javaApiUrl}/api/s3/upload`, {
+              const sketchimageresponse = await fetch(`${apiUrl}/api/s3/upload`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json', 
-                    'Authorization': `Bearer ${token}`
+                    // 'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({
                     name: uniqueSketchImageName,
@@ -180,11 +182,11 @@ const CreateImageForm = () => {
 
               //Begin uploading AI Image
               const uniqueAIImageName = `aiimage_${Date.now()}`; // Generating a unique name using timestamp
-              const aiimageresponse = await fetch(`${javaApiUrl}/api/s3/upload`, {
+              const aiimageresponse = await fetch(`${apiUrl}/api/s3/upload`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json', 
-                    'Authorization': `Bearer ${token}`
+                    // 'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({
                     name: uniqueAIImageName,

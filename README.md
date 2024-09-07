@@ -11,7 +11,7 @@
 - [Acknowledgments](#acknowledgments) 🙌
 
 ## <a name="overview">🌐 Overview </a>
-ArtifyMe is a mobile application that allows users to convert sketches into images using AI. The app has a React Native frontend for the mobile interface, a JAVA Spring Boot backend with JWT authentication that handles server operations, and a Python FastAPI for generating images from sketches using Stable Diffusion.
+ArtifyMe is a mobile application that allows users to convert sketches into images using AI. The app has a React Native frontend for the mobile interface, a .NET backend with JWT authentication that handles server operations, and a Python FastAPI for generating images from sketches using Stable Diffusion.
 
 ## <a name="technologies">⚙️ Technologies Used </a>
 - Frontend: [React Native](https://reactnative.dev/)
@@ -21,15 +21,16 @@ ArtifyMe is a mobile application that allows users to convert sketches into imag
   - Form Validation: [Yup](https://github.com/jquense/yup)
     ![Yup](https://img.shields.io/badge/-Yup-663399?style=flat)
 
-- Backend: JAVA Spring Boot, Python FastAPI
-  ![JAVA Spring Boot](https://img.shields.io/badge/-Java_Spring_Boot-6DB33F?style=flat&logo=spring&logoColor=white)
+- Backend: ASP .Net, Python FastAPI
+  ![.NET](https://img.shields.io/badge/.NET-512BD4?style=flat&logo=dotnet&logoColor=white)
+  ![ASP.NET](https://img.shields.io/badge/ASP.NET-5C2D91?style=flat&logo=dotnet&logoColor=white)
   ![Python FastAPI](https://img.shields.io/badge/-Python_FastAPI-009688?style=flat&logo=fastapi&logoColor=white)
 
-- Authentication: [JAVA Spring Boot Security JWT Authentication](https://spring.io/projects/spring-security)
-  ![JWT Authentication](https://img.shields.io/badge/-JWT_Authentication-000000?style=flat)
+- Authentication: [ASP.NET Identity](https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity)
+  ![ASP.NET Identity](https://img.shields.io/badge/ASP.NET_Identity-512BD4?style=flat&logo=dotnet&logoColor=white)
 
-- Database: [Spring Data MongoDB](https://spring.io/projects/spring-data-mongodb)
-  ![Spring Data MongoDB](https://img.shields.io/badge/-Spring%20Data%20MongoDB-47A248?style=flat&logo=spring-data-mongodb&logoColor=white)
+- Database: [Microsoft SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
+  ![Microsoft SQL Server](https://img.shields.io/badge/Microsoft_SQL_Server-CC2927?style=flat&logo=microsoft-sql-server&logoColor=white)
 
 - Image Storage: [S3-AmazonWebServices](https://aws.amazon.com/s3/)
   ![Amazon S3](https://img.shields.io/badge/-AWS%20S3-232F3E?style=flat&logo=amazon-aws&logoColor=white)
@@ -41,10 +42,10 @@ ArtifyMe is a mobile application that allows users to convert sketches into imag
 ## <a name="features">🚀 Features </a>
 - **Sketch-to-Image Conversion:** Utilize AI Stable Diffusion model via a Python FastAPI to convert sketches into stunning images effortlessly using img2img.
 - **Interactive Canvas:** Enjoy a fully interactive canvas experience with adjustable brush sizes, a diverse range of colors to choose from, and convenient options for clearing and undoing actions.
-- **Secure Authentication:** Robust JWT token-based authentication and authorization mechanisms, seamlessly integrated with a secure Java Spring Boot backend, ensuring the safety and privacy of user data.
+- **Authentication:** Robust JWT token-based authentication and authorization mechanisms, seamlessly integrated with ASP .Net backend.
 - **CRUD Operations:** Explore comprehensive CRUD (Create, Read, Update, Delete) functionalities to manage creations efficiently. Save, edit, and delete your sketches with ease, and share your masterpieces effortlessly with friends.
-- **Profile Management:** Experience seamless user account management, including user sign-up, login, and password management, all backed by a secure JAVA backend for enhanced security and reliability.
-- **Cloud Storage Integration and Database:** All user creations are stored in Amazon Web Services (AWS) S3 bucket, providing scalable and reliable cloud storage solution for enhanced accessibility. Additionally, leverage MongoDB Atlas database for efficient data management and storage.
+- **Profile Management:** Experience seamless user account management, including user sign-up, login, and password management, all backed by a  .NET backend.
+- **Cloud Storage Integration and Database:** All user creations are stored in Amazon Web Services (AWS) S3 bucket, providing scalable and reliable cloud storage solution for enhanced accessibility. Additionally, leverage MS SQL Server for efficient data management and storage.
 - **Dark Mode:** Enhance your user experience with a sleek and modern dark mode interface.
 - **Pagination:** Navigate through your artwork collection effortlessly with pagination.
 - **Artwork Details:** Dive deeper into your artworks with dedicated artwork details screens, offering full-screen viewing capabilities to appreciate every detail.
@@ -57,6 +58,20 @@ Clone the repository: `git clone https://github.com/tomyRomero/artifyme`
 
 Please place close attention to the env examples for the frontend as well as the application properties example for the backend (found in src/main/resources/). Ensure you have set the proper variables before starting the application or you will experience errors.
 
+**SQL SERVER and AWS S3**
+SQL Server Setup:
+1.	Download and Install SQL Server
+2.	Install SQL Server Management Studio (SSMS) or Azure Data Studio
+3. Configure SQL Server:
+	•	Open SQL Server Management Studio / Azure Data.
+	•	Connect to your local SQL Server instance (usually localhost or .\SQLEXPRESS).
+	•	Create a new database if one does not already exist for your application.
+4. Configure Connection String and AWS Settings:
+  - Make sure you have an S3 bucket ready
+  - Make sure you have your database conncection string ready
+5. App.settings.json
+  - I will be inlcuding a boilerplate app.settings.json file for you to input your connection and S3 keys.
+
 **Frontend:**
 1. Navigate to the project directory: `cd frontend`
 2. Install dependencies: `npm install`
@@ -66,8 +81,9 @@ Ensure that you have JAVA and MAVEN installed with the necessary versions, they 
 
 **Backend:**
 1. Navigate to the project directory: `cd backend`
-2. Install dependencies: `mvn clean install`
-3. Start the Spring Boot server: `mvn spring-boot:run`
+2. Install dependencies: `dotnet restorel`
+3. Build the project: `dotnet build`
+4. Start the ASP .Net server: `dotnet run`
 
 **AI Integration:**
 1. Navigate to the project directory: `cd fastapi`
@@ -107,7 +123,6 @@ Screenshots of the mobile app interface and functionalities.<br><br>
 <img src="./images/signup.png" alt="Screenshot of signup screen" width="200" height="400"><br>
 <img src="./images/profile.png" alt="Screenshot of profile screen" width="200" height="400"><br>
 <img src="./images/profiledark.png" alt="Screenshot of profile screen in dark mode" width="200" height="400"><br>
-<img src="./images/contact.png" alt="Screenshot of contact screen" width="200" height="400"><br>
 
 ## <a name="acknowledgments"> 🙌 Acknowledgments </a>
 Shout out to https://loading.io/ and https://icons8.com/ for all the icons provided

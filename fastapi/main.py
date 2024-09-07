@@ -18,7 +18,7 @@ app.add_middleware(
 )
 
 # Load the DiffusionPipeline with optimizations
-model_id = "runwayml/stable-diffusion-v1-5"
+model_id = "stabilityai/stable-diffusion-2-1-base"
 pipeline = DiffusionPipeline.from_pretrained(model_id)
 
 #mps for mac, can switch to cuda if able too 
