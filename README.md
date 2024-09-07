@@ -72,18 +72,19 @@ SQL Server Setup:
 5. App.settings.json
   - I will be inlcuding a boilerplate app.settings.json file for you to input your connection and S3 keys.
 
-**Frontend:**
-1. Navigate to the project directory: `cd frontend`
-2. Install dependencies: `npm install`
-3. Start the development server: `npm start`
-
 Ensure that you have JAVA and MAVEN installed with the necessary versions, they can be found in the pom.xml, for example the JAVA I used was 20, and MAVEN was 4.0.0, spring-boot was 3.2.3. Ensure that you have these systems up and running if you want to test the server locally, ensure that you have MAVEN and JAVA as environmental variables on your PC.
 
 **Backend:**
 1. Navigate to the project directory: `cd backend`
 2. Install dependencies: `dotnet restorel`
 3. Build the project: `dotnet build`
-4. Start the ASP .Net server: `dotnet run`
+
+4. Apply Entity Framework Migrations:
+	•	First, add the migrations:
+  1. `dotnet ef migrations add InitialCreate`
+  2. `dotnet ef database update`
+
+5. Start the ASP .Net server: `dotnet run`
 
 **AI Integration:**
 1. Navigate to the project directory: `cd fastapi`
@@ -97,6 +98,11 @@ In main.py, line 25, the code is for macOS
 For Windows or Linux systems, you can use "cuda" instead of "mps" if you have a compatible GPU and CUDA installed. "cuda" will utilize the GPU for faster processing.
 
 If you don't have a compatible GPU or CUDA installed, you can use "cpu" to run the model on the CPU.
+
+**Frontend:**
+1. Navigate to the project directory: `cd frontend`
+2. Install dependencies: `npm install`
+3. Start the development server: `npm start`
 
 Ensure all three softwares are up and running for app to be fully functional.
 Any questions or errors please contact me.
