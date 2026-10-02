@@ -1,0 +1,26 @@
+<!-- The app icon. The PNGs in assets/images are rendered from this at 1024 pixels with resvg: icon.png as it is;
+     adaptive-icon.png (Android) is the artwork alone, without the violet, scaled to 78%; splash-icon.png is the
+     artwork alone, and splash-icon-dark.png the same with the dark theme outline (#4A4380) in place of #16122B. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <rect width="1024" height="1024" fill="#5800FF"/>
+  <defs>
+    <linearGradient id="rainbow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#D93025"/>
+      <stop offset="0.2" stop-color="#F28A00"/>
+      <stop offset="0.4" stop-color="#F6C21C"/>
+      <stop offset="0.6" stop-color="#1E8E3E"/>
+      <stop offset="0.8" stop-color="#1A5CFF"/>
+      <stop offset="1" stop-color="#8E24AA"/>
+    </linearGradient>
+  </defs>
+  <g transform="rotate(-6 512 512)">
+    <!-- The chunky lip under the artboard -->
+    <rect x="292" y="212" width="440" height="620" rx="56" fill="#16122B" transform="translate(0 30)"/>
+    <!-- The artboard -->
+    <rect x="292" y="212" width="440" height="620" rx="56" fill="#FFFFFF" stroke="#16122B" stroke-width="28"/>
+    <!-- A brush stroke, in the rainbow -->
+    <path d="M372 600 C 420 470, 500 460, 512 540 S 610 640, 652 470" fill="none" stroke="url(#rainbow)" stroke-width="78" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <!-- A sparkle: the moment it becomes art -->
+  <path d="M826 184 C 835 234, 850 249, 900 258 C 850 267, 835 282, 826 332 C 817 282, 802 267, 752 258 C 802 249, 817 234, 826 184 Z" fill="#FFC83D" stroke="#16122B" stroke-width="20" stroke-linejoin="round"/>
+</svg>

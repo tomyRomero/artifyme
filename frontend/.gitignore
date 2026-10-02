@@ -8,6 +8,10 @@ node_modules/
 dist/
 web-build/
 
+# Native folders, made by `npx expo run:ios` and `run:android`
+/ios
+/android
+
 # Native
 *.orig.*
 *.jks

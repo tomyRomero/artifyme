@@ -1,0 +1,13 @@
+# Secret scanning rules for CI: gitleaks' defaults, plus one rule for credentials
+# embedded in connection URLs (for example mongodb+srv://user:password@host),
+# the kind of leak found in this repository's history.
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "url-embedded-credentials"
+description = "Username and password embedded in a connection URL"
+regex = '''[a-z][a-z0-9+.-]*://[^\s:/@'"]+:([^\s/@'"]{6,})@[^\s/'"]+'''
+secretGroup = 1
+keywords = ["://"]

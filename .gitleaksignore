@@ -1,0 +1,6 @@
+# Known findings in old commit 513a7c1 (March 2024, the retired Spring backend).
+# They belong to a MongoDB Atlas account that is no longer used, and the JWT key is unused.
+# History is kept as-is rather than rewritten. Any NEW finding still fails CI.
+513a7c1db3487715045a4c9a961d6cbce6efc968:backend/src/main/resources/application.yaml:url-embedded-credentials:4
+513a7c1db3487715045a4c9a961d6cbce6efc968:backend/src/main/resources/application.properties:generic-api-key:4
+513a7c1db3487715045a4c9a961d6cbce6efc968:backend/src/main/resources/application.properties:url-embedded-credentials:1

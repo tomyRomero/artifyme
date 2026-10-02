@@ -1,0 +1,86 @@
+# SQL Server only:            docker compose up -d --wait
+# Everything (inference mock): docker compose --profile app up -d --build --wait
+# Settings come from .env (see .env-example).
+name: artifyme
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2025-latest
+    # amd64 only; on Apple silicon turn on Rosetta emulation in Docker Desktop
+    platform: linux/amd64
+    # Run sqlservr directly so it gets Docker's stop signal and shuts down cleanly
+    entrypoint: ["/opt/mssql/bin/sqlservr"]
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: Developer
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD in .env (see .env-example)}
+    # SQL Server needs at least 2 GB
+    mem_limit: 2g
+    ports:
+      # localhost only
+      - "127.0.0.1:14331:1433"
+    volumes:
+      - sqlserver2025-data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -C -b -Q \"SELECT 1\""]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+
+  api:
+    profiles: [app]
+    build: ./backend
+    environment:
+      # Plain HTTP and migrations at startup, as with dotnet run
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: "Server=sqlserver;Database=ArtifyMe;User ID=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True"
+      JwtSettings__Secret: ${JWT_SECRET:-}
+      Inference__BaseUrl: http://inference:8000
+      Inference__ApiKey: ${INFERENCE_API_KEY:-}
+      # Optional: without them, images are kept in the images volume
+      R2__Endpoint: ${R2_ENDPOINT:-}
+      R2__BucketName: ${R2_BUCKET:-}
+      R2__AccessKeyId: ${R2_ACCESS_KEY_ID:-}
+      R2__SecretAccessKey: ${R2_SECRET_ACCESS_KEY:-}
+      # Optional: only when the Expo project requires an access token for push
+      Push__AccessToken: ${EXPO_ACCESS_TOKEN:-}
+    ports:
+      # All interfaces, so a phone on the network can reach it
+      - "5038:8080"
+    volumes:
+      - images:/app/storage
+    mem_limit: 512m
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+      inference:
+        condition: service_healthy
+
+  inference:
+    profiles: [app]
+    build:
+      context: ./inference
+      args:
+        # "real" installs the model's packages (several GB); also set INFERENCE_MODE=real
+        EXTRAS: ${INFERENCE_EXTRAS:-}
+    environment:
+      INFERENCE_MODE: ${INFERENCE_MODE:-mock}
+      INFERENCE_API_KEY: ${INFERENCE_API_KEY:-}
+    volumes:
+      # Model weights (about 3 GB)
+      - model-cache:/home/app/.cache/huggingface
+    # The real model needs about 8 GB
+    mem_limit: ${INFERENCE_MEMORY:-1g}
+    # No published port: only the API calls it
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 10s
+
+volumes:
+  sqlserver2025-data:
+  images:
+  model-cache:

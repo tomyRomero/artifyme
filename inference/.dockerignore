@@ -1,0 +1,6 @@
+# Only the code and the lockfile go into the image
+.venv/
+tests/
+**/__pycache__/
+.pytest_cache/
+.ruff_cache/

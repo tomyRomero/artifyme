@@ -1,0 +1,41 @@
+[project]
+name = "artifyme-inference"
+version = "1.0.0"
+description = "Turns ArtifyMe sketches into artwork with Stable Diffusion and ControlNet"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.142",
+    "uvicorn[standard]>=0.54",
+    "pillow>=12.3",
+    "pydantic>=2.13",
+]
+
+[project.optional-dependencies]
+# The real model. Large downloads, only needed when running with INFERENCE_MODE=real.
+real = [
+    "torch>=2.14",
+    "diffusers>=0.40",
+    "transformers>=5.17",
+    "accelerate>=1.15",
+    "safetensors>=0.8",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1",
+    "httpx2>=2.13",
+    "ruff>=0.16",
+]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
