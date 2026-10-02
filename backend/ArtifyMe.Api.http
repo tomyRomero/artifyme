@@ -1,0 +1,38 @@
+# For the VS Code REST Client, Rider or Visual Studio. Start the API with `dotnet run --launch-profile http`.
+@host = http://localhost:5038
+@email = local.dev@example.com
+@password = correct horse battery staple
+
+### Health
+GET {{host}}/health
+
+### Register
+POST {{host}}/api/v1/users
+Content-Type: application/json
+
+{ "firstName": "Local", "lastName": "Dev", "email": "{{email}}", "password": "{{password}}" }
+
+### Sign in, then paste "accessToken" into @token below (valid for 15 minutes)
+POST {{host}}/api/v1/auth/sessions
+Content-Type: application/json
+
+{ "email": "{{email}}", "password": "{{password}}", "installId": "http-file-install-0001", "platform": "ios", "appVersion": "dev" }
+
+###
+@token = paste-access-token-here
+
+### Profile
+GET {{host}}/api/v1/users/me
+Authorization: Bearer {{token}}
+
+### Signed-in devices
+GET {{host}}/api/v1/auth/sessions
+Authorization: Bearer {{token}}
+
+### Gallery
+GET {{host}}/api/v1/artworks?page=1&pageSize=12
+Authorization: Bearer {{token}}
+
+### Generation in progress (204 if none)
+GET {{host}}/api/v1/generations/active
+Authorization: Bearer {{token}}

@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="backend/ArtifyMe.Api.csproj" />
+  <Project Path="backend.Tests/ArtifyMe.Api.Tests.csproj" />
+</Solution>

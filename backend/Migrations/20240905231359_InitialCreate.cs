@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace dotnetbackend.Migrations
+namespace ArtifyMe.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration

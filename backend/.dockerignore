@@ -1,0 +1,5 @@
+# Build output and local data stay out of the image
+bin/
+obj/
+storage/
+*.http

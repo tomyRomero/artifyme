@@ -1,0 +1,129 @@
+name: CI
+
+on:
+  push:
+    branches: [main, upgrade]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  api:
+    name: API · build and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+      - name: Build
+        run: dotnet build ArtifyMe.slnx --configuration Release
+      - name: Check formatting (see .editorconfig)
+        run: dotnet format ArtifyMe.slnx --verify-no-changes --no-restore
+      - name: Test
+        run: dotnet test --solution ArtifyMe.slnx --configuration Release --no-build
+
+  migrations:
+    name: API · SQL Server migrations
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+      - name: Start SQL Server
+        run: |
+          SA_PASSWORD="Ci$(openssl rand -hex 12)!"
+          echo "::add-mask::$SA_PASSWORD"
+          echo "SA_PASSWORD=$SA_PASSWORD" >> "$GITHUB_ENV"
+          docker run -d --name mssql -e ACCEPT_EULA=Y -e MSSQL_SA_PASSWORD="$SA_PASSWORD" \
+            -p 1433:1433 mcr.microsoft.com/mssql/server:2025-latest
+          for attempt in $(seq 1 60); do
+            if docker exec mssql /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P "$SA_PASSWORD" -Q "SELECT 1" > /dev/null 2>&1; then
+              exit 0
+            fi
+            sleep 2
+          done
+          docker logs mssql
+          exit 1
+      - name: Restore EF Core tools (version pinned in dotnet-tools.json)
+        run: dotnet tool restore
+      - name: Build API
+        run: dotnet build backend
+      - name: Apply and verify migrations
+        run: .github/scripts/check-migrations.sh
+
+  inference:
+    name: Inference · lint and test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: inference
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: inference/uv.lock
+      - name: Install (mock mode and dev tools only, no model packages)
+        run: uv sync --locked
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run pytest
+
+  images:
+    name: Docker images build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Check compose.yaml, with the app's services
+        # Any password will do: the file is only checked, nothing is started
+        run: MSSQL_SA_PASSWORD="$(openssl rand -hex 12)" docker compose --profile app config --quiet
+      - name: Build the API image
+        run: docker build backend
+      - name: Build the image service (mock mode)
+        run: docker build inference
+
+  mobile:
+    name: Mobile · lint, format, typecheck and test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - name: Check package versions match the Expo SDK
+        run: npx expo install --check
+      - run: npm run lint
+      - name: Check formatting (see .prettierrc)
+        run: npm run format:check
+      - run: npm run typecheck
+      - run: npm test
+      - name: Build the iOS bundle (catches imports the type check can't)
+        run: npx expo export --platform ios --output-dir "$RUNNER_TEMP/expo-export"
+
+  secrets:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Install gitleaks
+        run: |
+          curl -sSLo gitleaks.tar.gz https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz
+          echo "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb  gitleaks.tar.gz" | sha256sum --check
+          tar -xzf gitleaks.tar.gz gitleaks
+      - name: Scan the full history
+        run: ./gitleaks git . --config .gitleaks.toml --redact --no-banner

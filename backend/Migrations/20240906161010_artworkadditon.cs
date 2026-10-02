@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace dotnetbackend.Migrations
+namespace ArtifyMe.Migrations
 {
     /// <inheritdoc />
-    public partial class artworkadditon : Migration
+    public partial class ArtworkAddition : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
